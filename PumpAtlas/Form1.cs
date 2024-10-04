@@ -32,7 +32,7 @@ namespace PumpAtlas
             try
             {
                 MySqlConnection cnn = new MySqlConnection(db_conn);
-                conn_state.Text = "Successfully Connected";
+                conn_state.Text = "Successfully Connected to Database";
                 fill_selectors();
 
             }
@@ -72,7 +72,6 @@ namespace PumpAtlas
                 HeadList.DisplayMember = "Head";
 
             }
-
 
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
@@ -140,7 +139,7 @@ namespace PumpAtlas
 
                 adapter = new MySqlDataAdapter(Bigquery, connection);
                 adapter.Fill(Full_data);
-                TableView.DataSource = Full_data;   
+                TableView.DataSource = Full_data;
             }
         }
 
@@ -162,6 +161,41 @@ namespace PumpAtlas
             TableView.Refresh();
             TableView.DataContext = null;
             Full_data.Clear();
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var fileContent = string.Empty;
+            var filePath = string.Empty;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\Downloads";
+                openFileDialog.Filter = "CSV Files (*.csv)|*.csv";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    //Get the path of specified file
+                    filePath = openFileDialog.FileName;
+
+                    //Read the contents of the file into a stream
+                    var fileStream = openFileDialog.OpenFile();
+
+                    using (StreamReader reader = new StreamReader(fileStream))
+                    {
+                        fileContent = reader.ReadToEnd();
+                    }
+                }
+            }
+
+            MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
         }
     }
 }

@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            label1 = new Label();
             TabView = new TabControl();
             tabPage1 = new TabPage();
             conn_state = new Label();
@@ -43,28 +42,32 @@
             CompanyList = new ListBox();
             tabPage2 = new TabPage();
             tabPage3 = new TabPage();
+            tabPage4 = new TabPage();
+            pictureBox2 = new PictureBox();
+            tabControl1 = new TabControl();
+            tabPage5 = new TabPage();
+            tabPage6 = new TabPage();
             pictureBox1 = new PictureBox();
+            pictureBox3 = new PictureBox();
+            tabPage7 = new TabPage();
+            button1 = new Button();
             TabView.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)TableView).BeginInit();
+            tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            tabControl1.SuspendLayout();
+            tabPage5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 20F);
-            label1.Location = new Point(667, 9);
-            label1.Name = "label1";
-            label1.Size = new Size(151, 37);
-            label1.TabIndex = 0;
-            label1.Text = "Pump Atlas";
             // 
             // TabView
             // 
             TabView.Controls.Add(tabPage1);
             TabView.Controls.Add(tabPage2);
             TabView.Controls.Add(tabPage3);
+            TabView.Controls.Add(tabPage4);
             TabView.Location = new Point(12, 41);
             TabView.Name = "TabView";
             TabView.SelectedIndex = 0;
@@ -198,6 +201,61 @@
             tabPage3.Text = "RP vs Market";
             tabPage3.UseVisualStyleBackColor = true;
             // 
+            // tabPage4
+            // 
+            tabPage4.BackColor = Color.White;
+            tabPage4.Controls.Add(pictureBox2);
+            tabPage4.Controls.Add(tabControl1);
+            tabPage4.Location = new Point(4, 24);
+            tabPage4.Name = "tabPage4";
+            tabPage4.Padding = new Padding(3);
+            tabPage4.Size = new Size(1461, 766);
+            tabPage4.TabIndex = 3;
+            tabPage4.Text = "Data Management";
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
+            pictureBox2.Location = new Point(538, 6);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(465, 97);
+            pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
+            pictureBox2.TabIndex = 1;
+            pictureBox2.TabStop = false;
+            pictureBox2.Click += pictureBox2_Click;
+            // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(tabPage5);
+            tabControl1.Controls.Add(tabPage6);
+            tabControl1.Controls.Add(tabPage7);
+            tabControl1.Location = new Point(6, 99);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(1446, 661);
+            tabControl1.TabIndex = 0;
+            // 
+            // tabPage5
+            // 
+            tabPage5.BackColor = Color.White;
+            tabPage5.Controls.Add(button1);
+            tabPage5.Location = new Point(4, 24);
+            tabPage5.Name = "tabPage5";
+            tabPage5.Padding = new Padding(3);
+            tabPage5.Size = new Size(1438, 633);
+            tabPage5.TabIndex = 0;
+            tabPage5.Text = "File Conversor";
+            // 
+            // tabPage6
+            // 
+            tabPage6.Location = new Point(4, 24);
+            tabPage6.Name = "tabPage6";
+            tabPage6.Padding = new Padding(3);
+            tabPage6.Size = new Size(1438, 633);
+            tabPage6.TabIndex = 1;
+            tabPage6.Text = "File Viewer";
+            tabPage6.UseVisualStyleBackColor = true;
+            // 
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
@@ -208,6 +266,36 @@
             pictureBox1.TabIndex = 2;
             pictureBox1.TabStop = false;
             // 
+            // pictureBox3
+            // 
+            pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
+            pictureBox3.Location = new Point(567, 3);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(368, 58);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 3;
+            pictureBox3.TabStop = false;
+            // 
+            // tabPage7
+            // 
+            tabPage7.Location = new Point(4, 24);
+            tabPage7.Name = "tabPage7";
+            tabPage7.Padding = new Padding(3);
+            tabPage7.Size = new Size(1438, 633);
+            tabPage7.TabIndex = 2;
+            tabPage7.Text = "Data Insertion";
+            tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(58, 53);
+            button1.Name = "button1";
+            button1.Size = new Size(328, 64);
+            button1.TabIndex = 0;
+            button1.Text = "Select File\r\n";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -215,9 +303,9 @@
             AutoSize = true;
             BackColor = Color.White;
             ClientSize = new Size(1480, 838);
+            Controls.Add(pictureBox3);
             Controls.Add(pictureBox1);
             Controls.Add(TabView);
-            Controls.Add(label1);
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
@@ -225,14 +313,17 @@
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)TableView).EndInit();
+            tabPage4.ResumeLayout(false);
+            tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            tabControl1.ResumeLayout(false);
+            tabPage5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
-        private Label label1;
         private TabControl TabView;
         private TabPage tabPage1;
         private TabPage tabPage2;
@@ -247,5 +338,13 @@
         private Label conn_state;
         private Button button3;
         private PictureBox pictureBox1;
+        private TabPage tabPage4;
+        private TabControl tabControl1;
+        private TabPage tabPage5;
+        private TabPage tabPage6;
+        private PictureBox pictureBox2;
+        private PictureBox pictureBox3;
+        private TabPage tabPage7;
+        private Button button1;
     }
 }

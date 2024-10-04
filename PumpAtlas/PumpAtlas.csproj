@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="9.0.0" />
+    <PackageReference Include="Spire.XLS" Version="14.9.5" />
   </ItemGroup>
 
   <ItemGroup>
