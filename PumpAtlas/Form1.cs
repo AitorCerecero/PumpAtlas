@@ -1,10 +1,15 @@
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Relational;
+using Spire.Xls;
 using System.Data;
+using System.Text;
+using CsvHelper;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Forms;
 using static System.Reflection.Metadata.BlobBuilder;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using CsvHelper.Configuration;
 
 namespace PumpAtlas
 
@@ -21,6 +26,12 @@ namespace PumpAtlas
         DataTable speed = new DataTable();
         DataTable size = new DataTable();
         DataTable Full_data = new DataTable();
+        DataTable dt = new DataTable();
+
+
+        String fileContent = string.Empty;
+        String filePath = string.Empty;
+
 
         public Form1()
         {
@@ -33,12 +44,14 @@ namespace PumpAtlas
             {
                 MySqlConnection cnn = new MySqlConnection(db_conn);
                 conn_state.Text = "Successfully Connected to Database";
+                conn_db_state.Text = "Successfully Connected to Database";
                 fill_selectors();
 
             }
             catch (Exception)
             {
                 conn_state.Text = "Warning, not connected";
+                conn_db_state.Text = "Warning, not connected";
             }
         }
 
@@ -170,32 +183,251 @@ namespace PumpAtlas
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = "c:\\Downloads";
-                openFileDialog.Filter = "CSV Files (*.csv)|*.csv";
+                openFileDialog.Filter = "Excel Files (*.xlsx,*.xlsm)|*.xlsx;*.xlsm";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    //Get the path of specified file
-                    filePath = openFileDialog.FileName;
 
-                    //Read the contents of the file into a stream
+                    filePath = openFileDialog.FileName;
+                    String name_of_file = Path.GetFileName(filePath);
+
                     var fileStream = openFileDialog.OpenFile();
 
                     using (StreamReader reader = new StreamReader(fileStream))
                     {
-                        fileContent = reader.ReadToEnd();
+                        Excel_file_tag.Text = name_of_file;
                     }
                 }
             }
 
-            MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
+        }
+
+        private void save_file()
+        {
+            SaveFileDialog save_as = new SaveFileDialog();
+            save_as.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            save_as.Title = "Save Converted File As";
+            save_as.CheckFileExists = false;
+            save_as.CheckPathExists = true;
+            save_as.DefaultExt = "csv";
+            save_as.Filter = "CSV files (*.csv)|*.csv";
+            save_as.FilterIndex = 1;
+            save_as.RestoreDirectory = true;
+
+            String saved_name = FileNameBox.Text;
+            save_as.FileName = saved_name + ".csv";
+            String head = conv_state.Text;
+
+            if (save_as.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    Workbook WB = new Workbook();
+                    WB.LoadFromFile(filePath);
+                    Worksheet sheet = WB.Worksheets[0];
+
+                    // Save to the selected file path
+                    sheet.SaveToFile(save_as.FileName, ",");
+                    conv_state.Text = head + "Success";
+
+                    if (conv_state.Text.Contains("Success") || conv_state.Text.Contains("Failure: "))
+                    {
+                        FileNameBox.Text = String.Empty;
+                        filePath = String.Empty;
+                        Excel_file_tag.Text = String.Empty;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    conv_state.Text = head + "Failure: " + ex.Message;
+                }
+
+            }
+            else
+            {
+                conv_state.Text = head + "Operation cancelled";
+                FileNameBox = null;
+                save_as = null;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            save_file();
+        }
+
+        private void visor()
+        {
+            string start = csv_label.Text;
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\Downloads";
+                openFileDialog.Title = "Select CSV to View its Content";
+                openFileDialog.Filter = "CSV files (*.csv)|*.csv";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+
+
+                    try
+                    {
+                        using (var reader = new StreamReader(filePath))
+                        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                        {
+                            using (var dr = new CsvDataReader(csv))
+                            {
+                                var dt = new DataTable();
+                                dt.Load(dr);
+                                csv_view.DataSource = dt;
+                                csv_label.Text = start + Path.GetFileName(filePath);
+                            }
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error reading CSV file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        public void clear_visor()
+        {
+            csv_view.DataSource = null;
+            csv_view.Refresh();
+            csv_view.DataContext = null;
+            csv_label.Text = String.Empty;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            visor();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            clear_visor();
+        }
+
+        private void select_file_to_insert_to_database()
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\Downloads";
+                openFileDialog.Title = "Select a CSV to Insert onto Database";
+                openFileDialog.Filter = "CSV files (*.csv)|*.csv";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    try
+                    {
+                        using (var reader = new StreamReader(filePath))
+                        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                        {
+                            using (var dr = new CsvDataReader(csv))
+                            {
+                                sel_insert_label.Text = Path.GetFileName(filePath);
+
+                                void insert_to_db()
+                                {
+                                    try
+                                    {
+                                        using (var connection = new MySqlConnection(db_conn))
+                                        {
+                                            connection.Open();
+
+                                            using (var reader = new StreamReader(filePath))
+                                            {
+                                                // Leer y omitir la primera línea (encabezados)
+                                                string headerLine = reader.ReadLine();
+
+                                                // Ahora prepara la consulta para insertar los datos
+                                                while (!reader.EndOfStream)
+                                                {
+                                                    string dataLine = reader.ReadLine();
+                                                    string[] values = dataLine.Split(',');
+
+                                                    // Escape de comillas simples en los valores y ponerlos entre comillas
+                                                    for (int i = 0; i < values.Length; i++)
+                                                    {
+                                                        values[i] = "'" + values[i].Replace("'", "''") + "'";
+                                                    }
+
+                                                    string valueString = $"({string.Join(",", values)})";
+
+                                                    // Ejecuta la inserción sin los encabezados
+                                                    string insertQuery = $"INSERT INTO pumps (Company, Flow, Head, Pump_Speed_in_RPM,Max_BHP,Pump_Model,Line,Stages,Pump_Size) VALUES {valueString}";
+
+                                                    using (var cmd = new MySqlCommand(insertQuery, connection))
+                                                    {
+                                                        cmd.ExecuteNonQuery();
+                                                    }
+                                                }
+                                            }
+                                            insert_state.Text = "Data inserted successfully";
+
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        insert_state.Text = ($"An error occurred: {ex.Message}");
+                                    }
+                                }
+
+                                insert_to_db();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error reading CSV file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    sel_insert_label.Text = "No File Selected";
+                }
+            }
+        }
+
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            select_file_to_insert_to_database();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+            CompanyList.DataSource = null;
+            SizeList.DataSource = null;
+            HeadList.DataSource = null;
+            SpeedList.DataSource = null;
+            FlowList.DataSource = null;
+
+
+            CompanyList.Items.Clear();
+            SizeList.Items.Clear();
+            HeadList.Items.Clear();
+            SpeedList.Items.Clear();
+            FlowList.Items.Clear();
+
+
+            fill_selectors();
         }
     }
 }

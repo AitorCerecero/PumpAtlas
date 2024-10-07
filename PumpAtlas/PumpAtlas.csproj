@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="MySql.Data" Version="9.0.0" />
     <PackageReference Include="Spire.XLS" Version="14.9.5" />
   </ItemGroup>
