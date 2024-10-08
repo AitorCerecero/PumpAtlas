@@ -225,6 +225,12 @@
         YnrVcfkAAAAASUVORK5CYII=
 </value>
   </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>Note: The following button should be used after any insertion, the program was designed to do it on automatically, however its suggested to ensure the process was madre correctly by clicking the button
+
+
+</value>
+  </data>
   <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAA+gAAAIdCAYAAACui1f6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL

@@ -41,15 +41,12 @@ namespace PumpAtlas
             try
             {
                 MySqlConnection cnn = new MySqlConnection(db_conn);
-                conn_state.Text = "Successfully Connected to Database";
-                conn_db_state.Text = "Successfully Connected to Database";
+                conn_state.Text = conn_db_state.Text;
                 fill_selectors();
-
             }
             catch (Exception)
             {
-                conn_state.Text = "Warning, not connected";
-                conn_db_state.Text = "Warning, not connected";
+                conn_state.Text = conn_db_state.Text;
             }
         }
 
@@ -60,30 +57,73 @@ namespace PumpAtlas
             {
                 connection.Open();
 
+                //Company Filler for all 3 Tabs of Data Processing
                 String query1 = ("SELECT Company FROM pumps GROUP BY Company");
                 adapter = new MySqlDataAdapter(query1, connection);
                 DataTable comp = new DataTable();
+                DataTable comp_rpvsothers = new DataTable();
+                DataTable comp_rpvsmkt = new DataTable();
                 adapter.Fill(comp);
+                adapter.Fill(comp_rpvsothers);
+                adapter.Fill(comp_rpvsmkt);
+                //MAP
                 CompanyList.DataSource = null;
                 CompanyList.DataSource = new BindingSource(comp, null);
                 CompanyList.DisplayMember = "Company";
+                //RP VS OTHER
+                Company_rpvsothers.DataSource = null;
+                Company_rpvsothers.DataSource = new BindingSource(comp_rpvsothers, null);
+                Company_rpvsothers.DisplayMember = "Company";
+                //RP VS MARKET
+                Company_rpvsmkt.DataSource = null;
+                Company_rpvsmkt.DataSource = new BindingSource(comp_rpvsmkt, null);
+                Company_rpvsmkt.DisplayMember = "Company";
 
+                //Head Filler for all 3 Tabs of Data Processing
                 String query2 = ("SELECT Head FROM pumps GROUP BY Head ORDER BY Head");
                 adapter = new MySqlDataAdapter(query2, connection);
                 DataTable head = new DataTable();
+                DataTable head_rpvsothers = new DataTable();
+                DataTable head_rpvsmkt = new DataTable();
                 adapter.Fill(head);
+                adapter.Fill(head_rpvsothers);
+                adapter.Fill(head_rpvsmkt);
+                //MAP
                 HeadList.DataSource = null;
                 HeadList.DataSource = new BindingSource(head, null);
                 HeadList.DisplayMember = "Head";
+                //RP VS OTHER
+                Head_rpvsothers.DataSource = null;
+                Head_rpvsothers.DataSource = new BindingSource(head_rpvsothers, null);
+                Head_rpvsothers.DisplayMember = "Head";
+                //RP VS MARKET
+                Head_rpvsmkt.DataSource = null;
+                Head_rpvsmkt.DataSource = new BindingSource(head_rpvsmkt, null);
+                Head_rpvsmkt.DisplayMember = "Head";
 
+                //Flow Filler for all 3 Tabs of Data Processing
                 String query3 = ("SELECT Flow FROM pumps GROUP BY Flow ORDER BY Flow ASC");
                 adapter = new MySqlDataAdapter(query3, connection);
                 DataTable flow = new DataTable();
+                DataTable flow_rpvsothers = new DataTable();
+                DataTable flow_rpvsmkt = new DataTable();
                 adapter.Fill(flow);
+                adapter.Fill(flow_rpvsothers);
+                adapter.Fill(flow_rpvsmkt);
+                //MAP
                 FlowList.DataSource = null;
                 FlowList.DataSource = new BindingSource(flow, null);
                 FlowList.DisplayMember = "Flow";
+                //RP VS OTHER
+                Flow_rpvsothers.DataSource = null;
+                Flow_rpvsothers.DataSource = new BindingSource(flow_rpvsothers, null);
+                Flow_rpvsothers.DisplayMember = "Flow";
+                //RP VS MARKET
+                Flow_rpvsmkt.DataSource = null;
+                Flow_rpvsmkt.DataSource = new BindingSource(flow_rpvsmkt, null);
+                Flow_rpvsmkt.DisplayMember = "Flow";
 
+                //Speed Filler for all 3 Tabs of Data Processing (Only used once)
                 String query4 = ("SELECT Pump_Speed_in_RPM FROM pumps GROUP BY Pump_Speed_in_RPM ORDER BY Pump_Speed_in_RPM ASC");
                 adapter = new MySqlDataAdapter(query4, connection);
                 DataTable speed = new DataTable();
@@ -92,13 +132,50 @@ namespace PumpAtlas
                 SpeedList.DataSource = new BindingSource(speed, null);
                 SpeedList.DisplayMember = "Pump_Speed_in_RPM";
 
+                //Pump Size Filler for all 3 Tabs of Data Processing
                 String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
                 adapter = new MySqlDataAdapter(query5, connection);
                 DataTable size = new DataTable();
+                DataTable size_rpvsothers = new DataTable();
+                DataTable size_rpvsmkt = new DataTable();
                 adapter.Fill(size);
+                adapter.Fill(size_rpvsothers);
+                adapter.Fill(size_rpvsmkt);
+                //MAP
                 SizeList.DataSource = null;
                 SizeList.DataSource = new BindingSource(size, null);
                 SizeList.DisplayMember = "Pump_Size";
+                //RP VS OTHERS
+                Size_rpvsothers.DataSource = null;
+                Size_rpvsothers.DataSource = new BindingSource(size_rpvsothers, null);
+                Size_rpvsothers.DisplayMember = "Pump_Size";
+                //RP VS MARKET
+                Size_rpvsmkt.DataSource = null;
+                Size_rpvsmkt.DataSource = new BindingSource(size_rpvsmkt, null);
+                Size_rpvsmkt.DisplayMember = "Pump_Size";
+
+                //Stages Filler for all 3 Tabs of data processing
+                String query6 = ("SELECT Stages FROM pumps GROUP BY Stages ORDER BY Stages ASC");
+                adapter = new MySqlDataAdapter(query6, connection);
+                DataTable stage = new DataTable();
+                DataTable stage_rpvsothers = new DataTable();
+                DataTable stage_rpvsmkt = new DataTable();
+                adapter.Fill(stage);
+                adapter.Fill(stage_rpvsothers);
+                adapter.Fill(stage_rpvsmkt);
+                //MAP
+                StagesList.DataSource = null;
+                StagesList.DataSource = new BindingSource(stage, null);
+                StagesList.DisplayMember = "Stages";
+                //RP VS OTHERS
+                Stages_rpvsothers.DataSource = null;
+                Stages_rpvsothers.DataSource = new BindingSource(stage_rpvsothers, null);
+                Stages_rpvsothers.DisplayMember = "Stages";
+                //RP VS MARKET
+                Stages_rpvsmkt.DataSource = null;
+                Stages_rpvsmkt.DataSource = new BindingSource(stage_rpvsmkt, null);
+                Stages_rpvsmkt.DisplayMember = "Stages";
+
             }
         }
 
@@ -110,12 +187,14 @@ namespace PumpAtlas
             string Heads = string.Join("','", HeadList.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
             string Speeds = string.Join("','", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Speed_in_RPM"].ToString()));
             string Sizes = string.Join("','", SizeList.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Size"].ToString()));
+            string Stages = string.Join("','", StagesList.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
+            string StagesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Stages IN ('{Stages}')";
 
 
             string Bigquery = $"SELECT Company, Flow, Head, Pump_Speed_in_RPM as 'Speed (RPM)',Pump_Size, MIN(Max_BHP) as 'Min BHP' " +
@@ -125,6 +204,7 @@ namespace PumpAtlas
                            $"AND {HeadsCondition} " +
                            $"AND {SpeedsCondition} " +
                            $"AND {SizesCondition} " +
+                           $"AND {StagesCondition} " +
                            $"GROUP BY Head, Company, Flow, Pump_Speed_in_RPM,Pump_Size " +
                            $"ORDER BY Flow DESC";
 
@@ -145,16 +225,39 @@ namespace PumpAtlas
 
         private void Clear_select_Click(object sender, EventArgs e)
         {
+            clear_results_and_filter_map();
+            TableView.DataSource = null;
+            TableView.Refresh();
+            TableView.DataContext = null;
+            Full_data.Clear();
+        }
+
+        private void clear_results_and_filter_map()
+        {
             CompanyList.ClearSelected();
             FlowList.ClearSelected();
             HeadList.ClearSelected();
             SpeedList.ClearSelected();
             SizeList.ClearSelected();
+            StagesList.ClearSelected();
+        }
 
-            TableView.DataSource = null;
-            TableView.Refresh();
-            TableView.DataContext = null;
-            Full_data.Clear();
+        private void clear_results_and_filter_rpvsothers()
+        {
+            Company_rpvsothers.ClearSelected();
+            Flow_rpvsothers.ClearSelected();
+            Head_rpvsothers.ClearSelected();
+            Size_rpvsothers.ClearSelected();
+            Stages_rpvsothers.ClearSelected();
+        }
+
+        private void clear_results_and_filter_rpvsmkt()
+        {
+            Company_rpvsmkt.ClearSelected();
+            Flow_rpvsmkt.ClearSelected();
+            Head_rpvsmkt.ClearSelected();
+            Size_rpvsmkt.ClearSelected();
+            Stages_rpvsmkt.ClearSelected();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -253,8 +356,6 @@ namespace PumpAtlas
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-
-
                     try
                     {
                         using (var reader = new StreamReader(filePath))
@@ -265,15 +366,21 @@ namespace PumpAtlas
                                 var dt = new DataTable();
                                 dt.Load(dr);
                                 csv_view.DataSource = dt;
+                                string start_ok = "Now Viewing";
+                                viewer.Text = start_ok;
                                 csv_label.Text = start + Path.GetFileName(filePath);
                             }
-
                         }
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("Error reading CSV file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
+                else
+                {
+                    string start_fail = "No File Selected";
+                    viewer.Text = start_fail;
                 }
             }
         }
@@ -284,6 +391,8 @@ namespace PumpAtlas
             csv_view.Refresh();
             csv_view.DataContext = null;
             csv_label.Text = String.Empty;
+            string start_fail = "No File Selected";
+            viewer.Text = start_fail;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -421,7 +530,17 @@ namespace PumpAtlas
 
         }
 
-        private void label13_Click(object sender, EventArgs e)
+        private void button10_Click(object sender, EventArgs e)
+        {
+            clear_results_and_filter_rpvsothers();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            clear_results_and_filter_rpvsmkt();
+        }
+
+        private void label7_Click(object sender, EventArgs e)
         {
 
         }
