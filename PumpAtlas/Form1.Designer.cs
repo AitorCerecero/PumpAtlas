@@ -31,6 +31,13 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             TabView = new TabControl();
             tabPage1 = new TabPage();
+            label14 = new Label();
+            label13 = new Label();
+            label12 = new Label();
+            label11 = new Label();
+            label10 = new Label();
+            label9 = new Label();
+            label8 = new Label();
             button8 = new Button();
             conn_state = new Label();
             button3 = new Button();
@@ -73,8 +80,6 @@
             button6 = new Button();
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
-            label8 = new Label();
-            label9 = new Label();
             TabView.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)TableView).BeginInit();
@@ -104,6 +109,11 @@
             // tabPage1
             // 
             tabPage1.BackColor = Color.White;
+            tabPage1.Controls.Add(label14);
+            tabPage1.Controls.Add(label13);
+            tabPage1.Controls.Add(label12);
+            tabPage1.Controls.Add(label11);
+            tabPage1.Controls.Add(label10);
             tabPage1.Controls.Add(label9);
             tabPage1.Controls.Add(label8);
             tabPage1.Controls.Add(button8);
@@ -123,9 +133,73 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Map";
             // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new Point(226, 3);
+            label14.Name = "label14";
+            label14.Size = new Size(62, 15);
+            label14.TabIndex = 18;
+            label14.Text = "Pump Size";
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(18, 3);
+            label13.Name = "label13";
+            label13.Size = new Size(59, 15);
+            label13.TabIndex = 17;
+            label13.Text = "Company";
+            label13.Click += label13_Click;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(18, 177);
+            label12.Name = "label12";
+            label12.Size = new Size(35, 15);
+            label12.TabIndex = 16;
+            label12.Text = "Head";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(18, 352);
+            label11.Name = "label11";
+            label11.Size = new Size(32, 15);
+            label11.TabIndex = 15;
+            label11.Text = "Flow";
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(18, 527);
+            label10.Name = "label10";
+            label10.Size = new Size(80, 15);
+            label10.TabIndex = 14;
+            label10.Text = "Speed in RPM";
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(226, 310);
+            label9.Name = "label9";
+            label9.Size = new Size(146, 15);
+            label9.TabIndex = 13;
+            label9.Text = "any insertion to refresh DB";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(226, 295);
+            label8.Name = "label8";
+            label8.Size = new Size(185, 15);
+            label8.TabIndex = 12;
+            label8.Text = "Button below should beused after\r\n";
+            // 
             // button8
             // 
-            button8.Location = new Point(226, 356);
+            button8.Location = new Point(226, 334);
             button8.Name = "button8";
             button8.Size = new Size(192, 33);
             button8.TabIndex = 11;
@@ -136,7 +210,7 @@
             // conn_state
             // 
             conn_state.AutoSize = true;
-            conn_state.Location = new Point(27, 702);
+            conn_state.Location = new Point(18, 715);
             conn_state.Name = "conn_state";
             conn_state.Size = new Size(104, 45);
             conn_state.TabIndex = 10;
@@ -148,7 +222,7 @@
             button3.Name = "button3";
             button3.Size = new Size(192, 33);
             button3.TabIndex = 8;
-            button3.Text = "Run Filters";
+            button3.Text = "Run Selections";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
@@ -158,7 +232,7 @@
             Clear_select.Name = "Clear_select";
             Clear_select.Size = new Size(192, 33);
             Clear_select.TabIndex = 6;
-            Clear_select.Text = "Clear Results\r\n";
+            Clear_select.Text = "Clear Selections and Results";
             Clear_select.UseVisualStyleBackColor = true;
             Clear_select.Click += Clear_select_Click;
             // 
@@ -166,7 +240,7 @@
             // 
             SizeList.FormattingEnabled = true;
             SizeList.ItemHeight = 15;
-            SizeList.Location = new Point(226, 16);
+            SizeList.Location = new Point(228, 20);
             SizeList.Name = "SizeList";
             SizeList.SelectionMode = SelectionMode.MultiSimple;
             SizeList.Size = new Size(190, 154);
@@ -185,7 +259,7 @@
             // 
             SpeedList.FormattingEnabled = true;
             SpeedList.ItemHeight = 15;
-            SpeedList.Location = new Point(18, 516);
+            SpeedList.Location = new Point(18, 545);
             SpeedList.Name = "SpeedList";
             SpeedList.SelectionMode = SelectionMode.MultiSimple;
             SpeedList.Size = new Size(190, 154);
@@ -195,7 +269,7 @@
             // 
             FlowList.FormattingEnabled = true;
             FlowList.ItemHeight = 15;
-            FlowList.Location = new Point(18, 356);
+            FlowList.Location = new Point(18, 370);
             FlowList.Name = "FlowList";
             FlowList.SelectionMode = SelectionMode.MultiSimple;
             FlowList.Size = new Size(190, 154);
@@ -205,7 +279,7 @@
             // 
             HeadList.FormattingEnabled = true;
             HeadList.ItemHeight = 15;
-            HeadList.Location = new Point(18, 185);
+            HeadList.Location = new Point(18, 195);
             HeadList.Name = "HeadList";
             HeadList.SelectionMode = SelectionMode.MultiSimple;
             HeadList.Size = new Size(190, 154);
@@ -215,7 +289,7 @@
             // 
             CompanyList.FormattingEnabled = true;
             CompanyList.ItemHeight = 15;
-            CompanyList.Location = new Point(18, 16);
+            CompanyList.Location = new Point(18, 20);
             CompanyList.Name = "CompanyList";
             CompanyList.SelectionMode = SelectionMode.MultiSimple;
             CompanyList.Size = new Size(190, 154);
@@ -262,7 +336,6 @@
             pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
             pictureBox2.TabIndex = 1;
             pictureBox2.TabStop = false;
-            pictureBox2.Click += pictureBox2_Click;
             // 
             // tabControl1
             // 
@@ -542,24 +615,6 @@
             pictureBox3.TabIndex = 3;
             pictureBox3.TabStop = false;
             // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Location = new Point(226, 295);
-            label8.Name = "label8";
-            label8.Size = new Size(185, 15);
-            label8.TabIndex = 12;
-            label8.Text = "Button below should beused after\r\n";
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(226, 310);
-            label9.Name = "label9";
-            label9.Size = new Size(124, 15);
-            label9.TabIndex = 13;
-            label9.Text = "insertion to refresh DB";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -570,6 +625,7 @@
             Controls.Add(pictureBox3);
             Controls.Add(pictureBox1);
             Controls.Add(TabView);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
@@ -640,5 +696,10 @@
         private Button button8;
         private Label label9;
         private Label label8;
+        private Label label13;
+        private Label label12;
+        private Label label11;
+        private Label label10;
+        private Label label14;
     }
 }

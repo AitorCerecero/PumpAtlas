@@ -5,29 +5,26 @@ using System.Data;
 using System.Text;
 using CsvHelper;
 using System.Globalization;
+using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
 using static System.Reflection.Metadata.BlobBuilder;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using CsvHelper.Configuration;
+using System.Threading;
 
 namespace PumpAtlas
 
 {
     public partial class Form1 : Form
     {
+
+        private System.Timers.Timer timer;
         string db_conn = "server=localhost;database=rp;uid=root;pwd=FireSystems25;";
 
-
         MySqlDataAdapter adapter;
-        DataTable comp = new DataTable();
-        DataTable head = new DataTable();
-        DataTable flow = new DataTable();
-        DataTable speed = new DataTable();
-        DataTable size = new DataTable();
         DataTable Full_data = new DataTable();
         DataTable dt = new DataTable();
-
 
         String fileContent = string.Empty;
         String filePath = string.Empty;
@@ -36,6 +33,7 @@ namespace PumpAtlas
         public Form1()
         {
             InitializeComponent();
+            this.Text = "Ruhrpumpen Pump Atlas";
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -57,66 +55,50 @@ namespace PumpAtlas
 
         private void fill_selectors()
         {
-            String query1 = ("SELECT Company FROM pumps GROUP BY Company");
-            String query2 = ("SELECT Head FROM pumps GROUP BY Head ORDER BY Head");
-            String query3 = ("SELECT Flow FROM pumps GROUP BY Flow ORDER BY Flow ASC");
-            String query4 = ("SELECT Pump_Speed_in_RPM FROM pumps GROUP BY Pump_Speed_in_RPM ORDER BY Pump_Speed_in_RPM ASC");
-            String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
-
 
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
                 connection.Open();
 
+                String query1 = ("SELECT Company FROM pumps GROUP BY Company");
                 adapter = new MySqlDataAdapter(query1, connection);
+                DataTable comp = new DataTable();
                 adapter.Fill(comp);
-                CompanyList.DataSource = comp;
+                CompanyList.DataSource = null;
+                CompanyList.DataSource = new BindingSource(comp, null);
                 CompanyList.DisplayMember = "Company";
 
-            }
-
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
-            {
-                connection.Open();
-
+                String query2 = ("SELECT Head FROM pumps GROUP BY Head ORDER BY Head");
                 adapter = new MySqlDataAdapter(query2, connection);
+                DataTable head = new DataTable();
                 adapter.Fill(head);
-                HeadList.DataSource = head;
+                HeadList.DataSource = null;
+                HeadList.DataSource = new BindingSource(head, null);
                 HeadList.DisplayMember = "Head";
 
-            }
-
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
-            {
-                connection.Open();
-
+                String query3 = ("SELECT Flow FROM pumps GROUP BY Flow ORDER BY Flow ASC");
                 adapter = new MySqlDataAdapter(query3, connection);
+                DataTable flow = new DataTable();
                 adapter.Fill(flow);
-                FlowList.DataSource = flow;
+                FlowList.DataSource = null;
+                FlowList.DataSource = new BindingSource(flow, null);
                 FlowList.DisplayMember = "Flow";
 
-            }
-
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
-            {
-                connection.Open();
-
+                String query4 = ("SELECT Pump_Speed_in_RPM FROM pumps GROUP BY Pump_Speed_in_RPM ORDER BY Pump_Speed_in_RPM ASC");
                 adapter = new MySqlDataAdapter(query4, connection);
+                DataTable speed = new DataTable();
                 adapter.Fill(speed);
-                SpeedList.DataSource = speed;
+                SpeedList.DataSource = null;
+                SpeedList.DataSource = new BindingSource(speed, null);
                 SpeedList.DisplayMember = "Pump_Speed_in_RPM";
 
-            }
-
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
-            {
-                connection.Open();
-
+                String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
                 adapter = new MySqlDataAdapter(query5, connection);
+                DataTable size = new DataTable();
                 adapter.Fill(size);
-                SizeList.DataSource = size;
+                SizeList.DataSource = null;
+                SizeList.DataSource = new BindingSource(size, null);
                 SizeList.DisplayMember = "Pump_Size";
-
             }
         }
 
@@ -149,7 +131,6 @@ namespace PumpAtlas
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
                 connection.Open();
-
                 adapter = new MySqlDataAdapter(Bigquery, connection);
                 adapter.Fill(Full_data);
                 TableView.DataSource = Full_data;
@@ -174,11 +155,6 @@ namespace PumpAtlas
             TableView.Refresh();
             TableView.DataContext = null;
             Full_data.Clear();
-        }
-
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -342,7 +318,7 @@ namespace PumpAtlas
                             {
                                 sel_insert_label.Text = Path.GetFileName(filePath);
 
-                                void insert_to_db()
+                                async void insert_to_db()
                                 {
                                     try
                                     {
@@ -380,6 +356,30 @@ namespace PumpAtlas
                                             }
                                             insert_state.Text = "Data inserted successfully";
 
+                                            if (insert_state.Text.Contains("Data inserted successfully"))
+                                            {
+                                                CompanyList.DataSource = null;
+                                                SizeList.DataSource = null;
+                                                HeadList.DataSource = null;
+                                                SpeedList.DataSource = null;
+                                                FlowList.DataSource = null;
+
+                                                fill_selectors();
+
+                                                await Task.Delay(6000);
+
+                                                sel_insert_label.Text = string.Empty;
+                                                insert_state.Text = string.Empty;
+                                            }
+                                            else
+                                            {
+
+                                                await Task.Delay(5000);
+
+                                                sel_insert_label.Text = string.Empty;
+                                                insert_state.Text = string.Empty;
+                                            }
+
                                         }
                                     }
                                     catch (Exception ex)
@@ -404,7 +404,6 @@ namespace PumpAtlas
             }
         }
 
-
         private void button7_Click(object sender, EventArgs e)
         {
             select_file_to_insert_to_database();
@@ -412,22 +411,19 @@ namespace PumpAtlas
 
         private void button8_Click(object sender, EventArgs e)
         {
-
             CompanyList.DataSource = null;
             SizeList.DataSource = null;
             HeadList.DataSource = null;
             SpeedList.DataSource = null;
             FlowList.DataSource = null;
 
-
-            CompanyList.Items.Clear();
-            SizeList.Items.Clear();
-            HeadList.Items.Clear();
-            SpeedList.Items.Clear();
-            FlowList.Items.Clear();
-
-
             fill_selectors();
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
