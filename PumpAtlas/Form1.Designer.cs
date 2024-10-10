@@ -64,6 +64,7 @@
             label3 = new Label();
             button6 = new Button();
             tabPage3 = new TabPage();
+            button18 = new Button();
             label27 = new Label();
             Head_rpvsmkt = new ListBox();
             Company_rpvsmkt = new ListBox();
@@ -113,7 +114,6 @@
             label12 = new Label();
             label11 = new Label();
             label10 = new Label();
-            conn_state = new Label();
             button3 = new Button();
             Clear_select = new Button();
             SizeList = new ListBox();
@@ -484,6 +484,7 @@
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(button18);
             tabPage3.Controls.Add(label27);
             tabPage3.Controls.Add(Head_rpvsmkt);
             tabPage3.Controls.Add(Company_rpvsmkt);
@@ -510,6 +511,16 @@
             tabPage3.TabIndex = 2;
             tabPage3.Text = "RP vs Market";
             tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // button18
+            // 
+            button18.Location = new Point(214, 242);
+            button18.Name = "button18";
+            button18.Size = new Size(192, 33);
+            button18.TabIndex = 55;
+            button18.Text = "Clear Filters";
+            button18.UseVisualStyleBackColor = true;
+            button18.Click += button18_Click;
             // 
             // label27
             // 
@@ -551,7 +562,7 @@
             // 
             // button11
             // 
-            button11.Location = new Point(214, 422);
+            button11.Location = new Point(214, 340);
             button11.Name = "button11";
             button11.Size = new Size(192, 33);
             button11.TabIndex = 50;
@@ -561,11 +572,11 @@
             // 
             // button12
             // 
-            button12.Location = new Point(214, 372);
+            button12.Location = new Point(214, 290);
             button12.Name = "button12";
             button12.Size = new Size(192, 33);
             button12.TabIndex = 49;
-            button12.Text = "Clear Selections and Results";
+            button12.Text = "Clear Results";
             button12.UseVisualStyleBackColor = true;
             button12.Click += button12_Click;
             // 
@@ -729,8 +740,9 @@
             button16.Name = "button16";
             button16.Size = new Size(192, 33);
             button16.TabIndex = 38;
-            button16.Text = "Clear Selections and Results";
+            button16.Text = "Clear Filters";
             button16.UseVisualStyleBackColor = true;
+            button16.Click += button16_Click;
             // 
             // Head_rpvsothers
             // 
@@ -786,7 +798,7 @@
             button10.Name = "button10";
             button10.Size = new Size(192, 33);
             button10.TabIndex = 32;
-            button10.Text = "Clear Selections and Results";
+            button10.Text = "Clear Results";
             button10.UseVisualStyleBackColor = true;
             button10.Click += button10_Click;
             // 
@@ -925,7 +937,6 @@
             tabPage1.Controls.Add(label12);
             tabPage1.Controls.Add(label11);
             tabPage1.Controls.Add(label10);
-            tabPage1.Controls.Add(conn_state);
             tabPage1.Controls.Add(button3);
             tabPage1.Controls.Add(Clear_select);
             tabPage1.Controls.Add(SizeList);
@@ -943,12 +954,13 @@
             // 
             // button15
             // 
-            button15.Location = new Point(226, 244);
+            button15.Location = new Point(228, 274);
             button15.Name = "button15";
             button15.Size = new Size(192, 33);
             button15.TabIndex = 54;
             button15.Text = "Clear Results";
             button15.UseVisualStyleBackColor = true;
+            button15.Click += button15_Click;
             // 
             // label28
             // 
@@ -1014,18 +1026,9 @@
             label10.TabIndex = 14;
             label10.Text = "Speed in RPM";
             // 
-            // conn_state
-            // 
-            conn_state.AutoSize = true;
-            conn_state.Location = new Point(18, 715);
-            conn_state.Name = "conn_state";
-            conn_state.Size = new Size(104, 45);
-            conn_state.TabIndex = 10;
-            conn_state.Text = "Connection State: \r\n\r\n\r\n";
-            // 
             // button3
             // 
-            button3.Location = new Point(226, 343);
+            button3.Location = new Point(228, 313);
             button3.Name = "button3";
             button3.Size = new Size(192, 33);
             button3.TabIndex = 8;
@@ -1035,11 +1038,11 @@
             // 
             // Clear_select
             // 
-            Clear_select.Location = new Point(226, 293);
+            Clear_select.Location = new Point(228, 235);
             Clear_select.Name = "Clear_select";
             Clear_select.Size = new Size(192, 33);
             Clear_select.TabIndex = 6;
-            Clear_select.Text = "Clear Selections ";
+            Clear_select.Text = "Clear Filters";
             Clear_select.UseVisualStyleBackColor = true;
             Clear_select.Click += Clear_select_Click;
             // 
@@ -1151,21 +1154,23 @@
             // 
             // button13
             // 
-            button13.Location = new Point(237, 261);
+            button13.Location = new Point(237, 290);
             button13.Name = "button13";
             button13.Size = new Size(192, 33);
             button13.TabIndex = 57;
             button13.Text = "Clear Results";
             button13.UseVisualStyleBackColor = true;
+            button13.Click += button13_Click;
             // 
             // button14
             // 
-            button14.Location = new Point(237, 360);
+            button14.Location = new Point(237, 332);
             button14.Name = "button14";
             button14.Size = new Size(192, 33);
             button14.TabIndex = 56;
             button14.Text = "Run Selections";
             button14.UseVisualStyleBackColor = true;
+            button14.Click += button14_Click;
             // 
             // TableView4
             // 
@@ -1186,11 +1191,11 @@
             // 
             // button17
             // 
-            button17.Location = new Point(237, 310);
+            button17.Location = new Point(237, 251);
             button17.Name = "button17";
             button17.Size = new Size(192, 33);
             button17.TabIndex = 55;
-            button17.Text = "Clear Selections ";
+            button17.Text = "Clear Filters";
             button17.UseVisualStyleBackColor = true;
             button17.Click += button17_Click;
             // 
@@ -1432,7 +1437,6 @@
         private Label label12;
         private Label label11;
         private Label label10;
-        private Label conn_state;
         private Button button3;
         private Button Clear_select;
         private ListBox SizeList;
@@ -1461,5 +1465,6 @@
         private Button button13;
         private Button button14;
         private Button button17;
+        private Button button18;
     }
 }

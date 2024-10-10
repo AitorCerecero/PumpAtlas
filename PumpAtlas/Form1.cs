@@ -52,12 +52,12 @@ namespace PumpAtlas
             try
             {
                 MySqlConnection cnn = new MySqlConnection(db_conn);
-                conn_state.Text = conn_db_state.Text;
+                conn_db_state.Text = "Connected Successfully to Database";
                 fill_selectors();
             }
             catch (Exception)
             {
-                conn_state.Text = conn_db_state.Text;
+                conn_db_state.Text = "Something Went Wrong";
             }
         }
 
@@ -245,37 +245,28 @@ namespace PumpAtlas
             string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
 
 
-            string Bigquery = $@"WITH RankedResults AS (
+            string Bigquery = $@"
                                 SELECT 
+                                Head, 
                                 Company, 
                                 Flow, 
-                                Head, 
                                 Pump_Speed_in_RPM, 
                                 Pump_Size, 
-                                MIN(Max_BHP) AS Min_BHP,
-                                ROW_NUMBER() OVER (PARTITION BY Flow, Head ORDER BY MIN(Max_BHP) ASC) AS RowNum
+                                MIN(Max_BHP) AS Min_BHP
                                 FROM pumps
                                 WHERE {CompaniesCondition}
                                 AND {FlowsCondition}
                                 AND {HeadsCondition}
+                                AND {SpeedsCondition}
                                 AND {SizesCondition}
                                 AND {StagesCondition}
                                 GROUP BY 
                                 Company, 
-                                Flow, 
                                 Head, 
+                                Flow, 
                                 Pump_Speed_in_RPM, 
                                 Pump_Size
-                                )
-                                SELECT 
-                                Company, 
-                                Flow, 
-                                Head, 
-                                Pump_Size, 
-                                Min_BHP
-                                FROM RankedResults
-                                WHERE RowNum = 1;";
-
+                                ORDER BY Head ASC, Flow ASC;";
 
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
@@ -301,25 +292,31 @@ namespace PumpAtlas
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
             string StagesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Stages IN ('{Stages}')";
 
-            string Bigquery = $@"WITH RankedResults AS (
-                               SELECT 
-                               Company, 
-                               Flow, 
-                               Head, 
-                               Pump_Size, 
-                               Max_BHP as 'Min BHP',
-                               ROW_NUMBER() OVER (PARTITION BY Head ORDER BY Max_BHP) as RowNum
-                               FROM pumps
-                               WHERE {CompaniesCondition}
-                               AND {FlowsCondition}
-                               AND {HeadsCondition}
-                               AND {SizesCondition}
-                               AND {StagesCondition}
-                               )
-                               SELECT Company, Flow, Head, Pump_Size, `Min BHP`
-                               FROM RankedResults
-                               WHERE RowNum = 1
-                               ORDER BY Head DESC";
+            string Bigquery = $@"
+                            WITH RankedResults AS (
+                            SELECT  
+                            Company,
+                            Head,
+                            Flow, 
+                            Pump_Size, 
+                            MIN(Max_BHP) AS Min_BHP,
+                            ROW_NUMBER() OVER (PARTITION BY Flow, Head ORDER BY MIN(Max_BHP) ASC) AS RowNum
+                            FROM pumps
+                            WHERE {CompaniesCondition}
+                            AND {FlowsCondition}
+                            AND {HeadsCondition}
+                            AND {SizesCondition}
+                            AND {StagesCondition}
+                            GROUP BY Company, Head, Flow, Pump_Size
+                            )
+                            SELECT 
+                            Head, 
+                            Company, 
+                            Flow, 
+                            Pump_Size, 
+                            Min_BHP
+                            FROM RankedResults
+                            WHERE RowNum = 1;";
 
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
@@ -347,24 +344,28 @@ namespace PumpAtlas
 
 
             string Bigquery = $@"WITH RankedResults AS (
-                               SELECT 
-                               Company, 
+                               SELECT
+                               Company,
+                               Head,  
                                Flow, 
-                               Head, 
                                Pump_Size, 
-                               Max_BHP as 'Min BHP',
-                               ROW_NUMBER() OVER (PARTITION BY Head ORDER BY Max_BHP) as RowNum
+                               MIN(Max_BHP) as Min BHP,
+                               ROW_NUMBER() OVER (PARTITION BY Flow,Head ORDER BY MIN(Max_BHP ASC) as RowNum
                                FROM pumps
                                WHERE {CompaniesCondition}
                                AND {FlowsCondition}
                                AND {HeadsCondition}
                                AND {SizesCondition}
                                AND {StagesCondition}
+                               GROUP BY Company, Head, Flow, Pump_Size
                                )
-                               SELECT Company, Flow, Head, Pump_Size, `Min BHP`
+                               SELECT Head,
+                               Company, 
+                               Flow, 
+                               Pump_Size, 
+                               `Min BHP`
                                FROM RankedResults
-                               WHERE RowNum = 1
-                               ORDER BY Head DESC";
+                               WHERE RowNum = 1";
 
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
@@ -375,6 +376,7 @@ namespace PumpAtlas
             }
         }
 
+        //Query that retrieves Data for the All Data Tab
         public void big_query4()
         {
 
@@ -385,6 +387,7 @@ namespace PumpAtlas
             string Sizes = string.Join("','", Size_all.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Size"].ToString()));
             string Stages = string.Join("','", Stages_all.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
+            
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
@@ -392,33 +395,35 @@ namespace PumpAtlas
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
             string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
 
-
-            string Bigquery = $@"
-                                SELECT 
+            
+            string Bigquery = $@"SELECT 
+                                Head,
                                 Company, 
-                                Flow, 
-                                Head, 
-                                Pump_Size, 
+                                Flow,  
+                                Pump_Speed_in_RPM as 'Pump Speed', 
                                 Max_BHP,
-                                FROM pumps                                
-                                WHERE {CompaniesCondition}
-                                AND {FlowsCondition}
-                                AND {HeadsCondition}
-                                AND {SpeedsCondition}
-                                AND {SizesCondition}
-                                AND {StagesCondition}";
-
+                                Pump_Model, 
+                                Line,
+                                Stages,
+                                Pump_Size
+                            FROM pumps                                
+                            WHERE {CompaniesCondition}
+                            AND {FlowsCondition}
+                            AND {HeadsCondition}
+                            AND {SpeedsCondition}
+                            AND {SizesCondition}
+                            AND {StagesCondition};";
 
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
                 connection.Open();
                 adapter = new MySqlDataAdapter(Bigquery, connection);
-                adapter.Fill(Full_data);
+                adapter.Fill(Full_data4);
                 TableView4.DataSource = Full_data4;
             }
         }
 
-        private void clear_results_and_filter_map()
+        private void clear_filter_map()
         {
             CompanyList.ClearSelected();
             FlowList.ClearSelected();
@@ -428,7 +433,7 @@ namespace PumpAtlas
             StagesList.ClearSelected();
         }
 
-        private void clear_results_and_filter_rpvsothers()
+        private void clear_filter_rpvsothers()
         {
             Company_rpvsothers.ClearSelected();
             Flow_rpvsothers.ClearSelected();
@@ -437,7 +442,7 @@ namespace PumpAtlas
             Stages_rpvsothers.ClearSelected();
         }
 
-        private void clear_results_and_filter_rpvsmkt()
+        private void clear_filter_rpvsmkt()
         {
             Company_rpvsmkt.ClearSelected();
             Flow_rpvsmkt.ClearSelected();
@@ -446,13 +451,14 @@ namespace PumpAtlas
             Stages_rpvsmkt.ClearSelected();
         }
 
-        private void clear_results_and_filter_all_data()
+        private void clear_filter_all_data()
         {
             Company_all.ClearSelected();
             Flow_all.ClearSelected();
             Head_all.ClearSelected();
             Size_all.ClearSelected();
             Stages_all.ClearSelected();
+            Speed_all.ClearSelected();
         }
         //Method that opens File explorer and allows to select an Excel File
         private void open_excel()
@@ -748,30 +754,58 @@ namespace PumpAtlas
             fill_selectors();
         }
 
-        //Clears any selection and grid result on MAP tab
-        private void Clear_select_Click(object sender, EventArgs e)
+        private void clear_results_map()
         {
             TableView.DataSource = null;
             TableView.Refresh();
             TableView.DataContext = null;
             Full_data.Clear();
         }
-        //Clears any selection and grid result on RP VS OTHERS tab
-        private void button10_Click(object sender, EventArgs e)
+
+        private void clear_results_rpvsothers()
         {
             TableView2.DataSource = null;
             TableView2.Refresh();
             TableView2.DataContext = null;
             Full_data2.Clear();
-
         }
-        //Clears any selection and grid result on RP VS MKT tab
-        private void button12_Click(object sender, EventArgs e)
+
+        private void clear_results_rpvsmkt()
         {
             TableView3.DataSource = null;
             TableView3.Refresh();
             TableView3.DataContext = null;
             Full_data3.Clear();
+        }
+
+
+        private void clear_results_all_data()
+        {
+            TableView4.DataSource = null;
+            TableView4.Refresh();
+            TableView4.DataContext = null;
+            Full_data4.Clear();
+        }
+
+        //Method that Clears grid result on MAP tab
+        private void Clear_select_Click(object sender, EventArgs e)
+        {
+            clear_filter_map();
+        }
+        //Method that Clears grid result on RP VS OTHERS tab
+        private void button10_Click(object sender, EventArgs e)
+        {
+            clear_results_rpvsothers();
+        }
+        //Method that Clears grid result on RP VS MKT tab
+        private void button12_Click(object sender, EventArgs e)
+        {
+            clear_results_rpvsmkt();
+        }
+        //Method that Clears grid result on All Data Tab
+        private void button13_Click(object sender, EventArgs e)
+        {
+            clear_results_all_data();
         }
         //Button linked to connect to Database method in Data Management Tab
         private void button6_Click(object sender, EventArgs e)
@@ -794,11 +828,6 @@ namespace PumpAtlas
             big_query3();
         }
 
-        private void button13_Click(object sender, EventArgs e)
-        {
-            big_query4();
-        }
-
         private void button8_Click_1(object sender, EventArgs e)
         {
             refresh_db();
@@ -806,8 +835,27 @@ namespace PumpAtlas
 
         private void button17_Click(object sender, EventArgs e)
         {
-            clear_results_and_filter_all_data();
+            clear_filter_all_data();
+        }
 
+        private void button14_Click(object sender, EventArgs e)
+        {
+            big_query4();
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            clear_results_map();
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            clear_filter_rpvsothers();
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            clear_filter_rpvsmkt();
         }
     }
 }
