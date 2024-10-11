@@ -140,6 +140,7 @@
             Flow_all = new ListBox();
             Head_all = new ListBox();
             Company_all = new ListBox();
+            button19 = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             tabPage4.SuspendLayout();
@@ -354,6 +355,7 @@
             // 
             // tabPage7
             // 
+            tabPage7.Controls.Add(button19);
             tabPage7.Controls.Add(label8);
             tabPage7.Controls.Add(button8);
             tabPage7.Controls.Add(label7);
@@ -1313,6 +1315,16 @@
             Company_all.Size = new Size(190, 154);
             Company_all.TabIndex = 54;
             // 
+            // button19
+            // 
+            button19.Location = new Point(597, 473);
+            button19.Name = "button19";
+            button19.Size = new Size(250, 43);
+            button19.TabIndex = 14;
+            button19.Text = "Test Engine";
+            button19.UseVisualStyleBackColor = true;
+            button19.Click += button19_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -1466,5 +1478,6 @@
         private Button button14;
         private Button button17;
         private Button button18;
+        private Button button19;
     }
 }

@@ -387,7 +387,7 @@ namespace PumpAtlas
             string Sizes = string.Join("','", Size_all.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Size"].ToString()));
             string Stages = string.Join("','", Stages_all.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
-            
+
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
@@ -395,10 +395,10 @@ namespace PumpAtlas
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
             string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
 
-            
-            string Bigquery = $@"SELECT 
-                                Head,
+
+            string Bigquery = $@"SELECT
                                 Company, 
+                                Head,
                                 Flow,  
                                 Pump_Speed_in_RPM as 'Pump Speed', 
                                 Max_BHP,
@@ -420,6 +420,19 @@ namespace PumpAtlas
                 adapter = new MySqlDataAdapter(Bigquery, connection);
                 adapter.Fill(Full_data4);
                 TableView4.DataSource = Full_data4;
+            }
+        }
+        
+        //Function that clears pivot table on Server side to allow new data go through and be optimized
+        private void clear_pivot()
+        {
+
+            using (MySqlConnection connection = new MySqlConnection(db_conn))
+            {
+                connection.Open();
+                String delete_statement = "TRUNCATE TABLE pumps_receiver";
+                MySqlCommand cmd = new MySqlCommand(delete_statement,connection);
+                MySqlDataReader runenr = cmd.ExecuteReader();
             }
         }
 
@@ -680,6 +693,7 @@ namespace PumpAtlas
                                                 FlowList.DataSource = null;
 
                                                 fill_selectors();
+                                                clear_pivot();
 
                                                 await Task.Delay(6000);
 
@@ -691,8 +705,10 @@ namespace PumpAtlas
 
                                                 await Task.Delay(5000);
 
+                                                clear_pivot();
                                                 sel_insert_label.Text = string.Empty;
                                                 insert_state.Text = string.Empty;
+                                                
                                             }
 
                                         }
@@ -856,6 +872,11 @@ namespace PumpAtlas
         private void button18_Click(object sender, EventArgs e)
         {
             clear_filter_rpvsmkt();
+        }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+            clear_pivot();
         }
     }
 }
