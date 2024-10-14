@@ -397,7 +397,8 @@ namespace PumpAtlas
 
 
             string Bigquery = $@"SELECT
-                                Company, 
+                                Company,
+                                Pump_Line,
                                 Head,
                                 Flow,  
                                 Pump_Speed_in_RPM as 'Pump Speed', 
@@ -422,7 +423,7 @@ namespace PumpAtlas
                 TableView4.DataSource = Full_data4;
             }
         }
-        
+
         //Function that clears pivot table on Server side to allow new data go through and be optimized
         private void clear_pivot()
         {
@@ -431,7 +432,7 @@ namespace PumpAtlas
             {
                 connection.Open();
                 String delete_statement = "TRUNCATE TABLE pumps_receiver";
-                MySqlCommand cmd = new MySqlCommand(delete_statement,connection);
+                MySqlCommand cmd = new MySqlCommand(delete_statement, connection);
                 MySqlDataReader runenr = cmd.ExecuteReader();
             }
         }
@@ -624,7 +625,7 @@ namespace PumpAtlas
             clear_visor();
         }
 
-        private void select_file_to_insert_to_database()
+        private async void select_file_to_insert_to_database()
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -637,92 +638,79 @@ namespace PumpAtlas
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
+                    sel_insert_label.Text = Path.GetFileName(filePath); // Muestra el nombre del archivo seleccionado
+
                     try
                     {
                         using (var reader = new StreamReader(filePath))
                         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                        using (var dr = new CsvDataReader(csv))
                         {
-                            using (var dr = new CsvDataReader(csv))
+                            insert_state.Text = "Performing Insertion, Hold on while we Insert the Data";
+
+                            await Task.Run(async () =>
                             {
-                                sel_insert_label.Text = Path.GetFileName(filePath);
-
-                                async void insert_to_db()
+                                try
                                 {
-                                    try
+                                    using (var connection = new MySqlConnection(db_conn))
                                     {
-                                        using (var connection = new MySqlConnection(db_conn))
+                                        connection.Open();
+
+                                        using (var reader = new StreamReader(filePath))
                                         {
-                                            connection.Open();
+                                            string headerLine = reader.ReadLine(); // Omitir encabezado
 
-                                            using (var reader = new StreamReader(filePath))
+                                            while (!reader.EndOfStream)
                                             {
-                                                // Leer y omitir la primera línea (encabezados)
-                                                string headerLine = reader.ReadLine();
+                                                string dataLine = reader.ReadLine();
+                                                string[] values = dataLine.Split(',');
 
-                                                // Ahora prepara la consulta para insertar los datos
-                                                while (!reader.EndOfStream)
+                                                for (int i = 0; i < values.Length; i++)
                                                 {
-                                                    string dataLine = reader.ReadLine();
-                                                    string[] values = dataLine.Split(',');
+                                                    values[i] = "'" + values[i].Replace("'", "''") + "'";
+                                                }
 
-                                                    // Escape de comillas simples en los valores y ponerlos entre comillas
-                                                    for (int i = 0; i < values.Length; i++)
-                                                    {
-                                                        values[i] = "'" + values[i].Replace("'", "''") + "'";
-                                                    }
+                                                string valueString = $"({string.Join(",", values)})";
 
-                                                    string valueString = $"({string.Join(",", values)})";
+                                                string insertQuery = $"INSERT INTO pumps_receiver (Company,Pump_Line, Flow, Head, Pump_Speed_in_RPM,Max_BHP,Pump_Model,Line,Stages,Pump_Size) VALUES {valueString}";
 
-                                                    // Ejecuta la inserción sin los encabezados
-                                                    string insertQuery = $"INSERT INTO pumps (Company, Flow, Head, Pump_Speed_in_RPM,Max_BHP,Pump_Model,Line,Stages,Pump_Size) VALUES {valueString}";
-
-                                                    using (var cmd = new MySqlCommand(insertQuery, connection))
-                                                    {
-                                                        cmd.ExecuteNonQuery();
-                                                    }
+                                                using (var cmd = new MySqlCommand(insertQuery, connection))
+                                                {
+                                                    cmd.ExecuteNonQuery();
                                                 }
                                             }
-                                            insert_state.Text = "Data inserted successfully";
-
-                                            if (insert_state.Text.Contains("Data inserted successfully"))
-                                            {
-                                                CompanyList.DataSource = null;
-                                                SizeList.DataSource = null;
-                                                HeadList.DataSource = null;
-                                                SpeedList.DataSource = null;
-                                                FlowList.DataSource = null;
-
-                                                fill_selectors();
-                                                clear_pivot();
-
-                                                await Task.Delay(6000);
-
-                                                sel_insert_label.Text = string.Empty;
-                                                insert_state.Text = string.Empty;
-                                            }
-                                            else
-                                            {
-
-                                                await Task.Delay(5000);
-
-                                                clear_pivot();
-                                                sel_insert_label.Text = string.Empty;
-                                                insert_state.Text = string.Empty;
-                                                
-                                            }
-
                                         }
                                     }
-                                    catch (Exception ex)
-                                    {
-                                        insert_state.Text = ($"An error occurred: {ex.Message}");
 
-                                        await Task.Delay(5000);
+                                    // Actualiza la UI después de la inserción
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        insert_state.Text = "Data inserted successfully";
+                                        fill_selectors();
+                                        clear_pivot();
+                                    }));
+
+                                    await Task.Delay(6000); // Pausa de 6 segundos
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        sel_insert_label.Text = string.Empty;
                                         insert_state.Text = string.Empty;
-                                    }
+                                    }));
                                 }
-                                insert_to_db();
-                            }
+                                catch (Exception ex)
+                                {
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        insert_state.Text = $"An error occurred: {ex.Message}";
+                                    }));
+
+                                    await Task.Delay(5000); // Pausa de 5 segundos
+                                    this.Invoke(new Action(() =>
+                                    {
+                                        insert_state.Text = string.Empty;
+                                    }));
+                                }
+                            });
                         }
                     }
                     catch (Exception ex)
@@ -874,9 +862,5 @@ namespace PumpAtlas
             clear_filter_rpvsmkt();
         }
 
-        private void button19_Click(object sender, EventArgs e)
-        {
-            clear_pivot();
-        }
     }
 }

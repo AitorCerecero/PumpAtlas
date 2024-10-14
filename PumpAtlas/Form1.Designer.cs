@@ -140,7 +140,6 @@
             Flow_all = new ListBox();
             Head_all = new ListBox();
             Company_all = new ListBox();
-            button19 = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             tabPage4.SuspendLayout();
@@ -196,7 +195,7 @@
             // pictureBox2
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(532, 20);
+            pictureBox2.Location = new Point(524, 6);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(465, 97);
             pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -208,10 +207,10 @@
             tabControl1.Controls.Add(tabPage5);
             tabControl1.Controls.Add(tabPage6);
             tabControl1.Controls.Add(tabPage7);
-            tabControl1.Location = new Point(6, 99);
+            tabControl1.Location = new Point(6, 109);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1446, 661);
+            tabControl1.Size = new Size(1446, 651);
             tabControl1.TabIndex = 0;
             // 
             // tabPage5
@@ -227,7 +226,7 @@
             tabPage5.Location = new Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new Padding(3);
-            tabPage5.Size = new Size(1438, 633);
+            tabPage5.Size = new Size(1438, 623);
             tabPage5.TabIndex = 0;
             tabPage5.Text = "File Conversor";
             // 
@@ -303,7 +302,7 @@
             tabPage6.Location = new Point(4, 24);
             tabPage6.Name = "tabPage6";
             tabPage6.Padding = new Padding(3);
-            tabPage6.Size = new Size(1438, 633);
+            tabPage6.Size = new Size(1438, 623);
             tabPage6.TabIndex = 1;
             tabPage6.Text = "File Viewer";
             tabPage6.UseVisualStyleBackColor = true;
@@ -355,7 +354,6 @@
             // 
             // tabPage7
             // 
-            tabPage7.Controls.Add(button19);
             tabPage7.Controls.Add(label8);
             tabPage7.Controls.Add(button8);
             tabPage7.Controls.Add(label7);
@@ -371,7 +369,7 @@
             tabPage7.Location = new Point(4, 24);
             tabPage7.Name = "tabPage7";
             tabPage7.Padding = new Padding(3);
-            tabPage7.Size = new Size(1438, 633);
+            tabPage7.Size = new Size(1438, 623);
             tabPage7.TabIndex = 2;
             tabPage7.Text = "Data Insertion";
             tabPage7.UseVisualStyleBackColor = true;
@@ -1315,16 +1313,6 @@
             Company_all.Size = new Size(190, 154);
             Company_all.TabIndex = 54;
             // 
-            // button19
-            // 
-            button19.Location = new Point(597, 473);
-            button19.Name = "button19";
-            button19.Size = new Size(250, 43);
-            button19.TabIndex = 14;
-            button19.Text = "Test Engine";
-            button19.UseVisualStyleBackColor = true;
-            button19.Click += button19_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -1478,6 +1466,5 @@
         private Button button14;
         private Button button17;
         private Button button18;
-        private Button button19;
     }
 }
