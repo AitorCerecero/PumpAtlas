@@ -377,7 +377,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(212, 349);
+            label8.Location = new Point(212, 331);
             label8.Name = "label8";
             label8.Size = new Size(1076, 45);
             label8.TabIndex = 13;
@@ -385,7 +385,7 @@
             // 
             // button8
             // 
-            button8.Location = new Point(597, 397);
+            button8.Location = new Point(597, 379);
             button8.Name = "button8";
             button8.Size = new Size(250, 43);
             button8.TabIndex = 12;
@@ -396,7 +396,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(343, 226);
+            label7.Location = new Point(353, 147);
             label7.Name = "label7";
             label7.Size = new Size(790, 30);
             label7.TabIndex = 10;
@@ -405,7 +405,7 @@
             // insert_state
             // 
             insert_state.AutoSize = true;
-            insert_state.Location = new Point(678, 305);
+            insert_state.Location = new Point(678, 287);
             insert_state.Name = "insert_state";
             insert_state.Size = new Size(0, 15);
             insert_state.TabIndex = 9;
@@ -413,7 +413,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(597, 305);
+            label6.Location = new Point(597, 287);
             label6.Name = "label6";
             label6.Size = new Size(88, 15);
             label6.TabIndex = 8;
@@ -422,7 +422,7 @@
             // sel_insert_label
             // 
             sel_insert_label.AutoSize = true;
-            sel_insert_label.Location = new Point(675, 266);
+            sel_insert_label.Location = new Point(675, 248);
             sel_insert_label.Name = "sel_insert_label";
             sel_insert_label.Size = new Size(0, 15);
             sel_insert_label.TabIndex = 6;
@@ -430,7 +430,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(597, 266);
+            label5.Location = new Point(597, 248);
             label5.Name = "label5";
             label5.Size = new Size(75, 15);
             label5.TabIndex = 5;
@@ -438,7 +438,7 @@
             // 
             // button7
             // 
-            button7.Location = new Point(597, 167);
+            button7.Location = new Point(597, 191);
             button7.Name = "button7";
             button7.Size = new Size(250, 43);
             button7.TabIndex = 4;
@@ -449,7 +449,7 @@
             // conn_db_state
             // 
             conn_db_state.AutoSize = true;
-            conn_db_state.Location = new Point(707, 137);
+            conn_db_state.Location = new Point(788, 52);
             conn_db_state.Name = "conn_db_state";
             conn_db_state.Size = new Size(0, 15);
             conn_db_state.TabIndex = 3;
@@ -457,7 +457,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(597, 137);
+            label4.Location = new Point(678, 52);
             label4.Name = "label4";
             label4.Size = new Size(104, 15);
             label4.TabIndex = 2;
@@ -474,7 +474,7 @@
             // 
             // button6
             // 
-            button6.Location = new Point(597, 66);
+            button6.Location = new Point(597, 79);
             button6.Name = "button6";
             button6.Size = new Size(250, 43);
             button6.TabIndex = 0;

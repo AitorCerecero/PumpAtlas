@@ -624,7 +624,7 @@ namespace PumpAtlas
         {
             clear_visor();
         }
-
+        //Async function that inserts a file to the Database
         private async void select_file_to_insert_to_database()
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
