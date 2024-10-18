@@ -290,41 +290,80 @@ namespace PumpAtlas
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
-            string StagesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Stages IN ('{Stages}')";
+            string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
+
+            string caseStatements = string.Join(",\n", Company_rpvsothers.SelectedItems.Cast<DataRowView>()
+                .Select(item =>
+                    $"MIN(CASE WHEN Company = '{item["Company"].ToString()}' THEN Max_BHP END) AS '{item["Company"].ToString()}'"));
 
             string Bigquery = $@"
-                            WITH RankedResults AS (
-                            SELECT  
-                            Company,
-                            Head,
-                            Flow, 
-                            Pump_Size, 
-                            MIN(Max_BHP) AS Min_BHP,
-                            ROW_NUMBER() OVER (PARTITION BY Flow, Head ORDER BY MIN(Max_BHP) ASC) AS RowNum
-                            FROM pumps
-                            WHERE {CompaniesCondition}
-                            AND {FlowsCondition}
-                            AND {HeadsCondition}
-                            AND {SizesCondition}
-                            AND {StagesCondition}
-                            GROUP BY Company, Head, Flow, Pump_Size
-                            )
-                            SELECT 
-                            Head, 
-                            Company, 
-                            Flow, 
-                            Pump_Size, 
-                            Min_BHP
-                            FROM RankedResults
-                            WHERE RowNum = 1;";
+                               SELECT 
+                               Head,
+                               CONCAT(Company, '\n', Flow) AS CompanyFlow,
+                               {caseStatements}
+                               FROM 
+                               pumps
+                               WHERE 
+                               {CompaniesCondition}
+                               AND {FlowsCondition}
+                               AND {HeadsCondition}
+                               AND {SizesCondition}
+                               AND {StagesCondition}
+                               GROUP BY 
+                               Head, CompanyFlow 
+                               ORDER BY 
+                               Head;";
+
 
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
                 connection.Open();
                 adapter = new MySqlDataAdapter(Bigquery, connection);
-                adapter.Fill(Full_data2);
-                TableView2.DataSource = Full_data2;
+                adapter.Fill(Full_data2);  // Llenar el DataTable con la consulta
+
+                // Asegúrate de que el DataGridView tiene las columnas necesarias
+                if (TableView2.Columns.Count == 0)
+                {
+                    // Agregar las columnas del DataTable al DataGridView
+                    foreach (DataColumn column in Full_data2.Columns)
+                    {
+                        TableView2.Columns.Add(column.ColumnName, column.ColumnName);
+                    }
+                }
+
+                // Definimos la fila desde la que comenzarán a insertarse los datos
+                int startRowIndex = 4; // Comenzar desde la fila 5 (índice 4)
+
+                // Asegurarse de que el DataGridView tiene suficientes filas
+                if (TableView2.Rows.Count < startRowIndex + Full_data2.Rows.Count)
+                {
+                    // Añadir filas si faltan
+                    for (int i = TableView2.Rows.Count; i < startRowIndex + Full_data2.Rows.Count; i++)
+                    {
+                        TableView2.Rows.Add();
+                    }
+                }
+
+                // Insertar datos en el DataGridView empezando desde la fila 5 (índice 4)
+                for (int rowIndex = 0; rowIndex < Full_data2.Rows.Count; rowIndex++)
+                {
+                    for (int colIndex = 0; colIndex < Full_data2.Columns.Count; colIndex++)
+                    {
+                        // Insertar datos en la fila desplazada por startRowIndex
+                        TableView2.Rows[startRowIndex + rowIndex].Cells[colIndex].Value = Full_data2.Rows[rowIndex][colIndex];
+                    }
+                }
+
+                TableView2.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+                TableView2.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+
+                TableView2.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+                // Ajustar el ancho de las columnas automáticamente
+                TableView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
+
         }
 
         //Query that retrieves Data for the RP vs Market Tab
@@ -414,12 +453,21 @@ namespace PumpAtlas
                             AND {SpeedsCondition}
                             AND {SizesCondition}
                             AND {StagesCondition};";
+            string BigqueryTotal = $@"SELECT
+                                Max_BHP,
+                            FROM pumps                                
+                            WHERE {CompaniesCondition}
+                            AND {FlowsCondition}
+                            AND {HeadsCondition}
+                            AND {SpeedsCondition}
+                            AND {SizesCondition}
+                            AND {StagesCondition};";
 
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
                 connection.Open();
                 adapter = new MySqlDataAdapter(Bigquery, connection);
-                adapter.Fill(Full_data4);
+                adapter.Fill(Full_data4); 
                 TableView4.DataSource = Full_data4;
             }
         }
