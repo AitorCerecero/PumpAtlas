@@ -33,7 +33,7 @@ namespace PumpAtlas
         String fileContent = string.Empty;
         String filePath = string.Empty;
 
-
+        //initializing stage with app name
         public Form1()
         {
             InitializeComponent();
@@ -315,11 +315,30 @@ namespace PumpAtlas
                                Head;";
 
 
+            string Headquery = $@"
+                               SELECT 
+                               Head,
+                               CONCAT(Company, '\n', Flow) AS CompanyFlow,
+                               {caseStatements}
+                               FROM 
+                               pumps
+                               WHERE 
+                               {CompaniesCondition}
+                               AND {FlowsCondition}
+                               AND {HeadsCondition}
+                               AND {SizesCondition}
+                               AND {StagesCondition}
+                               GROUP BY 
+                               Head, CompanyFlow 
+                               ORDER BY 
+                               Head; LIMIT 1";
+
+
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
                 connection.Open();
                 adapter = new MySqlDataAdapter(Bigquery, connection);
-                adapter.Fill(Full_data2);  // Llenar el DataTable con la consulta
+                adapter.Fill(Full_data2);  
 
                 // Asegúrate de que el DataGridView tiene las columnas necesarias
                 if (TableView2.Columns.Count == 0)
@@ -331,8 +350,8 @@ namespace PumpAtlas
                     }
                 }
 
-                // Definimos la fila desde la que comenzarán a insertarse los datos
-                int startRowIndex = 4; // Comenzar desde la fila 5 (índice 4)
+                int startRowIndex = 1; // Comenzar desde la fila 5 (índice 4)
+                int headerIndex = 1;
 
                 // Asegurarse de que el DataGridView tiene suficientes filas
                 if (TableView2.Rows.Count < startRowIndex + Full_data2.Rows.Count)
@@ -353,6 +372,12 @@ namespace PumpAtlas
                         TableView2.Rows[startRowIndex + rowIndex].Cells[colIndex].Value = Full_data2.Rows[rowIndex][colIndex];
                     }
                 }
+
+                TableView2.ColumnHeadersVisible = true;
+                TableView2.Columns[1].Visible = true;
+
+                TableView2.Rows[2].Cells["CompanyFlow"].Value = TableView2.Rows[0].Cells["RP New"].Value;
+
 
                 TableView2.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
@@ -453,16 +478,6 @@ namespace PumpAtlas
                             AND {SpeedsCondition}
                             AND {SizesCondition}
                             AND {StagesCondition};";
-            string BigqueryTotal = $@"SELECT
-                                Max_BHP,
-                            FROM pumps                                
-                            WHERE {CompaniesCondition}
-                            AND {FlowsCondition}
-                            AND {HeadsCondition}
-                            AND {SpeedsCondition}
-                            AND {SizesCondition}
-                            AND {StagesCondition};";
-
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
                 connection.Open();
@@ -484,7 +499,7 @@ namespace PumpAtlas
                 MySqlDataReader runenr = cmd.ExecuteReader();
             }
         }
-
+        //method that clears listboxes in map tab
         private void clear_filter_map()
         {
             CompanyList.ClearSelected();
@@ -494,7 +509,7 @@ namespace PumpAtlas
             SizeList.ClearSelected();
             StagesList.ClearSelected();
         }
-
+        //method that clears listboxes in rp vs others tab
         private void clear_filter_rpvsothers()
         {
             Company_rpvsothers.ClearSelected();
@@ -503,7 +518,7 @@ namespace PumpAtlas
             Size_rpvsothers.ClearSelected();
             Stages_rpvsothers.ClearSelected();
         }
-
+        //method that clears listboxes in rp vs market tab
         private void clear_filter_rpvsmkt()
         {
             Company_rpvsmkt.ClearSelected();
@@ -512,7 +527,7 @@ namespace PumpAtlas
             Size_rpvsmkt.ClearSelected();
             Stages_rpvsmkt.ClearSelected();
         }
-
+        //method that clears listboxes in all data tab
         private void clear_filter_all_data()
         {
             Company_all.ClearSelected();
@@ -547,12 +562,13 @@ namespace PumpAtlas
                 }
             }
         }
-
+        //function that call method to open an excel file for CSV conversor
         private void button1_Click(object sender, EventArgs e)
         {
             open_excel();
         }
 
+        //function Saves converted file as CSV after conversion
         private void save_file()
         {
             SaveFileDialog save_as = new SaveFileDialog();
@@ -602,7 +618,7 @@ namespace PumpAtlas
                 save_as = null;
             }
         }
-
+        //Method that calls function function Saves converted file as CSV after conversion
         private void button2_Click(object sender, EventArgs e)
         {
             save_file();
@@ -779,6 +795,7 @@ namespace PumpAtlas
             select_file_to_insert_to_database();
         }
 
+        //refreshes all the selectors across the software
         private void refresh_db()
         {
             CompanyList.DataSource = null;
@@ -806,36 +823,32 @@ namespace PumpAtlas
             fill_selectors();
         }
 
+        //Clears map datagrid
         private void clear_results_map()
         {
             TableView.DataSource = null;
-            TableView.Refresh();
-            TableView.DataContext = null;
+            TableView.Columns.Clear();
             Full_data.Clear();
         }
-
+        //Clears rp vs others datagrid
         private void clear_results_rpvsothers()
         {
             TableView2.DataSource = null;
-            TableView2.Refresh();
-            TableView2.DataContext = null;
+            TableView2.Columns.Clear(); 
             Full_data2.Clear();
         }
-
+        //clears rp vs market datagrid
         private void clear_results_rpvsmkt()
         {
             TableView3.DataSource = null;
-            TableView3.Refresh();
-            TableView3.DataContext = null;
+            TableView3.Columns.Clear();
             Full_data3.Clear();
         }
-
-
+        //clears all data datagrid
         private void clear_results_all_data()
         {
             TableView4.DataSource = null;
-            TableView4.Refresh();
-            TableView4.DataContext = null;
+            TableView4.Columns.Clear();
             Full_data4.Clear();
         }
 
@@ -869,46 +882,45 @@ namespace PumpAtlas
         {
             Big_query();
         }
-
+        //button that fetches result from database for rp vs others tab
         private void button9_Click(object sender, EventArgs e)
         {
             big_query2();
         }
-
+        //button that fetches result from database for rp vs market tab 
         private void button11_Click(object sender, EventArgs e)
         {
             big_query3();
         }
-
+        //butto that call the method that refreshes database 
         private void button8_Click_1(object sender, EventArgs e)
         {
             refresh_db();
         }
-
+        //method that clears selected info in selectors of all data tab
         private void button17_Click(object sender, EventArgs e)
         {
             clear_filter_all_data();
         }
-
+        //button that fetches result from database for all data tab 
         private void button14_Click(object sender, EventArgs e)
         {
             big_query4();
         }
-
+        //function that calls method to clear datagrid on map tab
         private void button15_Click(object sender, EventArgs e)
         {
             clear_results_map();
         }
-
+        //function that calls method to clear datagrid on rp vs others tab
         private void button16_Click(object sender, EventArgs e)
         {
             clear_filter_rpvsothers();
         }
-
+        //function that calls method to clear datagrid on rp vs market tab
         private void button18_Click(object sender, EventArgs e)
         {
             clear_filter_rpvsmkt();
         }
-
     }
 }
