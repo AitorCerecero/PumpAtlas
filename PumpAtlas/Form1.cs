@@ -259,7 +259,7 @@ namespace PumpAtlas
     .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' 
                     AND Flow = '{item.Flow}' 
                     AND Pump_Speed_in_RPM = '{item.Speed}' 
-                    THEN Max_BHP END) AS `{item.Company}'\n'{item.Flow}'\n{item.Speed}`"));  // Alias seguro
+                   THEN Max_BHP END) AS `{item.Company}'\n'{item.Flow}'\n{item.Speed}`"));  // Alias seguro
 
             string Bigquery = $@"
 SELECT 
