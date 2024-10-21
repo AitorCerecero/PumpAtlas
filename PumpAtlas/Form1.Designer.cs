@@ -912,7 +912,7 @@
             Company_rpvsothers.ItemHeight = 15;
             Company_rpvsothers.Location = new Point(18, 33);
             Company_rpvsothers.Name = "Company_rpvsothers";
-            Company_rpvsothers.SelectionMode = SelectionMode.MultiSimple;
+            Company_rpvsothers.SelectionMode = SelectionMode.MultiExtended;
             Company_rpvsothers.Size = new Size(190, 154);
             Company_rpvsothers.TabIndex = 20;
             // 
