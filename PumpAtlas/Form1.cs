@@ -247,44 +247,37 @@ namespace PumpAtlas
             // Generar combinaciones seleccionadas
             var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                        from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
-                                       from sizeItem in SizeList.SelectedItems.Cast<DataRowView>()
                                        from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
                                        select new
                                        {
                                            Flow = flowItem["Flow"].ToString(),
                                            Company = companyItem["Company"].ToString(),
-                                           Size = sizeItem["Pump_Size"].ToString(),
                                            Speed = speedItem["Pump_Speed_in_RPM"].ToString()
                                        };
 
             string caseStatements = string.Join(",\n", selectedCombinations
     .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' 
                     AND Flow = '{item.Flow}' 
-                    AND Pump_Size = '{item.Size}' 
                     AND Pump_Speed_in_RPM = '{item.Speed}' 
-                    THEN Max_BHP END) AS `{item.Company}_{item.Flow}_{item.Size}_{item.Speed}`"));  // Alias seguro
+                    THEN Max_BHP END) AS `{item.Company}'\n'{item.Flow}'\n{item.Speed}`"));  // Alias seguro
 
             string Bigquery = $@"
 SELECT 
     Head,
-    GROUP_CONCAT(DISTINCT CONCAT(Company, ' - ', Flow, ' - ', Pump_Size, ' - ', Pump_Speed_in_RPM) 
-                 ORDER BY Company, Flow, Pump_Size, Pump_Speed_in_RPM 
-                 SEPARATOR '\n') AS CompanyFlow,  -- Concatenación ajustada
+    GROUP_CONCAT(CONCAT(Company, '\n', Flow, '\n', Pump_Size,'\n', Pump_Speed_in_RPM) ORDER BY Company, Flow SEPARATOR '\n') AS CompanyFlow,
+    Pump_Size,  
     {caseStatements} 
 FROM 
     pumps
 WHERE 
-    {CompaniesCondition}
+    {CompaniesCondition} 
     AND {FlowsCondition}
     AND {HeadsCondition}
-    AND {SizesCondition}
     AND {StagesCondition}
 GROUP BY 
-    Head
+    Head ,Pump_Size
 ORDER BY 
     Head;";
-
-
 
             // Conexión y carga de datos
             using (MySqlConnection connection = new MySqlConnection(db_conn))
@@ -332,7 +325,8 @@ ORDER BY
                 }
 
                 // Ajustes de estilo
-                TableView.ColumnHeadersVisible = true;
+                TableView.ColumnHeadersVisible = false;
+                TableView.Columns[2].Visible = false;
                 TableView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 TableView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 TableView.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -434,7 +428,6 @@ ORDER BY
                 TableView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
         }
-
 
         //Query that retrieves Data for the RP vs Market Tab
         public void big_query3()
