@@ -41,7 +41,7 @@ namespace PumpAtlas
             this.MaximizeBox = false;
         }
 
-        //Method that runs the method to connect to Database
+        //Function that runs the method to connect to Database when the app starts
         private void Form1_Load(object sender, EventArgs e)
         {
             db_connect();
@@ -235,7 +235,6 @@ namespace PumpAtlas
                     {SpeedsCondition} AND 
                     {HeadsCondition}";
 
-
             try
             {
                 
@@ -259,7 +258,6 @@ namespace PumpAtlas
                     return sizes;
                 });
 
-                
                 var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                            from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
                                            from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
@@ -270,14 +268,13 @@ namespace PumpAtlas
                                                Speed = speedItem["Pump_Speed_in_RPM"].ToString(),
                                            };
 
-                
                 string caseStatements = string.Join(",\n", selectedCombinations
                         .SelectMany(item => pumpSizes, (item, pumpSize) =>
                             $@"MIN(CASE WHEN Company = '{item.Company}' 
                      AND Flow = '{item.Flow}' 
                      AND Pump_Speed_in_RPM = '{item.Speed}' 
                      THEN Max_BHP 
-                     END) AS `{item.Company}\n{item.Flow}\n{item.Speed}\n{pumpSize}`"));
+                     END) AS '{item.Company}\n{item.Flow}\n{item.Speed}\n{pumpSize}'"));
 
                 string Bigquery = $@"
                     SELECT 
@@ -319,7 +316,7 @@ namespace PumpAtlas
             }
 
         }
-
+        //AI Generated Function that helped to made the fucntion async
         private void UpdateDataGridView(DataTable fullData)
         {
             TableView.Invoke((MethodInvoker)delegate
@@ -362,7 +359,6 @@ namespace PumpAtlas
                 TableView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 TableView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 TableView.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                TableView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
             });
         }
 
@@ -448,7 +444,8 @@ namespace PumpAtlas
                 }
 
                 TableView2.ColumnHeadersVisible = true;
-                TableView2.Columns[1].Visible = false; 
+                TableView2.Columns[1].Visible = false;
+                TableView2.Columns[0].Frozen = true;
                 TableView2.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 TableView2.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 TableView2.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -539,8 +536,9 @@ namespace PumpAtlas
 
                 TableView3.ColumnHeadersVisible = true;
                 TableView3.Columns[1].Visible = false;
+                TableView3.Columns[0].Frozen = true;
                 TableView3.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                TableView2.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                TableView3.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 TableView3.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 TableView3.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
