@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>icon rp.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="icon rp.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.0.1" />

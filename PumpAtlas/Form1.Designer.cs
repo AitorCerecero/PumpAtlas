@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
             tabPage4 = new TabPage();
@@ -80,9 +80,7 @@
             label23 = new Label();
             checkBox7 = new CheckBox();
             checkBox8 = new CheckBox();
-            label24 = new Label();
             label25 = new Label();
-            Size_rpvsmkt = new ListBox();
             Stages_rpvsmkt = new ListBox();
             tabPage2 = new TabPage();
             button16 = new Button();
@@ -94,14 +92,12 @@
             button10 = new Button();
             TableView2 = new DataGridView();
             label18 = new Label();
-            Size_rpvsothers = new ListBox();
             label17 = new Label();
             checkBox3 = new CheckBox();
             checkBox4 = new CheckBox();
             label16 = new Label();
             checkBox2 = new CheckBox();
             checkBox1 = new CheckBox();
-            label2 = new Label();
             label15 = new Label();
             Company_rpvsothers = new ListBox();
             Flow_rpvsothers = new ListBox();
@@ -109,14 +105,12 @@
             button15 = new Button();
             label28 = new Label();
             StagesList = new ListBox();
-            label14 = new Label();
             label13 = new Label();
             label12 = new Label();
             label11 = new Label();
             label10 = new Label();
             button3 = new Button();
             Clear_select = new Button();
-            SizeList = new ListBox();
             TableView = new DataGridView();
             SpeedList = new ListBox();
             FlowList = new ListBox();
@@ -500,9 +494,7 @@
             tabPage3.Controls.Add(label23);
             tabPage3.Controls.Add(checkBox7);
             tabPage3.Controls.Add(checkBox8);
-            tabPage3.Controls.Add(label24);
             tabPage3.Controls.Add(label25);
-            tabPage3.Controls.Add(Size_rpvsmkt);
             tabPage3.Controls.Add(Stages_rpvsmkt);
             tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
@@ -514,7 +506,7 @@
             // 
             // button18
             // 
-            button18.Location = new Point(214, 242);
+            button18.Location = new Point(212, 73);
             button18.Name = "button18";
             button18.Size = new Size(192, 33);
             button18.TabIndex = 55;
@@ -525,7 +517,7 @@
             // label27
             // 
             label27.AutoSize = true;
-            label27.Location = new Point(18, 573);
+            label27.Location = new Point(18, 386);
             label27.Name = "label27";
             label27.Size = new Size(35, 15);
             label27.TabIndex = 54;
@@ -535,7 +527,7 @@
             // 
             Head_rpvsmkt.FormattingEnabled = true;
             Head_rpvsmkt.ItemHeight = 15;
-            Head_rpvsmkt.Location = new Point(20, 591);
+            Head_rpvsmkt.Location = new Point(20, 404);
             Head_rpvsmkt.Name = "Head_rpvsmkt";
             Head_rpvsmkt.SelectionMode = SelectionMode.MultiExtended;
             Head_rpvsmkt.Size = new Size(190, 154);
@@ -554,7 +546,7 @@
             // label20
             // 
             label20.AutoSize = true;
-            label20.Location = new Point(216, 184);
+            label20.Location = new Point(214, 15);
             label20.Name = "label20";
             label20.Size = new Size(41, 15);
             label20.TabIndex = 51;
@@ -562,7 +554,7 @@
             // 
             // button11
             // 
-            button11.Location = new Point(214, 340);
+            button11.Location = new Point(212, 171);
             button11.Name = "button11";
             button11.Size = new Size(192, 33);
             button11.TabIndex = 50;
@@ -572,7 +564,7 @@
             // 
             // button12
             // 
-            button12.Location = new Point(214, 290);
+            button12.Location = new Point(212, 121);
             button12.Name = "button12";
             button12.Size = new Size(192, 33);
             button12.TabIndex = 49;
@@ -611,7 +603,7 @@
             // label22
             // 
             label22.AutoSize = true;
-            label22.Location = new Point(216, 116);
+            label22.Location = new Point(20, 659);
             label22.Name = "label22";
             label22.Size = new Size(65, 15);
             label22.TabIndex = 45;
@@ -620,7 +612,7 @@
             // checkBox5
             // 
             checkBox5.AutoSize = true;
-            checkBox5.Location = new Point(218, 159);
+            checkBox5.Location = new Point(22, 702);
             checkBox5.Name = "checkBox5";
             checkBox5.Size = new Size(42, 19);
             checkBox5.TabIndex = 44;
@@ -630,7 +622,7 @@
             // checkBox6
             // 
             checkBox6.AutoSize = true;
-            checkBox6.Location = new Point(218, 134);
+            checkBox6.Location = new Point(22, 677);
             checkBox6.Name = "checkBox6";
             checkBox6.Size = new Size(43, 19);
             checkBox6.TabIndex = 43;
@@ -640,7 +632,7 @@
             // label23
             // 
             label23.AutoSize = true;
-            label23.Location = new Point(214, 33);
+            label23.Location = new Point(18, 576);
             label23.Name = "label23";
             label23.Size = new Size(84, 15);
             label23.TabIndex = 42;
@@ -649,7 +641,7 @@
             // checkBox7
             // 
             checkBox7.AutoSize = true;
-            checkBox7.Location = new Point(218, 76);
+            checkBox7.Location = new Point(22, 619);
             checkBox7.Name = "checkBox7";
             checkBox7.Size = new Size(42, 19);
             checkBox7.TabIndex = 41;
@@ -659,21 +651,12 @@
             // checkBox8
             // 
             checkBox8.AutoSize = true;
-            checkBox8.Location = new Point(218, 51);
+            checkBox8.Location = new Point(22, 594);
             checkBox8.Name = "checkBox8";
             checkBox8.Size = new Size(43, 19);
             checkBox8.TabIndex = 40;
             checkBox8.Text = "Yes";
             checkBox8.UseVisualStyleBackColor = true;
-            // 
-            // label24
-            // 
-            label24.AutoSize = true;
-            label24.Location = new Point(18, 393);
-            label24.Name = "label24";
-            label24.Size = new Size(62, 15);
-            label24.TabIndex = 39;
-            label24.Text = "Pump Size";
             // 
             // label25
             // 
@@ -684,21 +667,11 @@
             label25.TabIndex = 38;
             label25.Text = "Company";
             // 
-            // Size_rpvsmkt
-            // 
-            Size_rpvsmkt.FormattingEnabled = true;
-            Size_rpvsmkt.ItemHeight = 15;
-            Size_rpvsmkt.Location = new Point(20, 411);
-            Size_rpvsmkt.Name = "Size_rpvsmkt";
-            Size_rpvsmkt.SelectionMode = SelectionMode.MultiSimple;
-            Size_rpvsmkt.Size = new Size(190, 154);
-            Size_rpvsmkt.TabIndex = 37;
-            // 
             // Stages_rpvsmkt
             // 
             Stages_rpvsmkt.FormattingEnabled = true;
             Stages_rpvsmkt.ItemHeight = 15;
-            Stages_rpvsmkt.Location = new Point(218, 202);
+            Stages_rpvsmkt.Location = new Point(216, 33);
             Stages_rpvsmkt.Name = "Stages_rpvsmkt";
             Stages_rpvsmkt.SelectionMode = SelectionMode.MultiSimple;
             Stages_rpvsmkt.Size = new Size(190, 34);
@@ -715,14 +688,12 @@
             tabPage2.Controls.Add(button10);
             tabPage2.Controls.Add(TableView2);
             tabPage2.Controls.Add(label18);
-            tabPage2.Controls.Add(Size_rpvsothers);
             tabPage2.Controls.Add(label17);
             tabPage2.Controls.Add(checkBox3);
             tabPage2.Controls.Add(checkBox4);
             tabPage2.Controls.Add(label16);
             tabPage2.Controls.Add(checkBox2);
             tabPage2.Controls.Add(checkBox1);
-            tabPage2.Controls.Add(label2);
             tabPage2.Controls.Add(label15);
             tabPage2.Controls.Add(Company_rpvsothers);
             tabPage2.Controls.Add(Flow_rpvsothers);
@@ -736,7 +707,7 @@
             // 
             // button16
             // 
-            button16.Location = new Point(214, 277);
+            button16.Location = new Point(216, 87);
             button16.Name = "button16";
             button16.Size = new Size(192, 33);
             button16.TabIndex = 38;
@@ -748,7 +719,7 @@
             // 
             Head_rpvsothers.FormattingEnabled = true;
             Head_rpvsothers.ItemHeight = 15;
-            Head_rpvsothers.Location = new Point(16, 601);
+            Head_rpvsothers.Location = new Point(18, 402);
             Head_rpvsothers.Name = "Head_rpvsothers";
             Head_rpvsothers.SelectionMode = SelectionMode.MultiExtended;
             Head_rpvsothers.Size = new Size(190, 154);
@@ -757,7 +728,7 @@
             // label26
             // 
             label26.AutoSize = true;
-            label26.Location = new Point(14, 583);
+            label26.Location = new Point(16, 384);
             label26.Name = "label26";
             label26.Size = new Size(35, 15);
             label26.TabIndex = 36;
@@ -767,7 +738,7 @@
             // 
             Stages_rpvsothers.FormattingEnabled = true;
             Stages_rpvsothers.ItemHeight = 15;
-            Stages_rpvsothers.Location = new Point(216, 220);
+            Stages_rpvsothers.Location = new Point(216, 33);
             Stages_rpvsothers.Name = "Stages_rpvsothers";
             Stages_rpvsothers.SelectionMode = SelectionMode.MultiSimple;
             Stages_rpvsothers.Size = new Size(190, 34);
@@ -776,7 +747,7 @@
             // label19
             // 
             label19.AutoSize = true;
-            label19.Location = new Point(214, 202);
+            label19.Location = new Point(214, 15);
             label19.Name = "label19";
             label19.Size = new Size(41, 15);
             label19.TabIndex = 34;
@@ -784,7 +755,7 @@
             // 
             // button9
             // 
-            button9.Location = new Point(214, 375);
+            button9.Location = new Point(216, 185);
             button9.Name = "button9";
             button9.Size = new Size(192, 33);
             button9.TabIndex = 33;
@@ -794,7 +765,7 @@
             // 
             // button10
             // 
-            button10.Location = new Point(214, 325);
+            button10.Location = new Point(216, 135);
             button10.Name = "button10";
             button10.Size = new Size(192, 33);
             button10.TabIndex = 32;
@@ -820,20 +791,10 @@
             label18.TabIndex = 30;
             label18.Text = "Flow";
             // 
-            // Size_rpvsothers
-            // 
-            Size_rpvsothers.FormattingEnabled = true;
-            Size_rpvsothers.ItemHeight = 15;
-            Size_rpvsothers.Location = new Point(18, 411);
-            Size_rpvsothers.Name = "Size_rpvsothers";
-            Size_rpvsothers.SelectionMode = SelectionMode.MultiSimple;
-            Size_rpvsothers.Size = new Size(190, 154);
-            Size_rpvsothers.TabIndex = 29;
-            // 
             // label17
             // 
             label17.AutoSize = true;
-            label17.Location = new Point(226, 116);
+            label17.Location = new Point(16, 653);
             label17.Name = "label17";
             label17.Size = new Size(65, 15);
             label17.TabIndex = 28;
@@ -842,7 +803,7 @@
             // checkBox3
             // 
             checkBox3.AutoSize = true;
-            checkBox3.Location = new Point(226, 159);
+            checkBox3.Location = new Point(26, 696);
             checkBox3.Name = "checkBox3";
             checkBox3.Size = new Size(42, 19);
             checkBox3.TabIndex = 27;
@@ -852,7 +813,7 @@
             // checkBox4
             // 
             checkBox4.AutoSize = true;
-            checkBox4.Location = new Point(226, 134);
+            checkBox4.Location = new Point(26, 671);
             checkBox4.Name = "checkBox4";
             checkBox4.Size = new Size(43, 19);
             checkBox4.TabIndex = 26;
@@ -862,7 +823,7 @@
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new Point(226, 33);
+            label16.Location = new Point(16, 570);
             label16.Name = "label16";
             label16.Size = new Size(84, 15);
             label16.TabIndex = 25;
@@ -871,7 +832,7 @@
             // checkBox2
             // 
             checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(226, 76);
+            checkBox2.Location = new Point(26, 613);
             checkBox2.Name = "checkBox2";
             checkBox2.Size = new Size(42, 19);
             checkBox2.TabIndex = 24;
@@ -881,21 +842,12 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(226, 51);
+            checkBox1.Location = new Point(26, 588);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(43, 19);
             checkBox1.TabIndex = 23;
             checkBox1.Text = "Yes";
             checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(16, 393);
-            label2.Name = "label2";
-            label2.Size = new Size(62, 15);
-            label2.TabIndex = 22;
-            label2.Text = "Pump Size";
             // 
             // label15
             // 
@@ -932,14 +884,12 @@
             tabPage1.Controls.Add(button15);
             tabPage1.Controls.Add(label28);
             tabPage1.Controls.Add(StagesList);
-            tabPage1.Controls.Add(label14);
             tabPage1.Controls.Add(label13);
             tabPage1.Controls.Add(label12);
             tabPage1.Controls.Add(label11);
             tabPage1.Controls.Add(label10);
             tabPage1.Controls.Add(button3);
             tabPage1.Controls.Add(Clear_select);
-            tabPage1.Controls.Add(SizeList);
             tabPage1.Controls.Add(TableView);
             tabPage1.Controls.Add(SpeedList);
             tabPage1.Controls.Add(FlowList);
@@ -954,7 +904,7 @@
             // 
             // button15
             // 
-            button15.Location = new Point(228, 274);
+            button15.Location = new Point(229, 99);
             button15.Name = "button15";
             button15.Size = new Size(192, 33);
             button15.TabIndex = 54;
@@ -965,7 +915,7 @@
             // label28
             // 
             label28.AutoSize = true;
-            label28.Location = new Point(228, 177);
+            label28.Location = new Point(229, 2);
             label28.Name = "label28";
             label28.Size = new Size(41, 15);
             label28.TabIndex = 53;
@@ -975,20 +925,11 @@
             // 
             StagesList.FormattingEnabled = true;
             StagesList.ItemHeight = 15;
-            StagesList.Location = new Point(230, 195);
+            StagesList.Location = new Point(231, 20);
             StagesList.Name = "StagesList";
             StagesList.SelectionMode = SelectionMode.MultiSimple;
             StagesList.Size = new Size(190, 34);
             StagesList.TabIndex = 52;
-            // 
-            // label14
-            // 
-            label14.AutoSize = true;
-            label14.Location = new Point(226, 3);
-            label14.Name = "label14";
-            label14.Size = new Size(62, 15);
-            label14.TabIndex = 18;
-            label14.Text = "Pump Size";
             // 
             // label13
             // 
@@ -1028,7 +969,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(228, 313);
+            button3.Location = new Point(229, 138);
             button3.Name = "button3";
             button3.Size = new Size(192, 33);
             button3.TabIndex = 8;
@@ -1038,7 +979,7 @@
             // 
             // Clear_select
             // 
-            Clear_select.Location = new Point(228, 235);
+            Clear_select.Location = new Point(229, 60);
             Clear_select.Name = "Clear_select";
             Clear_select.Size = new Size(192, 33);
             Clear_select.TabIndex = 6;
@@ -1046,26 +987,16 @@
             Clear_select.UseVisualStyleBackColor = true;
             Clear_select.Click += Clear_select_Click;
             // 
-            // SizeList
-            // 
-            SizeList.FormattingEnabled = true;
-            SizeList.ItemHeight = 15;
-            SizeList.Location = new Point(228, 20);
-            SizeList.Name = "SizeList";
-            SizeList.SelectionMode = SelectionMode.MultiSimple;
-            SizeList.Size = new Size(190, 154);
-            SizeList.TabIndex = 5;
-            // 
             // TableView
             // 
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            TableView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            TableView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             TableView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             TableView.GridColor = SystemColors.Control;
             TableView.Location = new Point(447, 16);
@@ -1079,7 +1010,7 @@
             SpeedList.ItemHeight = 15;
             SpeedList.Location = new Point(18, 545);
             SpeedList.Name = "SpeedList";
-            SpeedList.SelectionMode = SelectionMode.MultiSimple;
+            SpeedList.SelectionMode = SelectionMode.MultiExtended;
             SpeedList.Size = new Size(190, 154);
             SpeedList.TabIndex = 3;
             // 
@@ -1089,7 +1020,7 @@
             FlowList.ItemHeight = 15;
             FlowList.Location = new Point(18, 370);
             FlowList.Name = "FlowList";
-            FlowList.SelectionMode = SelectionMode.MultiSimple;
+            FlowList.SelectionMode = SelectionMode.MultiExtended;
             FlowList.Size = new Size(190, 154);
             FlowList.TabIndex = 2;
             // 
@@ -1109,7 +1040,7 @@
             CompanyList.ItemHeight = 15;
             CompanyList.Location = new Point(18, 20);
             CompanyList.Name = "CompanyList";
-            CompanyList.SelectionMode = SelectionMode.MultiSimple;
+            CompanyList.SelectionMode = SelectionMode.MultiExtended;
             CompanyList.Size = new Size(190, 154);
             CompanyList.TabIndex = 0;
             // 
@@ -1174,14 +1105,14 @@
             // 
             // TableView4
             // 
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = SystemColors.Control;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            TableView4.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            TableView4.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             TableView4.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             TableView4.GridColor = SystemColors.Control;
             TableView4.Location = new Point(447, 16);
@@ -1405,9 +1336,7 @@
         private Label label23;
         private CheckBox checkBox7;
         private CheckBox checkBox8;
-        private Label label24;
         private Label label25;
-        private ListBox Size_rpvsmkt;
         private ListBox Stages_rpvsmkt;
         private TabPage tabPage2;
         private ListBox Head_rpvsothers;
@@ -1418,28 +1347,24 @@
         private Button button10;
         private DataGridView TableView2;
         private Label label18;
-        private ListBox Size_rpvsothers;
         private Label label17;
         private CheckBox checkBox3;
         private CheckBox checkBox4;
         private Label label16;
         private CheckBox checkBox2;
         private CheckBox checkBox1;
-        private Label label2;
         private Label label15;
         private ListBox Company_rpvsothers;
         private ListBox Flow_rpvsothers;
         private TabPage tabPage1;
         private Label label28;
         private ListBox StagesList;
-        private Label label14;
         private Label label13;
         private Label label12;
         private Label label11;
         private Label label10;
         private Button button3;
         private Button Clear_select;
-        private ListBox SizeList;
         private DataGridView TableView;
         private ListBox SpeedList;
         private ListBox FlowList;

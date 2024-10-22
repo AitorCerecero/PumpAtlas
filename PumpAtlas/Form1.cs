@@ -19,7 +19,6 @@ namespace PumpAtlas
     public partial class Form1 : Form
     {
 
-        private System.Timers.Timer timer;
         //Database connection information String
         string db_conn = "server=localhost;database=rp;uid=root;pwd=FireSystems25;";
 
@@ -38,6 +37,8 @@ namespace PumpAtlas
         {
             InitializeComponent();
             this.Text = "Ruhrpumpen Pump Atlas";
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
         }
 
         //Method that runs the method to connect to Database
@@ -168,29 +169,11 @@ namespace PumpAtlas
                 Speed_all.DataSource = new BindingSource(speed_all, null);
                 Speed_all.DisplayMember = "Pump_Speed_in_RPM";
 
-                //Pump Size Filler for all 4 Tabs of Data Processing
+                //Pump Size Filler for all  Tabs of Data Processing (Only used Once)
                 String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
                 adapter = new MySqlDataAdapter(query5, connection);
-                DataTable size = new DataTable();
-                DataTable size_rpvsothers = new DataTable();
-                DataTable size_rpvsmkt = new DataTable();
                 DataTable size_all = new DataTable();
-                adapter.Fill(size);
-                adapter.Fill(size_rpvsothers);
-                adapter.Fill(size_rpvsmkt);
                 adapter.Fill(size_all);
-                //MAP
-                SizeList.DataSource = null;
-                SizeList.DataSource = new BindingSource(size, null);
-                SizeList.DisplayMember = "Pump_Size";
-                //RP VS OTHERS
-                Size_rpvsothers.DataSource = null;
-                Size_rpvsothers.DataSource = new BindingSource(size_rpvsothers, null);
-                Size_rpvsothers.DisplayMember = "Pump_Size";
-                //RP VS MARKET
-                Size_rpvsmkt.DataSource = null;
-                Size_rpvsmkt.DataSource = new BindingSource(size_rpvsmkt, null);
-                Size_rpvsmkt.DisplayMember = "Pump_Size";
                 //All Data
                 Size_all.DataSource = null;
                 Size_all.DataSource = new BindingSource(size_all, null);
@@ -227,93 +210,142 @@ namespace PumpAtlas
             }
         }
         //Query that retrieves Data for the Map Tab
-        private void Big_query()
+        private async void Big_query()
         {
+
             string Companies = string.Join("','", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", FlowList.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", HeadList.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
             string Speeds = string.Join("','", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Speed_in_RPM"].ToString()));
-            string Sizes = string.Join("','", SizeList.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Size"].ToString()));
             string Stages = string.Join("','", StagesList.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
-            // Condiciones SQL
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
-            string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
             string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
 
-            // Generar combinaciones seleccionadas
-            var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
-                                       from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
-                                       from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
-                                       select new
-                                       {
-                                           Flow = flowItem["Flow"].ToString(),
-                                           Company = companyItem["Company"].ToString(),
-                                           Speed = speedItem["Pump_Speed_in_RPM"].ToString()
-                                       };
+            List<string> pumpSizes = new List<string>();
+            string pumpSizeQuery = $@"
+                    SELECT DISTINCT Pump_Size 
+                    FROM pumps 
+                    WHERE 
+                    {CompaniesCondition} AND 
+                    {FlowsCondition} AND 
+                    {SpeedsCondition} AND 
+                    {HeadsCondition}";
 
-            string caseStatements = string.Join(",\n", selectedCombinations
-    .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' 
-                    AND Flow = '{item.Flow}' 
-                    AND Pump_Speed_in_RPM = '{item.Speed}' 
-                   THEN Max_BHP END) AS `{item.Company}'\n'{item.Flow}'\n{item.Speed}`"));  // Alias seguro
 
-            string Bigquery = $@"
-SELECT 
-    Head,
-    GROUP_CONCAT(CONCAT(Company, '\n', Flow, '\n', Pump_Size,'\n', Pump_Speed_in_RPM) ORDER BY Company, Flow SEPARATOR '\n') AS CompanyFlow,
-    Pump_Size,  
-    {caseStatements} 
-FROM 
-    pumps
-WHERE 
-    {CompaniesCondition} 
-    AND {FlowsCondition}
-    AND {HeadsCondition}
-    AND {StagesCondition}
-GROUP BY 
-    Head ,Pump_Size
-ORDER BY 
-    Head;";
-
-            // Conexión y carga de datos
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
+            try
             {
-                connection.Open();
-                adapter = new MySqlDataAdapter(Bigquery, connection);
-                Full_data.Clear();
-                adapter.Fill(Full_data);
+                
+                pumpSizes = await Task.Run(() =>
+                {
+                    var sizes = new List<string>();
+                    using (var connection = new MySqlConnection(db_conn))
+                    {
+                        using (var command = new MySqlCommand(pumpSizeQuery, connection))
+                        {
+                            connection.Open();
+                            using (var reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    sizes.Add(reader["Pump_Size"].ToString());
+                                }
+                            }
+                        }
+                    }
+                    return sizes;
+                });
 
-                // Limpiar DataGridView
+                
+                var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
+                                           from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
+                                           from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
+                                           select new
+                                           {
+                                               Flow = flowItem["Flow"].ToString(),
+                                               Company = companyItem["Company"].ToString(),
+                                               Speed = speedItem["Pump_Speed_in_RPM"].ToString(),
+                                           };
+
+                
+                string caseStatements = string.Join(",\n", selectedCombinations
+                        .SelectMany(item => pumpSizes, (item, pumpSize) =>
+                            $@"MIN(CASE WHEN Company = '{item.Company}' 
+                     AND Flow = '{item.Flow}' 
+                     AND Pump_Speed_in_RPM = '{item.Speed}' 
+                     THEN Max_BHP 
+                     END) AS `{item.Company}\n{item.Flow}\n{item.Speed}\n{pumpSize}`"));
+
+                string Bigquery = $@"
+                    SELECT 
+                    Head,
+                    GROUP_CONCAT(CONCAT(Company, '\n', Flow, '\n', Pump_Speed_in_RPM, '\n', Pump_Size) 
+                         ORDER BY Company, Flow, Pump_Speed_in_RPM, Pump_Size SEPARATOR '\n') AS CompanyFlow,
+                         {caseStatements} 
+                    FROM pumps
+                    WHERE 
+                    {CompaniesCondition} 
+                    AND {FlowsCondition}
+                    AND {HeadsCondition}
+                    AND {SpeedsCondition}
+                    GROUP BY 
+                    Head
+                    ORDER BY Head;";
+
+                var fullData = await Task.Run(() =>
+                {
+                    DataTable dataTable = new DataTable();
+                    using (MySqlConnection connection = new MySqlConnection(db_conn))
+                    {
+                        connection.Open();
+                        using (var adapter = new MySqlDataAdapter(Bigquery, connection))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                    }
+                    return dataTable;
+                });
+
+                
+                UpdateDataGridView(fullData);
+            }
+            catch (Exception ex)
+            {
+                
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+
+        }
+
+        private void UpdateDataGridView(DataTable fullData)
+        {
+            TableView.Invoke((MethodInvoker)delegate
+            {
                 TableView.Columns.Clear();
                 TableView.Rows.Clear();
 
-                // Si hay resultados
-                if (Full_data.Rows.Count > 0)
+                if (fullData.Rows.Count > 0)
                 {
-                    // Crear las columnas
-                    foreach (DataColumn column in Full_data.Columns)
+                    foreach (DataColumn column in fullData.Columns)
                     {
                         TableView.Columns.Add(column.ColumnName, column.ColumnName);
                     }
 
-                    // Agregar las filas
-                    for (int rowIndex = 0; rowIndex < Full_data.Rows.Count; rowIndex++)
+                    for (int rowIndex = 0; rowIndex < fullData.Rows.Count; rowIndex++)
                     {
                         TableView.Rows.Add();
-                        for (int colIndex = 0; colIndex < Full_data.Columns.Count; colIndex++)
+                        for (int colIndex = 0; colIndex < fullData.Columns.Count; colIndex++)
                         {
-                            TableView.Rows[rowIndex].Cells[colIndex].Value = Full_data.Rows[rowIndex][colIndex];
+                            TableView.Rows[rowIndex].Cells[colIndex].Value = fullData.Rows[rowIndex][colIndex];
                         }
                     }
 
-                    // Ocultar columnas vacías
                     foreach (DataGridViewColumn col in TableView.Columns)
                     {
-                        bool hasData = Full_data.AsEnumerable().Any(r => !r.IsNull(col.Name));
+                        bool hasData = fullData.AsEnumerable().Any(r => !r.IsNull(col.Name));
                         col.Visible = hasData;
                     }
 
@@ -324,31 +356,27 @@ ORDER BY
                     TableView.Visible = false;
                 }
 
-                // Ajustes de estilo
-                TableView.ColumnHeadersVisible = false;
-                TableView.Columns[2].Visible = false;
+                TableView.ColumnHeadersVisible = true;
+                TableView.Columns[1].Visible = false;
+                TableView.Columns[0].Frozen = true;
                 TableView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 TableView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 TableView.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                TableView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            }
+                TableView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            });
         }
-
 
         //Query that retrieves Data for the RP vs Others Tab
         private void big_query2()
         {
-            // Obtener condiciones de selección
             string Companies = string.Join("','", Company_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", Flow_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", Head_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
-            string Sizes = string.Join("','", Size_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Size"].ToString()));
             string Stages = string.Join("','", Stages_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
-            string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
             string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
 
             var selectedCombinations = from companyItem in Company_rpvsothers.SelectedItems.Cast<DataRowView>()
@@ -373,7 +401,6 @@ ORDER BY
             {CompaniesCondition}
             AND {FlowsCondition}
             AND {HeadsCondition}
-            AND {SizesCondition}
             AND {StagesCondition}
             GROUP BY 
             Head
@@ -435,14 +462,12 @@ ORDER BY
             string Companies = string.Join("','", Company_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", Flow_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", Head_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
-            string Sizes = string.Join("','", Size_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Size"].ToString()));
             string Stages = string.Join("','", Stages_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
-            string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
-            string StagesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Stages IN ('{Stages}')";
+            string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
 
 
             var selectedCombinations = from companyItem in Company_rpvsmkt.SelectedItems.Cast<DataRowView>()
@@ -467,7 +492,6 @@ ORDER BY
             {CompaniesCondition}
             AND {FlowsCondition}
             AND {HeadsCondition}
-            AND {SizesCondition}
             AND {StagesCondition}
             GROUP BY 
             Head
@@ -588,7 +612,6 @@ ORDER BY
             FlowList.ClearSelected();
             HeadList.ClearSelected();
             SpeedList.ClearSelected();
-            SizeList.ClearSelected();
             StagesList.ClearSelected();
         }
         //method that clears listboxes in rp vs others tab
@@ -597,7 +620,6 @@ ORDER BY
             Company_rpvsothers.ClearSelected();
             Flow_rpvsothers.ClearSelected();
             Head_rpvsothers.ClearSelected();
-            Size_rpvsothers.ClearSelected();
             Stages_rpvsothers.ClearSelected();
         }
         //method that clears listboxes in rp vs market tab
@@ -606,7 +628,6 @@ ORDER BY
             Company_rpvsmkt.ClearSelected();
             Flow_rpvsmkt.ClearSelected();
             Head_rpvsmkt.ClearSelected();
-            Size_rpvsmkt.ClearSelected();
             Stages_rpvsmkt.ClearSelected();
         }
         //method that clears listboxes in all data tab
@@ -784,7 +805,7 @@ ORDER BY
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    sel_insert_label.Text = Path.GetFileName(filePath); // Muestra el nombre del archivo seleccionado
+                    sel_insert_label.Text = Path.GetFileName(filePath); 
 
                     try
                     {
@@ -804,7 +825,7 @@ ORDER BY
 
                                         using (var reader = new StreamReader(filePath))
                                         {
-                                            string headerLine = reader.ReadLine(); // Omitir encabezado
+                                            string headerLine = reader.ReadLine(); 
 
                                             while (!reader.EndOfStream)
                                             {
@@ -828,7 +849,7 @@ ORDER BY
                                         }
                                     }
 
-                                    // Actualiza la UI después de la inserción
+                                    
                                     this.Invoke(new Action(() =>
                                     {
                                         insert_state.Text = "Data inserted successfully";
@@ -836,7 +857,7 @@ ORDER BY
                                         clear_pivot();
                                     }));
 
-                                    await Task.Delay(6000); // Pausa de 6 segundos
+                                    await Task.Delay(6000); 
                                     this.Invoke(new Action(() =>
                                     {
                                         sel_insert_label.Text = string.Empty;
@@ -850,7 +871,7 @@ ORDER BY
                                         insert_state.Text = $"An error occurred: {ex.Message}";
                                     }));
 
-                                    await Task.Delay(5000); // Pausa de 5 segundos
+                                    await Task.Delay(6000); 
                                     this.Invoke(new Action(() =>
                                     {
                                         insert_state.Text = string.Empty;
@@ -881,18 +902,15 @@ ORDER BY
         private void refresh_db()
         {
             CompanyList.DataSource = null;
-            SizeList.DataSource = null;
             HeadList.DataSource = null;
             SpeedList.DataSource = null;
             FlowList.DataSource = null;
 
             Company_rpvsothers.DataSource = null;
-            Size_rpvsothers.DataSource = null;
             Head_rpvsothers.DataSource = null;
             Flow_rpvsothers.DataSource = null;
 
             Company_rpvsmkt.DataSource = null;
-            Size_rpvsmkt.DataSource = null;
             Head_rpvsmkt.DataSource = null;
             Flow_rpvsmkt.DataSource = null;
 
