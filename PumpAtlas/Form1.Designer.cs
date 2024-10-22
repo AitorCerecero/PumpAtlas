@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle25 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle26 = new DataGridViewCellStyle();
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
             tabPage4 = new TabPage();
@@ -102,6 +102,12 @@
             Company_rpvsothers = new ListBox();
             Flow_rpvsothers = new ListBox();
             tabPage1 = new TabPage();
+            label2 = new Label();
+            checkBox9 = new CheckBox();
+            checkBox10 = new CheckBox();
+            label14 = new Label();
+            checkBox11 = new CheckBox();
+            checkBox12 = new CheckBox();
             button15 = new Button();
             label28 = new Label();
             StagesList = new ListBox();
@@ -506,7 +512,7 @@
             // 
             // button18
             // 
-            button18.Location = new Point(212, 73);
+            button18.Location = new Point(216, 33);
             button18.Name = "button18";
             button18.Size = new Size(192, 33);
             button18.TabIndex = 55;
@@ -517,7 +523,7 @@
             // label27
             // 
             label27.AutoSize = true;
-            label27.Location = new Point(18, 386);
+            label27.Location = new Point(18, 369);
             label27.Name = "label27";
             label27.Size = new Size(35, 15);
             label27.TabIndex = 54;
@@ -527,7 +533,7 @@
             // 
             Head_rpvsmkt.FormattingEnabled = true;
             Head_rpvsmkt.ItemHeight = 15;
-            Head_rpvsmkt.Location = new Point(20, 404);
+            Head_rpvsmkt.Location = new Point(20, 387);
             Head_rpvsmkt.Name = "Head_rpvsmkt";
             Head_rpvsmkt.SelectionMode = SelectionMode.MultiExtended;
             Head_rpvsmkt.Size = new Size(190, 154);
@@ -546,7 +552,7 @@
             // label20
             // 
             label20.AutoSize = true;
-            label20.Location = new Point(214, 15);
+            label20.Location = new Point(20, 544);
             label20.Name = "label20";
             label20.Size = new Size(41, 15);
             label20.TabIndex = 51;
@@ -554,7 +560,7 @@
             // 
             // button11
             // 
-            button11.Location = new Point(212, 171);
+            button11.Location = new Point(216, 131);
             button11.Name = "button11";
             button11.Size = new Size(192, 33);
             button11.TabIndex = 50;
@@ -564,7 +570,7 @@
             // 
             // button12
             // 
-            button12.Location = new Point(212, 121);
+            button12.Location = new Point(216, 81);
             button12.Name = "button12";
             button12.Size = new Size(192, 33);
             button12.TabIndex = 49;
@@ -584,7 +590,7 @@
             // label21
             // 
             label21.AutoSize = true;
-            label21.Location = new Point(20, 202);
+            label21.Location = new Point(18, 190);
             label21.Name = "label21";
             label21.Size = new Size(32, 15);
             label21.TabIndex = 47;
@@ -594,7 +600,7 @@
             // 
             Flow_rpvsmkt.FormattingEnabled = true;
             Flow_rpvsmkt.ItemHeight = 15;
-            Flow_rpvsmkt.Location = new Point(20, 220);
+            Flow_rpvsmkt.Location = new Point(18, 208);
             Flow_rpvsmkt.Name = "Flow_rpvsmkt";
             Flow_rpvsmkt.SelectionMode = SelectionMode.MultiSimple;
             Flow_rpvsmkt.Size = new Size(190, 154);
@@ -603,7 +609,7 @@
             // label22
             // 
             label22.AutoSize = true;
-            label22.Location = new Point(20, 659);
+            label22.Location = new Point(24, 692);
             label22.Name = "label22";
             label22.Size = new Size(65, 15);
             label22.TabIndex = 45;
@@ -612,7 +618,7 @@
             // checkBox5
             // 
             checkBox5.AutoSize = true;
-            checkBox5.Location = new Point(22, 702);
+            checkBox5.Location = new Point(26, 735);
             checkBox5.Name = "checkBox5";
             checkBox5.Size = new Size(42, 19);
             checkBox5.TabIndex = 44;
@@ -622,7 +628,7 @@
             // checkBox6
             // 
             checkBox6.AutoSize = true;
-            checkBox6.Location = new Point(22, 677);
+            checkBox6.Location = new Point(26, 710);
             checkBox6.Name = "checkBox6";
             checkBox6.Size = new Size(43, 19);
             checkBox6.TabIndex = 43;
@@ -632,7 +638,7 @@
             // label23
             // 
             label23.AutoSize = true;
-            label23.Location = new Point(18, 576);
+            label23.Location = new Point(22, 609);
             label23.Name = "label23";
             label23.Size = new Size(84, 15);
             label23.TabIndex = 42;
@@ -641,7 +647,7 @@
             // checkBox7
             // 
             checkBox7.AutoSize = true;
-            checkBox7.Location = new Point(22, 619);
+            checkBox7.Location = new Point(26, 652);
             checkBox7.Name = "checkBox7";
             checkBox7.Size = new Size(42, 19);
             checkBox7.TabIndex = 41;
@@ -651,7 +657,7 @@
             // checkBox8
             // 
             checkBox8.AutoSize = true;
-            checkBox8.Location = new Point(22, 594);
+            checkBox8.Location = new Point(26, 627);
             checkBox8.Name = "checkBox8";
             checkBox8.Size = new Size(43, 19);
             checkBox8.TabIndex = 40;
@@ -671,7 +677,7 @@
             // 
             Stages_rpvsmkt.FormattingEnabled = true;
             Stages_rpvsmkt.ItemHeight = 15;
-            Stages_rpvsmkt.Location = new Point(216, 33);
+            Stages_rpvsmkt.Location = new Point(22, 562);
             Stages_rpvsmkt.Name = "Stages_rpvsmkt";
             Stages_rpvsmkt.SelectionMode = SelectionMode.MultiSimple;
             Stages_rpvsmkt.Size = new Size(190, 34);
@@ -707,7 +713,7 @@
             // 
             // button16
             // 
-            button16.Location = new Point(216, 87);
+            button16.Location = new Point(214, 33);
             button16.Name = "button16";
             button16.Size = new Size(192, 33);
             button16.TabIndex = 38;
@@ -719,7 +725,7 @@
             // 
             Head_rpvsothers.FormattingEnabled = true;
             Head_rpvsothers.ItemHeight = 15;
-            Head_rpvsothers.Location = new Point(18, 402);
+            Head_rpvsothers.Location = new Point(20, 381);
             Head_rpvsothers.Name = "Head_rpvsothers";
             Head_rpvsothers.SelectionMode = SelectionMode.MultiExtended;
             Head_rpvsothers.Size = new Size(190, 154);
@@ -728,7 +734,7 @@
             // label26
             // 
             label26.AutoSize = true;
-            label26.Location = new Point(16, 384);
+            label26.Location = new Point(18, 363);
             label26.Name = "label26";
             label26.Size = new Size(35, 15);
             label26.TabIndex = 36;
@@ -738,7 +744,7 @@
             // 
             Stages_rpvsothers.FormattingEnabled = true;
             Stages_rpvsothers.ItemHeight = 15;
-            Stages_rpvsothers.Location = new Point(216, 33);
+            Stages_rpvsothers.Location = new Point(22, 561);
             Stages_rpvsothers.Name = "Stages_rpvsothers";
             Stages_rpvsothers.SelectionMode = SelectionMode.MultiSimple;
             Stages_rpvsothers.Size = new Size(190, 34);
@@ -747,7 +753,7 @@
             // label19
             // 
             label19.AutoSize = true;
-            label19.Location = new Point(214, 15);
+            label19.Location = new Point(20, 543);
             label19.Name = "label19";
             label19.Size = new Size(41, 15);
             label19.TabIndex = 34;
@@ -755,7 +761,7 @@
             // 
             // button9
             // 
-            button9.Location = new Point(216, 185);
+            button9.Location = new Point(214, 131);
             button9.Name = "button9";
             button9.Size = new Size(192, 33);
             button9.TabIndex = 33;
@@ -765,7 +771,7 @@
             // 
             // button10
             // 
-            button10.Location = new Point(216, 135);
+            button10.Location = new Point(214, 81);
             button10.Name = "button10";
             button10.Size = new Size(192, 33);
             button10.TabIndex = 32;
@@ -785,7 +791,7 @@
             // label18
             // 
             label18.AutoSize = true;
-            label18.Location = new Point(18, 202);
+            label18.Location = new Point(18, 190);
             label18.Name = "label18";
             label18.Size = new Size(32, 15);
             label18.TabIndex = 30;
@@ -794,7 +800,7 @@
             // label17
             // 
             label17.AutoSize = true;
-            label17.Location = new Point(16, 653);
+            label17.Location = new Point(22, 681);
             label17.Name = "label17";
             label17.Size = new Size(65, 15);
             label17.TabIndex = 28;
@@ -803,7 +809,7 @@
             // checkBox3
             // 
             checkBox3.AutoSize = true;
-            checkBox3.Location = new Point(26, 696);
+            checkBox3.Location = new Point(32, 724);
             checkBox3.Name = "checkBox3";
             checkBox3.Size = new Size(42, 19);
             checkBox3.TabIndex = 27;
@@ -813,7 +819,7 @@
             // checkBox4
             // 
             checkBox4.AutoSize = true;
-            checkBox4.Location = new Point(26, 671);
+            checkBox4.Location = new Point(32, 699);
             checkBox4.Name = "checkBox4";
             checkBox4.Size = new Size(43, 19);
             checkBox4.TabIndex = 26;
@@ -823,7 +829,7 @@
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new Point(16, 570);
+            label16.Location = new Point(22, 612);
             label16.Name = "label16";
             label16.Size = new Size(84, 15);
             label16.TabIndex = 25;
@@ -832,7 +838,7 @@
             // checkBox2
             // 
             checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(26, 613);
+            checkBox2.Location = new Point(32, 655);
             checkBox2.Name = "checkBox2";
             checkBox2.Size = new Size(42, 19);
             checkBox2.TabIndex = 24;
@@ -842,7 +848,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(26, 588);
+            checkBox1.Location = new Point(32, 630);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(43, 19);
             checkBox1.TabIndex = 23;
@@ -872,7 +878,7 @@
             // 
             Flow_rpvsothers.FormattingEnabled = true;
             Flow_rpvsothers.ItemHeight = 15;
-            Flow_rpvsothers.Location = new Point(18, 220);
+            Flow_rpvsothers.Location = new Point(20, 206);
             Flow_rpvsothers.Name = "Flow_rpvsothers";
             Flow_rpvsothers.SelectionMode = SelectionMode.MultiSimple;
             Flow_rpvsothers.Size = new Size(190, 154);
@@ -881,6 +887,12 @@
             // tabPage1
             // 
             tabPage1.BackColor = Color.White;
+            tabPage1.Controls.Add(label2);
+            tabPage1.Controls.Add(checkBox9);
+            tabPage1.Controls.Add(checkBox10);
+            tabPage1.Controls.Add(label14);
+            tabPage1.Controls.Add(checkBox11);
+            tabPage1.Controls.Add(checkBox12);
             tabPage1.Controls.Add(button15);
             tabPage1.Controls.Add(label28);
             tabPage1.Controls.Add(StagesList);
@@ -902,9 +914,67 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Map";
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(231, 103);
+            label2.Name = "label2";
+            label2.Size = new Size(65, 15);
+            label2.TabIndex = 60;
+            label2.Text = "Best Motor";
+            // 
+            // checkBox9
+            // 
+            checkBox9.AutoSize = true;
+            checkBox9.Location = new Point(241, 146);
+            checkBox9.Name = "checkBox9";
+            checkBox9.Size = new Size(42, 19);
+            checkBox9.TabIndex = 59;
+            checkBox9.Text = "No";
+            checkBox9.UseVisualStyleBackColor = true;
+            // 
+            // checkBox10
+            // 
+            checkBox10.AutoSize = true;
+            checkBox10.Location = new Point(241, 121);
+            checkBox10.Name = "checkBox10";
+            checkBox10.Size = new Size(43, 19);
+            checkBox10.TabIndex = 58;
+            checkBox10.Text = "Yes";
+            checkBox10.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new Point(231, 20);
+            label14.Name = "label14";
+            label14.Size = new Size(84, 15);
+            label14.TabIndex = 57;
+            label14.Text = "Best Company";
+            // 
+            // checkBox11
+            // 
+            checkBox11.AutoSize = true;
+            checkBox11.Location = new Point(241, 63);
+            checkBox11.Name = "checkBox11";
+            checkBox11.Size = new Size(42, 19);
+            checkBox11.TabIndex = 56;
+            checkBox11.Text = "No";
+            checkBox11.UseVisualStyleBackColor = true;
+            // 
+            // checkBox12
+            // 
+            checkBox12.AutoSize = true;
+            checkBox12.Location = new Point(241, 38);
+            checkBox12.Name = "checkBox12";
+            checkBox12.Size = new Size(43, 19);
+            checkBox12.TabIndex = 55;
+            checkBox12.Text = "Yes";
+            checkBox12.UseVisualStyleBackColor = true;
+            // 
             // button15
             // 
-            button15.Location = new Point(229, 99);
+            button15.Location = new Point(231, 234);
             button15.Name = "button15";
             button15.Size = new Size(192, 33);
             button15.TabIndex = 54;
@@ -915,7 +985,7 @@
             // label28
             // 
             label28.AutoSize = true;
-            label28.Location = new Point(229, 2);
+            label28.Location = new Point(18, 702);
             label28.Name = "label28";
             label28.Size = new Size(41, 15);
             label28.TabIndex = 53;
@@ -925,7 +995,7 @@
             // 
             StagesList.FormattingEnabled = true;
             StagesList.ItemHeight = 15;
-            StagesList.Location = new Point(231, 20);
+            StagesList.Location = new Point(20, 720);
             StagesList.Name = "StagesList";
             StagesList.SelectionMode = SelectionMode.MultiSimple;
             StagesList.Size = new Size(190, 34);
@@ -969,7 +1039,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(229, 138);
+            button3.Location = new Point(231, 273);
             button3.Name = "button3";
             button3.Size = new Size(192, 33);
             button3.TabIndex = 8;
@@ -979,7 +1049,7 @@
             // 
             // Clear_select
             // 
-            Clear_select.Location = new Point(229, 60);
+            Clear_select.Location = new Point(231, 195);
             Clear_select.Name = "Clear_select";
             Clear_select.Size = new Size(192, 33);
             Clear_select.TabIndex = 6;
@@ -989,14 +1059,14 @@
             // 
             // TableView
             // 
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            TableView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle25.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle25.BackColor = SystemColors.Control;
+            dataGridViewCellStyle25.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle25.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle25.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle25.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle25.WrapMode = DataGridViewTriState.True;
+            TableView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle25;
             TableView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             TableView.GridColor = SystemColors.Control;
             TableView.Location = new Point(447, 16);
@@ -1105,14 +1175,14 @@
             // 
             // TableView4
             // 
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = SystemColors.Control;
-            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            TableView4.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle26.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle26.BackColor = SystemColors.Control;
+            dataGridViewCellStyle26.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle26.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle26.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle26.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle26.WrapMode = DataGridViewTriState.True;
+            TableView4.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle26;
             TableView4.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             TableView4.GridColor = SystemColors.Control;
             TableView4.Location = new Point(447, 16);
@@ -1391,5 +1461,11 @@
         private Button button14;
         private Button button17;
         private Button button18;
+        private Label label2;
+        private CheckBox checkBox9;
+        private CheckBox checkBox10;
+        private Label label14;
+        private CheckBox checkBox11;
+        private CheckBox checkBox12;
     }
 }

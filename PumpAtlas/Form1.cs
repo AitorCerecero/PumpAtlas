@@ -237,7 +237,7 @@ namespace PumpAtlas
 
             try
             {
-                
+
                 pumpSizes = await Task.Run(() =>
                 {
                     var sizes = new List<string>();
@@ -306,12 +306,12 @@ namespace PumpAtlas
                     return dataTable;
                 });
 
-                
+
                 UpdateDataGridView(fullData);
             }
             catch (Exception ex)
             {
-                
+
                 MessageBox.Show($"Error: {ex.Message}");
             }
 
@@ -408,13 +408,13 @@ namespace PumpAtlas
             {
                 connection.Open();
                 adapter = new MySqlDataAdapter(Bigquery, connection);
-                Full_data2.Clear(); 
+                Full_data2.Clear();
                 adapter.Fill(Full_data2);
 
                 TableView2.Columns.Clear();
                 TableView2.Rows.Clear();
 
-                if (Full_data2.Rows.Count > 0) 
+                if (Full_data2.Rows.Count > 0)
                 {
                     foreach (DataColumn column in Full_data2.Columns)
                     {
@@ -433,14 +433,14 @@ namespace PumpAtlas
                     foreach (DataGridViewColumn col in TableView2.Columns)
                     {
                         bool hasData = Full_data2.AsEnumerable().Any(r => !r.IsNull(col.Name));
-                        col.Visible = hasData; 
+                        col.Visible = hasData;
                     }
 
-                    TableView2.Visible = true; 
+                    TableView2.Visible = true;
                 }
                 else
                 {
-                    TableView2.Visible = false; 
+                    TableView2.Visible = false;
                 }
 
                 TableView2.ColumnHeadersVisible = true;
@@ -586,7 +586,7 @@ namespace PumpAtlas
             {
                 connection.Open();
                 adapter = new MySqlDataAdapter(Bigquery, connection);
-                adapter.Fill(Full_data4); 
+                adapter.Fill(Full_data4);
                 TableView4.DataSource = Full_data4;
             }
         }
@@ -803,7 +803,7 @@ namespace PumpAtlas
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    sel_insert_label.Text = Path.GetFileName(filePath); 
+                    sel_insert_label.Text = Path.GetFileName(filePath);
 
                     try
                     {
@@ -823,7 +823,7 @@ namespace PumpAtlas
 
                                         using (var reader = new StreamReader(filePath))
                                         {
-                                            string headerLine = reader.ReadLine(); 
+                                            string headerLine = reader.ReadLine();
 
                                             while (!reader.EndOfStream)
                                             {
@@ -847,7 +847,7 @@ namespace PumpAtlas
                                         }
                                     }
 
-                                    
+
                                     this.Invoke(new Action(() =>
                                     {
                                         insert_state.Text = "Data inserted successfully";
@@ -855,7 +855,7 @@ namespace PumpAtlas
                                         clear_pivot();
                                     }));
 
-                                    await Task.Delay(6000); 
+                                    await Task.Delay(6000);
                                     this.Invoke(new Action(() =>
                                     {
                                         sel_insert_label.Text = string.Empty;
@@ -869,7 +869,7 @@ namespace PumpAtlas
                                         insert_state.Text = $"An error occurred: {ex.Message}";
                                     }));
 
-                                    await Task.Delay(6000); 
+                                    await Task.Delay(6000);
                                     this.Invoke(new Action(() =>
                                     {
                                         insert_state.Text = string.Empty;
@@ -932,7 +932,7 @@ namespace PumpAtlas
         private void clear_results_rpvsothers()
         {
             TableView2.DataSource = null;
-            TableView2.Columns.Clear(); 
+            TableView2.Columns.Clear();
             Full_data2.Clear();
         }
         //clears rp vs market datagrid
