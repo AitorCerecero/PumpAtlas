@@ -12,6 +12,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using CsvHelper.Configuration;
 using System.Threading;
+using System.IO;
 
 namespace PumpAtlas
 
@@ -169,7 +170,7 @@ namespace PumpAtlas
                 Speed_all.DataSource = new BindingSource(speed_all, null);
                 Speed_all.DisplayMember = "Pump_Speed_in_RPM";
 
-                //Pump Size Filler for all  Tabs of Data Processing (Only used Once)
+                //Pump Size Filler for all  Tabs of Data Processing (Only used Once in Map)
                 String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
                 adapter = new MySqlDataAdapter(query5, connection);
                 DataTable size_all = new DataTable();
@@ -178,66 +179,35 @@ namespace PumpAtlas
                 Size_all.DataSource = null;
                 Size_all.DataSource = new BindingSource(size_all, null);
                 Size_all.DisplayMember = "Pump_Size";
-
-                //Stages Filler for all 4 Tabs of data processing
-                String query6 = ("SELECT Stages FROM pumps GROUP BY Stages ORDER BY Stages ASC");
-                adapter = new MySqlDataAdapter(query6, connection);
-                DataTable stage = new DataTable();
-                DataTable stage_rpvsothers = new DataTable();
-                DataTable stage_rpvsmkt = new DataTable();
-                DataTable stage_all = new DataTable();
-                adapter.Fill(stage);
-                adapter.Fill(stage_rpvsothers);
-                adapter.Fill(stage_rpvsmkt);
-                adapter.Fill(stage_all);
-                //MAP
-                StagesList.DataSource = null;
-                StagesList.DataSource = new BindingSource(stage, null);
-                StagesList.DisplayMember = "Stages";
-                //RP VS OTHERS
-                Stages_rpvsothers.DataSource = null;
-                Stages_rpvsothers.DataSource = new BindingSource(stage_rpvsothers, null);
-                Stages_rpvsothers.DisplayMember = "Stages";
-                //RP VS MARKET
-                Stages_rpvsmkt.DataSource = null;
-                Stages_rpvsmkt.DataSource = new BindingSource(stage_rpvsmkt, null);
-                Stages_rpvsmkt.DisplayMember = "Stages";
-                //All Data
-                Stages_all.DataSource = null;
-                Stages_all.DataSource = new BindingSource(stage_all, null);
-                Stages_all.DisplayMember = "Stages";
-
             }
         }
         //Query that retrieves Data for the Map Tab
         private async void Big_query()
         {
-
+            // Construcción de filtros para la consulta SQL a partir de las listas seleccionadas
             string Companies = string.Join("','", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", FlowList.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", HeadList.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
             string Speeds = string.Join("','", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Speed_in_RPM"].ToString()));
-            string Stages = string.Join("','", StagesList.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
-            string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
 
-            List<string> pumpSizes = new List<string>();
+            // Generación de la lista de tamaños de bomba
+            List<string> pumpSizes;
             string pumpSizeQuery = $@"
-                    SELECT DISTINCT Pump_Size 
-                    FROM pumps 
-                    WHERE 
-                    {CompaniesCondition} AND 
-                    {FlowsCondition} AND 
-                    {SpeedsCondition} AND 
-                    {HeadsCondition}";
+        SELECT DISTINCT Pump_Size 
+        FROM pumps 
+        WHERE 
+            {CompaniesCondition} 
+            AND {FlowsCondition} 
+            AND {SpeedsCondition} 
+            AND {HeadsCondition}";
 
             try
             {
-
                 pumpSizes = await Task.Run(() =>
                 {
                     var sizes = new List<string>();
@@ -258,6 +228,7 @@ namespace PumpAtlas
                     return sizes;
                 });
 
+                // Combinación de elementos seleccionados para crear las columnas dinámicas
                 var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                            from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
                                            from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
@@ -269,33 +240,35 @@ namespace PumpAtlas
                                            };
 
                 string caseStatements = string.Join(",\n", selectedCombinations
-                        .SelectMany(item => pumpSizes, (item, pumpSize) =>
-                            $@"MIN(CASE WHEN Company = '{item.Company}' 
+                    .SelectMany(item => pumpSizes, (item, pumpSize) =>
+                        $@"MIN(CASE WHEN Company = '{item.Company}' 
                      AND Flow = '{item.Flow}' 
                      AND Pump_Speed_in_RPM = '{item.Speed}' 
                      THEN Max_BHP 
-                     END) AS '{item.Company}\n{item.Flow}\n{item.Speed}\n{pumpSize}'"));
+                     END) AS '{item.Flow}\n{item.Company}\n{pumpSize}\n{item.Speed}'"));
 
+                // Consulta principal con todos los filtros aplicados y columnas dinámicas
                 string Bigquery = $@"
-                    SELECT 
-                    Head,
-                    GROUP_CONCAT(CONCAT(Company, '\n', Flow, '\n', Pump_Speed_in_RPM, '\n', Pump_Size) 
-                         ORDER BY Company, Flow, Pump_Speed_in_RPM, Pump_Size SEPARATOR '\n') AS CompanyFlow,
-                         {caseStatements} 
-                    FROM pumps
-                    WHERE 
-                    {CompaniesCondition} 
-                    AND {FlowsCondition}
-                    AND {HeadsCondition}
-                    AND {SpeedsCondition}
-                    GROUP BY 
-                    Head
-                    ORDER BY Head;";
+            SELECT 
+                Head,
+                GROUP_CONCAT(CONCAT(Company, '\n', Flow, '\n', Pump_Speed_in_RPM, '\n', Pump_Size) 
+                    ORDER BY Company, Flow, Pump_Speed_in_RPM, Pump_Size SEPARATOR '\n') AS CompanyFlow,
+                {caseStatements} 
+            FROM pumps
+            WHERE 
+                {CompaniesCondition} 
+                AND {FlowsCondition}
+                AND {HeadsCondition}
+                AND {SpeedsCondition}
+            GROUP BY 
+                Head
+            ORDER BY Head;";
 
-                var fullData = await Task.Run(() =>
+                // Ejecución de la consulta y carga de datos en el DataTable
+                DataTable fullData = await Task.Run(() =>
                 {
                     DataTable dataTable = new DataTable();
-                    using (MySqlConnection connection = new MySqlConnection(db_conn))
+                    using (var connection = new MySqlConnection(db_conn))
                     {
                         connection.Open();
                         using (var adapter = new MySqlDataAdapter(Bigquery, connection))
@@ -306,61 +279,59 @@ namespace PumpAtlas
                     return dataTable;
                 });
 
+                // Actualización del DataGridView
+                TableView.Invoke((MethodInvoker)delegate
+                {
+                    TableView.SuspendLayout();
+                    TableView.Visible = false;
 
-                UpdateDataGridView(fullData);
+                    try
+                    {
+                        TableView.DataSource = null;
+                        TableView.Columns.Clear();
+
+                        // Configuración de optimización para el DataGridView
+                        TableView.RowHeadersVisible = false;
+                        TableView.AllowUserToAddRows = false;
+                        TableView.AllowUserToDeleteRows = false;
+                        TableView.AllowUserToOrderColumns = false;
+                        TableView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                        TableView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+
+                        // Establecer los datos en el DataGridView
+                        TableView.DataSource = fullData;
+
+                        if (TableView.Columns.Count > 1)
+                        {
+                            TableView.Columns[1].Visible = false;
+                            TableView.Columns[0].Frozen = true;
+                        }
+
+                        foreach (DataGridViewColumn col in TableView.Columns)
+                        {
+                            col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            col.Width = 120;
+                        }
+
+                        TableView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                        TableView.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+                        TableView.ColumnHeadersVisible = true;
+                    }
+                    finally
+                    {
+                        TableView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                        TableView.Visible = true;
+                        TableView.ResumeLayout();
+                    }
+                });
             }
             catch (Exception ex)
             {
-
-                MessageBox.Show($"Error: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
-
         }
-        //AI Generated Function that helped to made the fucntion async
-        private void UpdateDataGridView(DataTable fullData)
-        {
-            TableView.Invoke((MethodInvoker)delegate
-            {
-                TableView.Columns.Clear();
-                TableView.Rows.Clear();
 
-                if (fullData.Rows.Count > 0)
-                {
-                    foreach (DataColumn column in fullData.Columns)
-                    {
-                        TableView.Columns.Add(column.ColumnName, column.ColumnName);
-                    }
-
-                    for (int rowIndex = 0; rowIndex < fullData.Rows.Count; rowIndex++)
-                    {
-                        TableView.Rows.Add();
-                        for (int colIndex = 0; colIndex < fullData.Columns.Count; colIndex++)
-                        {
-                            TableView.Rows[rowIndex].Cells[colIndex].Value = fullData.Rows[rowIndex][colIndex];
-                        }
-                    }
-
-                    foreach (DataGridViewColumn col in TableView.Columns)
-                    {
-                        bool hasData = fullData.AsEnumerable().Any(r => !r.IsNull(col.Name));
-                        col.Visible = hasData;
-                    }
-
-                    TableView.Visible = true;
-                }
-                else
-                {
-                    TableView.Visible = false;
-                }
-
-                TableView.ColumnHeadersVisible = true;
-                TableView.Columns[1].Visible = false;
-                TableView.Columns[0].Frozen = true;
-                TableView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                TableView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                TableView.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            });
-        }
 
         //Query that retrieves Data for the RP vs Others Tab
         private void big_query2()
@@ -368,12 +339,10 @@ namespace PumpAtlas
             string Companies = string.Join("','", Company_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", Flow_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", Head_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
-            string Stages = string.Join("','", Stages_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
-            string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
 
             var selectedCombinations = from companyItem in Company_rpvsothers.SelectedItems.Cast<DataRowView>()
                                        from flowItem in Flow_rpvsothers.SelectedItems.Cast<DataRowView>()
@@ -397,7 +366,6 @@ namespace PumpAtlas
             {CompaniesCondition}
             AND {FlowsCondition}
             AND {HeadsCondition}
-            AND {StagesCondition}
             GROUP BY 
             Head
             ORDER BY 
@@ -411,45 +379,58 @@ namespace PumpAtlas
                 Full_data2.Clear();
                 adapter.Fill(Full_data2);
 
-                TableView2.Columns.Clear();
-                TableView2.Rows.Clear();
+                TableView2.SuspendLayout();
+                TableView2.Visible = false;
 
-                if (Full_data2.Rows.Count > 0)
+                try
                 {
-                    foreach (DataColumn column in Full_data2.Columns)
-                    {
-                        TableView2.Columns.Add(column.ColumnName, column.ColumnName);
-                    }
+                    TableView2.Columns.Clear();
+                    TableView2.Rows.Clear();
 
-                    for (int rowIndex = 0; rowIndex < Full_data2.Rows.Count; rowIndex++)
+                    if (Full_data2.Rows.Count > 0)
                     {
-                        TableView2.Rows.Add();
-                        for (int colIndex = 0; colIndex < Full_data2.Columns.Count; colIndex++)
+                        foreach (DataColumn column in Full_data2.Columns)
                         {
-                            TableView2.Rows[rowIndex].Cells[colIndex].Value = Full_data2.Rows[rowIndex][colIndex];
+                            TableView2.Columns.Add(column.ColumnName, column.ColumnName);
                         }
-                    }
 
-                    foreach (DataGridViewColumn col in TableView2.Columns)
+                        for (int rowIndex = 0; rowIndex < Full_data2.Rows.Count; rowIndex++)
+                        {
+                            TableView2.Rows.Add();
+                            for (int colIndex = 0; colIndex < Full_data2.Columns.Count; colIndex++)
+                            {
+                                TableView2.Rows[rowIndex].Cells[colIndex].Value = Full_data2.Rows[rowIndex][colIndex];
+                            }
+                        }
+
+                        foreach (DataGridViewColumn col in TableView2.Columns)
+                        {
+                            bool hasData = Full_data2.AsEnumerable().Any(r => !r.IsNull(col.Name));
+                            col.Visible = hasData;
+                        }
+
+                        TableView2.Visible = true;
+                    }
+                    else
                     {
-                        bool hasData = Full_data2.AsEnumerable().Any(r => !r.IsNull(col.Name));
-                        col.Visible = hasData;
+                        TableView2.Visible = false;
                     }
 
-                    TableView2.Visible = true;
+                    TableView2.ColumnHeadersVisible = true;
+                    TableView2.Columns[1].Visible = false;
+                    TableView2.Columns[0].Frozen = true;
+
+                    TableView2.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                    TableView2.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    //TableView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 }
-                else
+                finally
                 {
-                    TableView2.Visible = false;
+                    TableView2.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                    TableView2.Visible = Full_data2.Rows.Count > 0;
+                    TableView2.ResumeLayout();
                 }
 
-                TableView2.ColumnHeadersVisible = true;
-                TableView2.Columns[1].Visible = false;
-                TableView2.Columns[0].Frozen = true;
-                TableView2.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                TableView2.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                TableView2.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                TableView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
         }
 
@@ -459,12 +440,10 @@ namespace PumpAtlas
             string Companies = string.Join("','", Company_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", Flow_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", Head_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
-            string Stages = string.Join("','", Stages_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
-            string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
 
 
             var selectedCombinations = from companyItem in Company_rpvsmkt.SelectedItems.Cast<DataRowView>()
@@ -489,7 +468,6 @@ namespace PumpAtlas
             {CompaniesCondition}
             AND {FlowsCondition}
             AND {HeadsCondition}
-            AND {StagesCondition}
             GROUP BY 
             Head
             ORDER BY 
@@ -553,7 +531,6 @@ namespace PumpAtlas
             string Heads = string.Join("','", Head_all.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
             string Speeds = string.Join("','", Speed_all.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Speed_in_RPM"].ToString()));
             string Sizes = string.Join("','", Size_all.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Size"].ToString()));
-            string Stages = string.Join("','", Stages_all.SelectedItems.Cast<DataRowView>().Select(item => item["Stages"].ToString()));
 
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
@@ -561,8 +538,6 @@ namespace PumpAtlas
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
-            string StagesCondition = string.IsNullOrEmpty(Stages) ? "TRUE" : $"Stages IN ('{Stages}')";
-
 
             string Bigquery = $@"SELECT
                                 Company,
@@ -580,8 +555,7 @@ namespace PumpAtlas
                             AND {FlowsCondition}
                             AND {HeadsCondition}
                             AND {SpeedsCondition}
-                            AND {SizesCondition}
-                            AND {StagesCondition};";
+                            AND {SizesCondition};";
             using (MySqlConnection connection = new MySqlConnection(db_conn))
             {
                 connection.Open();
@@ -610,7 +584,6 @@ namespace PumpAtlas
             FlowList.ClearSelected();
             HeadList.ClearSelected();
             SpeedList.ClearSelected();
-            StagesList.ClearSelected();
         }
         //method that clears listboxes in rp vs others tab
         private void clear_filter_rpvsothers()
@@ -618,7 +591,6 @@ namespace PumpAtlas
             Company_rpvsothers.ClearSelected();
             Flow_rpvsothers.ClearSelected();
             Head_rpvsothers.ClearSelected();
-            Stages_rpvsothers.ClearSelected();
         }
         //method that clears listboxes in rp vs market tab
         private void clear_filter_rpvsmkt()
@@ -626,7 +598,6 @@ namespace PumpAtlas
             Company_rpvsmkt.ClearSelected();
             Flow_rpvsmkt.ClearSelected();
             Head_rpvsmkt.ClearSelected();
-            Stages_rpvsmkt.ClearSelected();
         }
         //method that clears listboxes in all data tab
         private void clear_filter_all_data()
@@ -635,7 +606,6 @@ namespace PumpAtlas
             Flow_all.ClearSelected();
             Head_all.ClearSelected();
             Size_all.ClearSelected();
-            Stages_all.ClearSelected();
             Speed_all.ClearSelected();
         }
         //Method that opens File explorer and allows to select an Excel File
@@ -758,7 +728,7 @@ namespace PumpAtlas
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error reading CSV file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        System.Windows.Forms.MessageBox.Show("Error reading CSV file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
@@ -880,7 +850,7 @@ namespace PumpAtlas
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error reading CSV file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        System.Windows.Forms.MessageBox.Show("Error reading CSV file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
@@ -1019,6 +989,16 @@ namespace PumpAtlas
         private void button18_Click(object sender, EventArgs e)
         {
             clear_filter_rpvsmkt();
+        }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CompanyList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
