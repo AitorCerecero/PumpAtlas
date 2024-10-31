@@ -13,6 +13,11 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using CsvHelper.Configuration;
 using System.Threading;
 using System.IO;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraGrid.Columns;
+using System.Windows.Controls;
+using DevExpress.XtraExport.Helpers;
 
 namespace PumpAtlas
 
@@ -242,10 +247,10 @@ namespace PumpAtlas
                 string caseStatements = string.Join(",\n", selectedCombinations
                     .SelectMany(item => pumpSizes, (item, pumpSize) =>
                         $@"MIN(CASE WHEN Company = '{item.Company}' 
-                     AND Flow = '{item.Flow}' 
-                     AND Pump_Speed_in_RPM = '{item.Speed}' 
-                     THEN Max_BHP 
-                     END) AS '{item.Flow}\n{item.Company}\n{pumpSize}\n{item.Speed}'"));
+                 AND Flow = '{item.Flow}' 
+                 AND Pump_Speed_in_RPM = '{item.Speed}' 
+                 THEN Max_BHP 
+                 END) AS '{item.Flow}\n{item.Company}\n{pumpSize}\n{item.Speed}'"));
 
                 // Consulta principal con todos los filtros aplicados y columnas dinámicas
                 string Bigquery = $@"
@@ -279,52 +284,21 @@ namespace PumpAtlas
                     return dataTable;
                 });
 
-                // Actualización del DataGridView
-                TableView.Invoke((MethodInvoker)delegate
-                {
-                    TableView.SuspendLayout();
-                    TableView.Visible = false;
+                gridControl1.DataSource = fullData;
+                gridView1.OptionsView.ShowGroupPanel = false;
+                gridView1.GroupPanelText = ""; 
+                gridView1.PopulateColumns();
+                gridView1.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+                gridView1.BestFitColumns();
+                gridView1.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+                gridView1.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
 
-                    try
-                    {
-                        TableView.DataSource = null;
-                        TableView.Columns.Clear();
+                GridColumn zeroColumn = gridView1.Columns[0];
+                zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
-                        // Configuración de optimización para el DataGridView
-                        TableView.RowHeadersVisible = false;
-                        TableView.AllowUserToAddRows = false;
-                        TableView.AllowUserToDeleteRows = false;
-                        TableView.AllowUserToOrderColumns = false;
-                        TableView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-                        TableView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+                GridColumn firstColumn = gridView1.Columns[1];
+                firstColumn.Visible = false;
 
-                        // Establecer los datos en el DataGridView
-                        TableView.DataSource = fullData;
-
-                        if (TableView.Columns.Count > 1)
-                        {
-                            TableView.Columns[1].Visible = false;
-                            TableView.Columns[0].Frozen = true;
-                        }
-
-                        foreach (DataGridViewColumn col in TableView.Columns)
-                        {
-                            col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                            col.Width = 120;
-                        }
-
-                        TableView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                        TableView.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-                        TableView.ColumnHeadersVisible = true;
-                    }
-                    finally
-                    {
-                        TableView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                        TableView.Visible = true;
-                        TableView.ResumeLayout();
-                    }
-                });
             }
             catch (Exception ex)
             {
@@ -334,7 +308,7 @@ namespace PumpAtlas
 
 
         //Query that retrieves Data for the RP vs Others Tab
-        private void big_query2()
+        private async void big_query2()
         {
             string Companies = string.Join("','", Company_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", Flow_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
@@ -343,6 +317,8 @@ namespace PumpAtlas
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
+
+            try { 
 
             var selectedCombinations = from companyItem in Company_rpvsothers.SelectedItems.Cast<DataRowView>()
                                        from flowItem in Flow_rpvsothers.SelectedItems.Cast<DataRowView>()
@@ -371,71 +347,44 @@ namespace PumpAtlas
             ORDER BY 
             Head;";
 
-
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
+            DataTable fullData2 = await Task.Run(() =>
             {
-                connection.Open();
-                adapter = new MySqlDataAdapter(Bigquery, connection);
-                Full_data2.Clear();
-                adapter.Fill(Full_data2);
-
-                TableView2.SuspendLayout();
-                TableView2.Visible = false;
-
-                try
+                DataTable dataTable2 = new DataTable();
+                using (var connection = new MySqlConnection(db_conn))
                 {
-                    TableView2.Columns.Clear();
-                    TableView2.Rows.Clear();
-
-                    if (Full_data2.Rows.Count > 0)
+                    connection.Open();
+                    using (var adapter = new MySqlDataAdapter(Bigquery, connection))
                     {
-                        foreach (DataColumn column in Full_data2.Columns)
-                        {
-                            TableView2.Columns.Add(column.ColumnName, column.ColumnName);
-                        }
-
-                        for (int rowIndex = 0; rowIndex < Full_data2.Rows.Count; rowIndex++)
-                        {
-                            TableView2.Rows.Add();
-                            for (int colIndex = 0; colIndex < Full_data2.Columns.Count; colIndex++)
-                            {
-                                TableView2.Rows[rowIndex].Cells[colIndex].Value = Full_data2.Rows[rowIndex][colIndex];
-                            }
-                        }
-
-                        foreach (DataGridViewColumn col in TableView2.Columns)
-                        {
-                            bool hasData = Full_data2.AsEnumerable().Any(r => !r.IsNull(col.Name));
-                            col.Visible = hasData;
-                        }
-
-                        TableView2.Visible = true;
+                        adapter.Fill(dataTable2);
                     }
-                    else
-                    {
-                        TableView2.Visible = false;
-                    }
-
-                    TableView2.ColumnHeadersVisible = true;
-                    TableView2.Columns[1].Visible = false;
-                    TableView2.Columns[0].Frozen = true;
-
-                    TableView2.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                    TableView2.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    //TableView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 }
-                finally
-                {
-                    TableView2.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                    TableView2.Visible = Full_data2.Rows.Count > 0;
-                    TableView2.ResumeLayout();
-                }
+                return dataTable2;
+            });
 
+            gridControl2.DataSource = fullData2;
+            gridView2.OptionsView.ShowGroupPanel = false;
+            gridView2.GroupPanelText = "";
+            gridView2.PopulateColumns();
+            gridView2.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            gridView2.BestFitColumns();
+            gridView2.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            gridView2.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+
+            GridColumn zeroColumn = gridView2.Columns[0];
+            zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+            GridColumn firstColumn = gridView2.Columns[1];
+            firstColumn.Visible = false;
+
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
         //Query that retrieves Data for the RP vs Market Tab
-        public void big_query3()
+        private async void big_query3()
         {
             string Companies = string.Join("','", Company_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", Flow_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
@@ -445,7 +394,7 @@ namespace PumpAtlas
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
 
-
+            try { 
             var selectedCombinations = from companyItem in Company_rpvsmkt.SelectedItems.Cast<DataRowView>()
                                        from flowItem in Flow_rpvsmkt.SelectedItems.Cast<DataRowView>()
                                        select new
@@ -473,57 +422,44 @@ namespace PumpAtlas
             ORDER BY 
             Head;";
 
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
-            {
-                connection.Open();
-                adapter = new MySqlDataAdapter(Bigquery, connection);
-                Full_data3.Clear();
-                adapter.Fill(Full_data3);
-
-                TableView3.Columns.Clear();
-                TableView3.Rows.Clear();
-
-                if (Full_data3.Rows.Count > 0)
+                DataTable fullData3 = await Task.Run(() =>
                 {
-                    foreach (DataColumn column in Full_data3.Columns)
+                    DataTable dataTable3 = new DataTable();
+                    using (var connection = new MySqlConnection(db_conn))
                     {
-                        TableView3.Columns.Add(column.ColumnName, column.ColumnName);
-                    }
-
-                    for (int rowIndex = 0; rowIndex < Full_data3.Rows.Count; rowIndex++)
-                    {
-                        TableView3.Rows.Add();
-                        for (int colIndex = 0; colIndex < Full_data3.Columns.Count; colIndex++)
+                        connection.Open();
+                        using (var adapter = new MySqlDataAdapter(Bigquery, connection))
                         {
-                            TableView3.Rows[rowIndex].Cells[colIndex].Value = Full_data3.Rows[rowIndex][colIndex];
+                            adapter.Fill(dataTable3);
                         }
                     }
+                    return dataTable3;
+                });
 
-                    foreach (DataGridViewColumn col in TableView3.Columns)
-                    {
-                        bool hasData = Full_data3.AsEnumerable().Any(r => !r.IsNull(col.Name));
-                        col.Visible = hasData;
-                    }
+                gridControl3.DataSource = fullData3;
+                gridView3.OptionsView.ShowGroupPanel = false;
+                gridView3.GroupPanelText = "";
+                gridView3.PopulateColumns();
+                gridView3.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+                gridView3.BestFitColumns();
+                gridView3.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+                gridView3.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
 
-                    TableView3.Visible = true;
-                }
-                else
-                {
-                    TableView3.Visible = false;
-                }
+                GridColumn zeroColumn = gridView3.Columns[0];
+                zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
-                TableView3.ColumnHeadersVisible = true;
-                TableView3.Columns[1].Visible = false;
-                TableView3.Columns[0].Frozen = true;
-                TableView3.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                TableView3.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                TableView3.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                TableView3.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                GridColumn firstColumn = gridView3.Columns[1];
+                firstColumn.Visible = false;
             }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
+            }
+
         }
 
         //Query that retrieves Data for the All Data Tab
-        public void big_query4()
+        private async void big_query4()
         {
 
             string Companies = string.Join("','", Company_all.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
@@ -539,6 +475,7 @@ namespace PumpAtlas
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
 
+            try { 
             string Bigquery = $@"SELECT
                                 Company,
                                 Pump_Line,
@@ -556,12 +493,33 @@ namespace PumpAtlas
                             AND {HeadsCondition}
                             AND {SpeedsCondition}
                             AND {SizesCondition};";
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
+
+                DataTable fullData4 = await Task.Run(() =>
+                {
+                    DataTable dataTable4 = new DataTable();
+                    using (var connection = new MySqlConnection(db_conn))
+                    {
+                        connection.Open();
+                        using (var adapter = new MySqlDataAdapter(Bigquery, connection))
+                        {
+                            adapter.Fill(dataTable4);
+                        }
+                    }
+                    return dataTable4;
+                });
+
+                gridControl4.DataSource = fullData4;
+                gridView4.OptionsView.ShowGroupPanel = false;
+                gridView4.GroupPanelText = "";
+                gridView4.PopulateColumns();
+                gridView4.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+                gridView4.BestFitColumns();
+                gridView4.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+                gridView4.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            }
+            catch (Exception ex)
             {
-                connection.Open();
-                adapter = new MySqlDataAdapter(Bigquery, connection);
-                adapter.Fill(Full_data4);
-                TableView4.DataSource = Full_data4;
+                System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -894,29 +852,29 @@ namespace PumpAtlas
         //Clears map datagrid
         private void clear_results_map()
         {
-            TableView.DataSource = null;
-            TableView.Columns.Clear();
+            gridControl1.DataSource = null;
+            gridView1.Columns.Clear();
             Full_data.Clear();
         }
         //Clears rp vs others datagrid
         private void clear_results_rpvsothers()
         {
-            TableView2.DataSource = null;
-            TableView2.Columns.Clear();
+            gridControl2.DataSource = null;
+            gridView2.Columns.Clear();
             Full_data2.Clear();
         }
         //clears rp vs market datagrid
         private void clear_results_rpvsmkt()
         {
-            TableView3.DataSource = null;
-            TableView3.Columns.Clear();
+            gridControl3.DataSource = null;
+            gridView3.Columns.Clear();
             Full_data3.Clear();
         }
         //clears all data datagrid
         private void clear_results_all_data()
         {
-            TableView4.DataSource = null;
-            TableView4.Columns.Clear();
+            gridControl4.DataSource = null;
+            gridView4.Columns.Clear();
             Full_data4.Clear();
         }
 

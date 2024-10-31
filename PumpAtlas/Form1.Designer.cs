@@ -30,8 +30,8 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
             tabPage4 = new TabPage();
@@ -67,7 +67,6 @@
             tabPage8 = new TabPage();
             button13 = new Button();
             button14 = new Button();
-            TableView4 = new DataGridView();
             button17 = new Button();
             label29 = new Label();
             label30 = new Label();
@@ -80,13 +79,14 @@
             Head_all = new ListBox();
             Company_all = new ListBox();
             tabPage3 = new TabPage();
+            gridControl3 = new DevExpress.XtraGrid.GridControl();
+            gridView3 = new DevExpress.XtraGrid.Views.Grid.GridView();
             button18 = new Button();
             label27 = new Label();
             Head_rpvsmkt = new ListBox();
             Company_rpvsmkt = new ListBox();
             button11 = new Button();
             button12 = new Button();
-            TableView3 = new DataGridView();
             label21 = new Label();
             Flow_rpvsmkt = new ListBox();
             label22 = new Label();
@@ -97,12 +97,13 @@
             checkBox8 = new CheckBox();
             label25 = new Label();
             tabPage2 = new TabPage();
+            gridControl2 = new DevExpress.XtraGrid.GridControl();
+            gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
             button16 = new Button();
             Head_rpvsothers = new ListBox();
             label26 = new Label();
             button9 = new Button();
             button10 = new Button();
-            TableView2 = new DataGridView();
             label18 = new Label();
             label17 = new Label();
             checkBox3 = new CheckBox();
@@ -114,6 +115,8 @@
             Company_rpvsothers = new ListBox();
             Flow_rpvsothers = new ListBox();
             tabPage1 = new TabPage();
+            gridControl1 = new DevExpress.XtraGrid.GridControl();
+            gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             label2 = new Label();
             checkBox9 = new CheckBox();
             checkBox10 = new CheckBox();
@@ -127,13 +130,15 @@
             label10 = new Label();
             button3 = new Button();
             Clear_select = new Button();
-            TableView = new DataGridView();
             SpeedList = new ListBox();
             FlowList = new ListBox();
             HeadList = new ListBox();
             CompanyList = new ListBox();
             TestTab = new TabControl();
             sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
+            sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
+            gridControl4 = new DevExpress.XtraGrid.GridControl();
+            gridView4 = new DevExpress.XtraGrid.Views.Grid.GridView();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             tabPage4.SuspendLayout();
@@ -144,14 +149,18 @@
             ((System.ComponentModel.ISupportInitialize)csv_view).BeginInit();
             tabPage7.SuspendLayout();
             tabPage8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)TableView4).BeginInit();
             tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)TableView3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridControl3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridView3).BeginInit();
             tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)TableView2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridControl2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridView2).BeginInit();
             tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)TableView).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridControl1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridView1).BeginInit();
             TestTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)gridControl4).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridView4).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
@@ -320,7 +329,23 @@
             // 
             // csv_view
             // 
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            csv_view.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             csv_view.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            csv_view.DefaultCellStyle = dataGridViewCellStyle2;
             csv_view.Location = new Point(290, 19);
             csv_view.Name = "csv_view";
             csv_view.Size = new Size(1137, 609);
@@ -479,9 +504,9 @@
             // tabPage8
             // 
             tabPage8.BackColor = Color.White;
+            tabPage8.Controls.Add(gridControl4);
             tabPage8.Controls.Add(button13);
             tabPage8.Controls.Add(button14);
-            tabPage8.Controls.Add(TableView4);
             tabPage8.Controls.Add(button17);
             tabPage8.Controls.Add(label29);
             tabPage8.Controls.Add(label30);
@@ -519,23 +544,6 @@
             button14.Text = "Run Selections";
             button14.UseVisualStyleBackColor = true;
             button14.Click += button14_Click;
-            // 
-            // TableView4
-            // 
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = SystemColors.Control;
-            dataGridViewCellStyle5.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
-            TableView4.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            TableView4.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            TableView4.GridColor = SystemColors.Control;
-            TableView4.Location = new Point(447, 16);
-            TableView4.Name = "TableView4";
-            TableView4.Size = new Size(1005, 744);
-            TableView4.TabIndex = 68;
             // 
             // button17
             // 
@@ -644,13 +652,13 @@
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(gridControl3);
             tabPage3.Controls.Add(button18);
             tabPage3.Controls.Add(label27);
             tabPage3.Controls.Add(Head_rpvsmkt);
             tabPage3.Controls.Add(Company_rpvsmkt);
             tabPage3.Controls.Add(button11);
             tabPage3.Controls.Add(button12);
-            tabPage3.Controls.Add(TableView3);
             tabPage3.Controls.Add(label21);
             tabPage3.Controls.Add(Flow_rpvsmkt);
             tabPage3.Controls.Add(label22);
@@ -667,6 +675,20 @@
             tabPage3.TabIndex = 2;
             tabPage3.Text = "RP vs Market";
             tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // gridControl3
+            // 
+            gridControl3.Location = new Point(414, 15);
+            gridControl3.MainView = gridView3;
+            gridControl3.Name = "gridControl3";
+            gridControl3.Size = new Size(1028, 740);
+            gridControl3.TabIndex = 56;
+            gridControl3.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView3 });
+            // 
+            // gridView3
+            // 
+            gridView3.GridControl = gridControl3;
+            gridView3.Name = "gridView3";
             // 
             // button18
             // 
@@ -726,15 +748,6 @@
             button12.Text = "Clear Results";
             button12.UseVisualStyleBackColor = true;
             button12.Click += button12_Click;
-            // 
-            // TableView3
-            // 
-            TableView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            TableView3.GridColor = SystemColors.Control;
-            TableView3.Location = new Point(414, 11);
-            TableView3.Name = "TableView3";
-            TableView3.Size = new Size(1028, 744);
-            TableView3.TabIndex = 48;
             // 
             // label21
             // 
@@ -824,12 +837,12 @@
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(gridControl2);
             tabPage2.Controls.Add(button16);
             tabPage2.Controls.Add(Head_rpvsothers);
             tabPage2.Controls.Add(label26);
             tabPage2.Controls.Add(button9);
             tabPage2.Controls.Add(button10);
-            tabPage2.Controls.Add(TableView2);
             tabPage2.Controls.Add(label18);
             tabPage2.Controls.Add(label17);
             tabPage2.Controls.Add(checkBox3);
@@ -847,6 +860,20 @@
             tabPage2.TabIndex = 1;
             tabPage2.Text = "RP vs Others";
             tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // gridControl2
+            // 
+            gridControl2.Location = new Point(412, 15);
+            gridControl2.MainView = gridView2;
+            gridControl2.Name = "gridControl2";
+            gridControl2.Size = new Size(1040, 745);
+            gridControl2.TabIndex = 39;
+            gridControl2.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView2 });
+            // 
+            // gridView2
+            // 
+            gridView2.GridControl = gridControl2;
+            gridView2.Name = "gridView2";
             // 
             // button16
             // 
@@ -896,15 +923,6 @@
             button10.Text = "Clear Results";
             button10.UseVisualStyleBackColor = true;
             button10.Click += button10_Click;
-            // 
-            // TableView2
-            // 
-            TableView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            TableView2.GridColor = SystemColors.Control;
-            TableView2.Location = new Point(412, 11);
-            TableView2.Name = "TableView2";
-            TableView2.Size = new Size(1028, 744);
-            TableView2.TabIndex = 31;
             // 
             // label18
             // 
@@ -1005,6 +1023,7 @@
             // tabPage1
             // 
             tabPage1.BackColor = Color.White;
+            tabPage1.Controls.Add(gridControl1);
             tabPage1.Controls.Add(label2);
             tabPage1.Controls.Add(checkBox9);
             tabPage1.Controls.Add(checkBox10);
@@ -1018,7 +1037,6 @@
             tabPage1.Controls.Add(label10);
             tabPage1.Controls.Add(button3);
             tabPage1.Controls.Add(Clear_select);
-            tabPage1.Controls.Add(TableView);
             tabPage1.Controls.Add(SpeedList);
             tabPage1.Controls.Add(FlowList);
             tabPage1.Controls.Add(HeadList);
@@ -1030,6 +1048,24 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Map";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // gridControl1
+            // 
+            gridControl1.Location = new Point(429, 7);
+            gridControl1.MainView = gridView1;
+            gridControl1.Name = "gridControl1";
+            gridControl1.Size = new Size(1023, 754);
+            gridControl1.TabIndex = 61;
+            gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView1 });
+            // 
+            // gridView1
+            // 
+            gridView1.GridControl = gridControl1;
+            gridView1.Name = "gridView1";
+            gridView1.OptionsBehavior.Editable = false;
+            gridView1.OptionsCustomization.AllowColumnMoving = false;
+            gridView1.OptionsCustomization.AllowColumnResizing = false;
+            gridView1.OptionsView.ColumnAutoWidth = false;
             // 
             // label2
             // 
@@ -1155,23 +1191,6 @@
             Clear_select.UseVisualStyleBackColor = true;
             Clear_select.Click += Clear_select_Click;
             // 
-            // TableView
-            // 
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = SystemColors.Control;
-            dataGridViewCellStyle6.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            TableView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle6;
-            TableView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            TableView.GridColor = SystemColors.Control;
-            TableView.Location = new Point(447, 16);
-            TableView.Name = "TableView";
-            TableView.Size = new Size(1005, 744);
-            TableView.TabIndex = 4;
-            // 
             // SpeedList
             // 
             SpeedList.FormattingEnabled = true;
@@ -1230,6 +1249,24 @@
             // 
             sqlDataSource1.Name = "sqlDataSource1";
             // 
+            // sqlDataSource2
+            // 
+            sqlDataSource2.Name = "sqlDataSource2";
+            // 
+            // gridControl4
+            // 
+            gridControl4.Location = new Point(447, 16);
+            gridControl4.MainView = gridView4;
+            gridControl4.Name = "gridControl4";
+            gridControl4.Size = new Size(1005, 744);
+            gridControl4.TabIndex = 69;
+            gridControl4.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView4 });
+            // 
+            // gridView4
+            // 
+            gridView4.GridControl = gridControl4;
+            gridView4.Name = "gridView4";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -1259,17 +1296,21 @@
             tabPage7.PerformLayout();
             tabPage8.ResumeLayout(false);
             tabPage8.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)TableView4).EndInit();
             tabPage3.ResumeLayout(false);
             tabPage3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)TableView3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridControl3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridView3).EndInit();
             tabPage2.ResumeLayout(false);
             tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)TableView2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridControl2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridView2).EndInit();
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)TableView).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridControl1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridView1).EndInit();
             TestTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)gridControl4).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridView4).EndInit();
             ResumeLayout(false);
         }
 
@@ -1309,7 +1350,6 @@
         private TabPage tabPage8;
         private Button button13;
         private Button button14;
-        private DataGridView TableView4;
         private Button button17;
         private Label label29;
         private Label label30;
@@ -1328,7 +1368,6 @@
         private ListBox Company_rpvsmkt;
         private Button button11;
         private Button button12;
-        private DataGridView TableView3;
         private Label label21;
         private ListBox Flow_rpvsmkt;
         private Label label22;
@@ -1344,7 +1383,6 @@
         private Label label26;
         private Button button9;
         private Button button10;
-        private DataGridView TableView2;
         private Label label18;
         private Label label17;
         private CheckBox checkBox3;
@@ -1369,12 +1407,20 @@
         private Label label10;
         private Button button3;
         private Button Clear_select;
-        private DataGridView TableView;
         private ListBox SpeedList;
         private ListBox FlowList;
         private ListBox HeadList;
         private ListBox CompanyList;
         private TabControl TestTab;
         private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource1;
+        private DevExpress.XtraGrid.GridControl gridControl1;
+        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        private DevExpress.XtraGrid.GridControl gridControl2;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
+        private DevExpress.XtraGrid.GridControl gridControl3;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView3;
+        private DevExpress.XtraGrid.GridControl gridControl4;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView4;
     }
 }
