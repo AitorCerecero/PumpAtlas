@@ -189,7 +189,7 @@ namespace PumpAtlas
         //Query that retrieves Data for the Map Tab
         private async void Big_query()
         {
-            // Construcción de filtros para la consulta SQL a partir de las listas seleccionadas
+            
             string Companies = string.Join("','", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", FlowList.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", HeadList.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
@@ -200,7 +200,7 @@ namespace PumpAtlas
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
 
-            // Generación de la lista de tamaños de bomba
+            
             List<string> pumpSizes;
             string pumpSizeQuery = $@"
         SELECT DISTINCT Pump_Size 
@@ -233,7 +233,7 @@ namespace PumpAtlas
                     return sizes;
                 });
 
-                // Combinación de elementos seleccionados para crear las columnas dinámicas
+              //Dynamic Columns
                 var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                            from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
                                            from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
@@ -252,7 +252,7 @@ namespace PumpAtlas
                  THEN Max_BHP 
                  END) AS '{item.Flow}\n{item.Company}\n{pumpSize}\n{item.Speed}'"));
 
-                // Consulta principal con todos los filtros aplicados y columnas dinámicas
+                
                 string Bigquery = $@"
             SELECT 
                 Head,
@@ -269,7 +269,7 @@ namespace PumpAtlas
                 Head
             ORDER BY Head;";
 
-                // Ejecución de la consulta y carga de datos en el DataTable
+                
                 DataTable fullData = await Task.Run(() =>
                 {
                     DataTable dataTable = new DataTable();
@@ -947,16 +947,6 @@ namespace PumpAtlas
         private void button18_Click(object sender, EventArgs e)
         {
             clear_filter_rpvsmkt();
-        }
-
-        private void tabPage1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CompanyList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

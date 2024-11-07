@@ -1047,7 +1047,6 @@
             tabPage1.Size = new Size(1461, 766);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Map";
-            tabPage1.Click += tabPage1_Click;
             // 
             // gridControl1
             // 
@@ -1230,7 +1229,6 @@
             CompanyList.SelectionMode = SelectionMode.MultiExtended;
             CompanyList.Size = new Size(190, 154);
             CompanyList.TabIndex = 0;
-            CompanyList.SelectedIndexChanged += CompanyList_SelectedIndexChanged;
             // 
             // TestTab
             // 
