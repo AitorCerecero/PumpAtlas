@@ -138,10 +138,10 @@
             CompanyList = new ListBox();
             TestTab = new TabControl();
             tabPage9 = new TabPage();
+            pictureBox4 = new PictureBox();
             label9 = new Label();
             sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
             sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
-            pictureBox4 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             tabPage4.SuspendLayout();
@@ -1274,6 +1274,15 @@
             tabPage9.TabIndex = 5;
             tabPage9.Text = "About App";
             // 
+            // pictureBox4
+            // 
+            pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
+            pictureBox4.Location = new Point(88, 187);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(251, 258);
+            pictureBox4.TabIndex = 1;
+            pictureBox4.TabStop = false;
+            // 
             // label9
             // 
             label9.AutoSize = true;
@@ -1291,15 +1300,6 @@
             // sqlDataSource2
             // 
             sqlDataSource2.Name = "sqlDataSource2";
-            // 
-            // pictureBox4
-            // 
-            pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
-            pictureBox4.Location = new Point(40, 175);
-            pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(251, 258);
-            pictureBox4.TabIndex = 1;
-            pictureBox4.TabStop = false;
             // 
             // Form1
             // 
