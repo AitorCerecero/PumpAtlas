@@ -27,7 +27,7 @@ namespace PumpAtlas
 
         //Database connection information String
         string db_conn = "server=localhost;database=rp;uid=root;pwd=FireSystems25;";
-        public static bool IsKeyEntered = false;  
+        public static bool IsKeyEntered = false;
 
 
         MySqlDataAdapter adapter;
@@ -826,20 +826,20 @@ namespace PumpAtlas
         //Button that calls method to insert data in Database from Data management tab
         private void button7_Click(object sender, EventArgs e)
         {
-            if (!IsKeyEntered)  
+            if (!IsKeyEntered)
             {
-                Form2 form2 = new Form2(this);  
-                form2.ShowDialog();  
+                Form2 form2 = new Form2(this);
+                form2.ShowDialog();
 
                 if (form2.Accessed)
                 {
-                    IsKeyEntered = true;  
-                    select_file_to_insert_to_database();  
+                    IsKeyEntered = true;
+                    select_file_to_insert_to_database();
                 }
             }
             else
             {
-                select_file_to_insert_to_database();  
+                select_file_to_insert_to_database();
             }
         }
 

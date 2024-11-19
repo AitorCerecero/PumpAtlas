@@ -48,11 +48,11 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(134, 166);
+            label1.Location = new Point(175, 159);
             label1.Name = "label1";
-            label1.Size = new Size(457, 15);
+            label1.Size = new Size(383, 30);
             label1.TabIndex = 1;
-            label1.Text = " This feature has been locked due to Data Security, to use it please insert the password\r\n";
+            label1.Text = " Only Authorized users can use this function, please insert the password\r\n\r\n";
             // 
             // button1
             // 
@@ -76,7 +76,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ButtonHighlight;
-            ClientSize = new Size(713, 313);
+            ClientSize = new Size(713, 358);
             Controls.Add(textBox1);
             Controls.Add(button1);
             Controls.Add(label1);
@@ -84,6 +84,7 @@
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form2";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Attention User";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);

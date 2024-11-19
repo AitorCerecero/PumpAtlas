@@ -30,8 +30,8 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
             tabPage4 = new TabPage();
@@ -137,8 +137,11 @@
             HeadList = new ListBox();
             CompanyList = new ListBox();
             TestTab = new TabControl();
+            tabPage9 = new TabPage();
+            label9 = new Label();
             sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
             sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
+            pictureBox4 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             tabPage4.SuspendLayout();
@@ -161,6 +164,8 @@
             ((System.ComponentModel.ISupportInitialize)gridControl1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).BeginInit();
             TestTab.SuspendLayout();
+            tabPage9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
@@ -329,23 +334,23 @@
             // 
             // csv_view
             // 
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            csv_view.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            csv_view.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             csv_view.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            csv_view.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Window;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            csv_view.DefaultCellStyle = dataGridViewCellStyle4;
             csv_view.Location = new Point(290, 19);
             csv_view.Name = "csv_view";
             csv_view.Size = new Size(1137, 609);
@@ -468,7 +473,7 @@
             // conn_db_state
             // 
             conn_db_state.AutoSize = true;
-            conn_db_state.Location = new Point(788, 52);
+            conn_db_state.Location = new Point(707, 50);
             conn_db_state.Name = "conn_db_state";
             conn_db_state.Size = new Size(0, 15);
             conn_db_state.TabIndex = 3;
@@ -476,7 +481,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(678, 52);
+            label4.Location = new Point(597, 50);
             label4.Name = "label4";
             label4.Size = new Size(104, 15);
             label4.TabIndex = 2;
@@ -1251,11 +1256,33 @@
             TestTab.Controls.Add(tabPage3);
             TestTab.Controls.Add(tabPage8);
             TestTab.Controls.Add(tabPage4);
+            TestTab.Controls.Add(tabPage9);
             TestTab.Location = new Point(12, 41);
             TestTab.Name = "TestTab";
             TestTab.SelectedIndex = 0;
             TestTab.Size = new Size(1469, 794);
             TestTab.TabIndex = 1;
+            // 
+            // tabPage9
+            // 
+            tabPage9.BackColor = Color.White;
+            tabPage9.Controls.Add(pictureBox4);
+            tabPage9.Controls.Add(label9);
+            tabPage9.Location = new Point(4, 24);
+            tabPage9.Name = "tabPage9";
+            tabPage9.Size = new Size(1461, 766);
+            tabPage9.TabIndex = 5;
+            tabPage9.Text = "About App";
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Font = new Font("Segoe UI", 36F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label9.Location = new Point(416, 144);
+            label9.Name = "label9";
+            label9.Size = new Size(827, 325);
+            label9.TabIndex = 0;
+            label9.Text = "Pump Atlas\r\n\r\nVersion 1.0.0\r\n\r\nProperty of Ruhrpumpen Fire Systems\r\n";
             // 
             // sqlDataSource1
             // 
@@ -1264,6 +1291,15 @@
             // sqlDataSource2
             // 
             sqlDataSource2.Name = "sqlDataSource2";
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
+            pictureBox4.Location = new Point(40, 175);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(251, 258);
+            pictureBox4.TabIndex = 1;
+            pictureBox4.TabStop = false;
             // 
             // Form1
             // 
@@ -1309,6 +1345,9 @@
             ((System.ComponentModel.ISupportInitialize)gridControl1).EndInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).EndInit();
             TestTab.ResumeLayout(false);
+            tabPage9.ResumeLayout(false);
+            tabPage9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ResumeLayout(false);
         }
 
@@ -1420,5 +1459,8 @@
         private DevExpress.XtraGrid.Views.Grid.GridView gridView4;
         public Button button7;
         public Button button8;
+        private TabPage tabPage9;
+        private Label label9;
+        private PictureBox pictureBox4;
     }
 }
