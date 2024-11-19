@@ -27,6 +27,8 @@ namespace PumpAtlas
 
         //Database connection information String
         string db_conn = "server=localhost;database=rp;uid=root;pwd=FireSystems25;";
+        public static bool IsKeyEntered = false;  
+
 
         MySqlDataAdapter adapter;
         DataTable Full_data = new DataTable();
@@ -189,7 +191,7 @@ namespace PumpAtlas
         //Query that retrieves Data for the Map Tab
         private async void Big_query()
         {
-            
+
             string Companies = string.Join("','", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", FlowList.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", HeadList.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
@@ -200,7 +202,7 @@ namespace PumpAtlas
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
 
-            
+
             List<string> pumpSizes;
             string pumpSizeQuery = $@"
         SELECT DISTINCT Pump_Size 
@@ -233,7 +235,7 @@ namespace PumpAtlas
                     return sizes;
                 });
 
-              //Dynamic Columns
+                //Dynamic Columns
                 var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                            from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
                                            from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
@@ -252,7 +254,7 @@ namespace PumpAtlas
                  THEN Max_BHP 
                  END) AS '{item.Flow}\n{item.Company}\n{pumpSize}\n{item.Speed}'"));
 
-                
+
                 string Bigquery = $@"
             SELECT 
                 Head,
@@ -269,7 +271,7 @@ namespace PumpAtlas
                 Head
             ORDER BY Head;";
 
-                
+
                 DataTable fullData = await Task.Run(() =>
                 {
                     DataTable dataTable = new DataTable();
@@ -286,7 +288,7 @@ namespace PumpAtlas
 
                 gridControl1.DataSource = fullData;
                 gridView1.OptionsView.ShowGroupPanel = false;
-                gridView1.GroupPanelText = ""; 
+                gridView1.GroupPanelText = "";
                 gridView1.PopulateColumns();
                 gridView1.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
                 gridView1.BestFitColumns();
@@ -318,20 +320,21 @@ namespace PumpAtlas
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
 
-            try { 
+            try
+            {
 
-            var selectedCombinations = from companyItem in Company_rpvsothers.SelectedItems.Cast<DataRowView>()
-                                       from flowItem in Flow_rpvsothers.SelectedItems.Cast<DataRowView>()
-                                       select new
-                                       {
-                                           Company = companyItem["Company"].ToString(),
-                                           Flow = flowItem["Flow"].ToString()
-                                       };
+                var selectedCombinations = from companyItem in Company_rpvsothers.SelectedItems.Cast<DataRowView>()
+                                           from flowItem in Flow_rpvsothers.SelectedItems.Cast<DataRowView>()
+                                           select new
+                                           {
+                                               Company = companyItem["Company"].ToString(),
+                                               Flow = flowItem["Flow"].ToString()
+                                           };
 
-            string caseStatements = string.Join(",\n", selectedCombinations
-                .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN Max_BHP END) AS '{item.Company}\n{item.Flow}\n'"));
+                string caseStatements = string.Join(",\n", selectedCombinations
+                    .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN Max_BHP END) AS '{item.Company}\n{item.Flow}\n'"));
 
-            string Bigquery = $@"
+                string Bigquery = $@"
             SELECT 
             Head,
             GROUP_CONCAT(CONCAT(Company, '\n', Flow) ORDER BY Company, Flow SEPARATOR '\n') AS CompanyFlow,
@@ -347,34 +350,34 @@ namespace PumpAtlas
             ORDER BY 
             Head;";
 
-            DataTable fullData2 = await Task.Run(() =>
-            {
-                DataTable dataTable2 = new DataTable();
-                using (var connection = new MySqlConnection(db_conn))
+                DataTable fullData2 = await Task.Run(() =>
                 {
-                    connection.Open();
-                    using (var adapter = new MySqlDataAdapter(Bigquery, connection))
+                    DataTable dataTable2 = new DataTable();
+                    using (var connection = new MySqlConnection(db_conn))
                     {
-                        adapter.Fill(dataTable2);
+                        connection.Open();
+                        using (var adapter = new MySqlDataAdapter(Bigquery, connection))
+                        {
+                            adapter.Fill(dataTable2);
+                        }
                     }
-                }
-                return dataTable2;
-            });
+                    return dataTable2;
+                });
 
-            gridControl2.DataSource = fullData2;
-            gridView2.OptionsView.ShowGroupPanel = false;
-            gridView2.GroupPanelText = "";
-            gridView2.PopulateColumns();
-            gridView2.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
-            gridView2.BestFitColumns();
-            gridView2.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            gridView2.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+                gridControl2.DataSource = fullData2;
+                gridView2.OptionsView.ShowGroupPanel = false;
+                gridView2.GroupPanelText = "";
+                gridView2.PopulateColumns();
+                gridView2.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+                gridView2.BestFitColumns();
+                gridView2.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+                gridView2.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
 
-            GridColumn zeroColumn = gridView2.Columns[0];
-            zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+                GridColumn zeroColumn = gridView2.Columns[0];
+                zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
-            GridColumn firstColumn = gridView2.Columns[1];
-            firstColumn.Visible = false;
+                GridColumn firstColumn = gridView2.Columns[1];
+                firstColumn.Visible = false;
 
             }
             catch (Exception ex)
@@ -394,19 +397,20 @@ namespace PumpAtlas
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
 
-            try { 
-            var selectedCombinations = from companyItem in Company_rpvsmkt.SelectedItems.Cast<DataRowView>()
-                                       from flowItem in Flow_rpvsmkt.SelectedItems.Cast<DataRowView>()
-                                       select new
-                                       {
-                                           Company = companyItem["Company"].ToString(),
-                                           Flow = flowItem["Flow"].ToString()
-                                       };
+            try
+            {
+                var selectedCombinations = from companyItem in Company_rpvsmkt.SelectedItems.Cast<DataRowView>()
+                                           from flowItem in Flow_rpvsmkt.SelectedItems.Cast<DataRowView>()
+                                           select new
+                                           {
+                                               Company = companyItem["Company"].ToString(),
+                                               Flow = flowItem["Flow"].ToString()
+                                           };
 
-            string caseStatements = string.Join(",\n", selectedCombinations
-                    .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN Max_BHP END) AS '{item.Flow}'"));
+                string caseStatements = string.Join(",\n", selectedCombinations
+                        .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN Max_BHP END) AS '{item.Flow}'"));
 
-            string Bigquery = $@"
+                string Bigquery = $@"
             SELECT 
             Head,
             GROUP_CONCAT(CONCAT(Company, '\n', Flow) ORDER BY Company, Flow SEPARATOR '\n') AS CompanyFlow,
@@ -475,8 +479,9 @@ namespace PumpAtlas
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
 
-            try { 
-            string Bigquery = $@"SELECT
+            try
+            {
+                string Bigquery = $@"SELECT
                                 Company,
                                 Pump_Line,
                                 Head,
@@ -718,7 +723,7 @@ namespace PumpAtlas
             clear_visor();
         }
         //Async function that inserts a file to the Database
-        private async void select_file_to_insert_to_database()
+        public async void select_file_to_insert_to_database()
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -821,8 +826,23 @@ namespace PumpAtlas
         //Button that calls method to insert data in Database from Data management tab
         private void button7_Click(object sender, EventArgs e)
         {
-            select_file_to_insert_to_database();
+            if (!IsKeyEntered)  
+            {
+                Form2 form2 = new Form2(this);  
+                form2.ShowDialog();  
+
+                if (form2.Accessed)
+                {
+                    IsKeyEntered = true;  
+                    select_file_to_insert_to_database();  
+                }
+            }
+            else
+            {
+                select_file_to_insert_to_database();  
+            }
         }
+
 
         //refreshes all the selectors across the software
         private void refresh_db()

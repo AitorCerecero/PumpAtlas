@@ -65,6 +65,8 @@
             label3 = new Label();
             button6 = new Button();
             tabPage8 = new TabPage();
+            gridControl4 = new DevExpress.XtraGrid.GridControl();
+            gridView4 = new DevExpress.XtraGrid.Views.Grid.GridView();
             button13 = new Button();
             button14 = new Button();
             button17 = new Button();
@@ -137,8 +139,6 @@
             TestTab = new TabControl();
             sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
             sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
-            gridControl4 = new DevExpress.XtraGrid.GridControl();
-            gridView4 = new DevExpress.XtraGrid.Views.Grid.GridView();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             tabPage4.SuspendLayout();
@@ -149,6 +149,8 @@
             ((System.ComponentModel.ISupportInitialize)csv_view).BeginInit();
             tabPage7.SuspendLayout();
             tabPage8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)gridControl4).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridView4).BeginInit();
             tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridControl3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridView3).BeginInit();
@@ -159,8 +161,6 @@
             ((System.ComponentModel.ISupportInitialize)gridControl1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).BeginInit();
             TestTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)gridControl4).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)gridView4).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
@@ -398,7 +398,7 @@
             label8.AutoSize = true;
             label8.Location = new Point(212, 331);
             label8.Name = "label8";
-            label8.Size = new Size(1076, 45);
+            label8.Size = new Size(1072, 45);
             label8.TabIndex = 13;
             label8.Text = resources.GetString("label8.Text");
             // 
@@ -524,6 +524,20 @@
             tabPage8.Size = new Size(1461, 766);
             tabPage8.TabIndex = 4;
             tabPage8.Text = "All Data";
+            // 
+            // gridControl4
+            // 
+            gridControl4.Location = new Point(447, 16);
+            gridControl4.MainView = gridView4;
+            gridControl4.Name = "gridControl4";
+            gridControl4.Size = new Size(1005, 744);
+            gridControl4.TabIndex = 69;
+            gridControl4.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView4 });
+            // 
+            // gridView4
+            // 
+            gridView4.GridControl = gridControl4;
+            gridView4.Name = "gridView4";
             // 
             // button13
             // 
@@ -1251,20 +1265,6 @@
             // 
             sqlDataSource2.Name = "sqlDataSource2";
             // 
-            // gridControl4
-            // 
-            gridControl4.Location = new Point(447, 16);
-            gridControl4.MainView = gridView4;
-            gridControl4.Name = "gridControl4";
-            gridControl4.Size = new Size(1005, 744);
-            gridControl4.TabIndex = 69;
-            gridControl4.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView4 });
-            // 
-            // gridView4
-            // 
-            gridView4.GridControl = gridControl4;
-            gridView4.Name = "gridView4";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -1294,6 +1294,8 @@
             tabPage7.PerformLayout();
             tabPage8.ResumeLayout(false);
             tabPage8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)gridControl4).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridView4).EndInit();
             tabPage3.ResumeLayout(false);
             tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)gridControl3).EndInit();
@@ -1307,8 +1309,6 @@
             ((System.ComponentModel.ISupportInitialize)gridControl1).EndInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).EndInit();
             TestTab.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)gridControl4).EndInit();
-            ((System.ComponentModel.ISupportInitialize)gridView4).EndInit();
             ResumeLayout(false);
         }
 
@@ -1334,13 +1334,11 @@
         private Button button4;
         private TabPage tabPage7;
         private Label label8;
-        private Button button8;
         private Label label7;
         private Label insert_state;
         private Label label6;
         private Label sel_insert_label;
         private Label label5;
-        private Button button7;
         private Label conn_db_state;
         private Label label4;
         private Label label3;
@@ -1420,5 +1418,7 @@
         private DevExpress.XtraGrid.Views.Grid.GridView gridView3;
         private DevExpress.XtraGrid.GridControl gridControl4;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView4;
+        public Button button7;
+        public Button button8;
     }
 }
