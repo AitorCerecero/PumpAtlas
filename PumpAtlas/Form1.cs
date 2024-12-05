@@ -1,5 +1,5 @@
-using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI.Relational;
+using System.Configuration;
+using Microsoft.Data.SqlClient;
 using Spire.Xls;
 using System.Data;
 using System.Text;
@@ -18,6 +18,7 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Columns;
 using System.Windows.Controls;
 using DevExpress.XtraExport.Helpers;
+using DevExpress.DirectX.Common.Direct2D;
 
 namespace PumpAtlas
 
@@ -26,11 +27,13 @@ namespace PumpAtlas
     {
 
         //Database connection information String
-        string db_conn = "server=localhost;database=rp;uid=root;pwd=FireSystems25;";
+
+        string db_conn = ConfigurationManager.ConnectionStrings["FireSystemsConnect"].ConnectionString;
+
         public static bool IsKeyEntered = false;
 
 
-        MySqlDataAdapter adapter;
+        SqlDataAdapter adapter;
         DataTable Full_data = new DataTable();
         DataTable Full_data2 = new DataTable();
         DataTable Full_data3 = new DataTable();
@@ -46,21 +49,39 @@ namespace PumpAtlas
             InitializeComponent();
             this.Text = "Ruhrpumpen Pump Atlas";
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+            this.MaximizeBox = true;
+            TestTab.Width = this.ClientSize.Width;
+            TestTab.Height = this.ClientSize.Height;
         }
 
         //Function that runs the method to connect to Database when the app starts
         private void Form1_Load(object sender, EventArgs e)
         {
-            db_connect();
+            sql_connect();
         }
 
-        //Method that established a connection between program and a MySQL Database
+        //SQL Server connect test 
+        public void sql_connect()
+        {
+            try
+            {
+                SqlConnection cnn = new SqlConnection(db_conn);
+                conn_db_state.Text = "Connected Successfully to SQL Server Database";
+                fill_selectors();
+            }
+            catch (Exception)
+            {
+                conn_db_state.Text = "Something Went Wrong";
+            }
+        }
+
+
+        //Method that established a connection between program and a Sql Database
         public void db_connect()
         {
             try
             {
-                MySqlConnection cnn = new MySqlConnection(db_conn);
+                SqlConnection cnn = new SqlConnection(db_conn);
                 conn_db_state.Text = "Connected Successfully to Database";
                 fill_selectors();
             }
@@ -74,13 +95,13 @@ namespace PumpAtlas
         private void fill_selectors()
         {
 
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
+            using (SqlConnection connection = new SqlConnection(db_conn))
             {
                 connection.Open();
 
                 //Company Filler for all 4 Tabs of Data Processing
                 String query1 = ("SELECT Company FROM pumps GROUP BY Company");
-                adapter = new MySqlDataAdapter(query1, connection);
+                adapter = new SqlDataAdapter(query1, connection);
                 DataTable comp = new DataTable();
                 DataTable comp_rpvsothers = new DataTable();
                 DataTable comp_rpvsmkt = new DataTable();
@@ -108,7 +129,7 @@ namespace PumpAtlas
 
                 //Head Filler for all 4 Tabs of Data Processing
                 String query2 = ("SELECT Head FROM pumps GROUP BY Head ORDER BY Head");
-                adapter = new MySqlDataAdapter(query2, connection);
+                adapter = new SqlDataAdapter(query2, connection);
                 DataTable head = new DataTable();
                 DataTable head_rpvsothers = new DataTable();
                 DataTable head_rpvsmkt = new DataTable();
@@ -136,7 +157,7 @@ namespace PumpAtlas
 
                 //Flow Filler for all 4 Tabs of Data Processing
                 String query3 = ("SELECT Flow FROM pumps GROUP BY Flow ORDER BY Flow ASC");
-                adapter = new MySqlDataAdapter(query3, connection);
+                adapter = new SqlDataAdapter(query3, connection);
                 DataTable flow = new DataTable();
                 DataTable flow_rpvsothers = new DataTable();
                 DataTable flow_rpvsmkt = new DataTable();
@@ -164,7 +185,7 @@ namespace PumpAtlas
 
                 //Speed Filler for all 4 Tabs of Data Processing (Only used twice)
                 String query4 = ("SELECT Pump_Speed_in_RPM FROM pumps GROUP BY Pump_Speed_in_RPM ORDER BY Pump_Speed_in_RPM ASC");
-                adapter = new MySqlDataAdapter(query4, connection);
+                adapter = new SqlDataAdapter(query4, connection);
                 DataTable speed = new DataTable();
                 DataTable speed_all = new DataTable();
                 adapter.Fill(speed);
@@ -179,7 +200,7 @@ namespace PumpAtlas
 
                 //Pump Size Filler for all  Tabs of Data Processing (Only used Once in Map)
                 String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
-                adapter = new MySqlDataAdapter(query5, connection);
+                adapter = new SqlDataAdapter(query5, connection);
                 DataTable size_all = new DataTable();
                 adapter.Fill(size_all);
                 //All Data
@@ -218,9 +239,9 @@ namespace PumpAtlas
                 pumpSizes = await Task.Run(() =>
                 {
                     var sizes = new List<string>();
-                    using (var connection = new MySqlConnection(db_conn))
+                    using (var connection = new SqlConnection(db_conn))
                     {
-                        using (var command = new MySqlCommand(pumpSizeQuery, connection))
+                        using (var command = new SqlCommand(pumpSizeQuery, connection))
                         {
                             connection.Open();
                             using (var reader = command.ExecuteReader())
@@ -275,10 +296,10 @@ namespace PumpAtlas
                 DataTable fullData = await Task.Run(() =>
                 {
                     DataTable dataTable = new DataTable();
-                    using (var connection = new MySqlConnection(db_conn))
+                    using (var connection = new SqlConnection(db_conn))
                     {
                         connection.Open();
-                        using (var adapter = new MySqlDataAdapter(Bigquery, connection))
+                        using (var adapter = new SqlDataAdapter(Bigquery, connection))
                         {
                             adapter.Fill(dataTable);
                         }
@@ -353,10 +374,10 @@ namespace PumpAtlas
                 DataTable fullData2 = await Task.Run(() =>
                 {
                     DataTable dataTable2 = new DataTable();
-                    using (var connection = new MySqlConnection(db_conn))
+                    using (var connection = new SqlConnection(db_conn))
                     {
                         connection.Open();
-                        using (var adapter = new MySqlDataAdapter(Bigquery, connection))
+                        using (var adapter = new SqlDataAdapter(Bigquery, connection))
                         {
                             adapter.Fill(dataTable2);
                         }
@@ -429,10 +450,10 @@ namespace PumpAtlas
                 DataTable fullData3 = await Task.Run(() =>
                 {
                     DataTable dataTable3 = new DataTable();
-                    using (var connection = new MySqlConnection(db_conn))
+                    using (var connection = new SqlConnection(db_conn))
                     {
                         connection.Open();
-                        using (var adapter = new MySqlDataAdapter(Bigquery, connection))
+                        using (var adapter = new SqlDataAdapter(Bigquery, connection))
                         {
                             adapter.Fill(dataTable3);
                         }
@@ -473,39 +494,40 @@ namespace PumpAtlas
             string Sizes = string.Join("','", Size_all.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Size"].ToString()));
 
 
-            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
-            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
-            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
-            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
-            string SizesCondition = string.IsNullOrEmpty(Sizes) ? "TRUE" : $"Pump_Size IN ('{Sizes}')";
+            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ('{Companies}')";
+            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";  // Flows puede ser numérico, no necesitas comillas
+            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";  // Similar para Heads, también numérico
+            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";  // Speeds también es numérico
+            string SizesCondition = string.IsNullOrEmpty(Sizes) ? "1=1" : $"Pump_Size IN ('{Sizes}')";
 
             try
             {
-                string Bigquery = $@"SELECT
-                                Company,
-                                Pump_Line,
-                                Head,
-                                Flow,  
-                                Pump_Speed_in_RPM as 'Pump Speed', 
-                                Max_BHP,
-                                Pump_Model, 
-                                Line,
-                                Stages,
-                                Pump_Size
-                            FROM pumps                                
-                            WHERE {CompaniesCondition}
-                            AND {FlowsCondition}
-                            AND {HeadsCondition}
-                            AND {SpeedsCondition}
-                            AND {SizesCondition};";
+                string Bigquery = $@"
+        SELECT 
+            Company,
+            Pump_Line,
+            Head,
+            Flow,  
+            Pump_Speed_in_RPM as 'Pump Speed', 
+            BHP,
+            Model, 
+            Line,
+            Stages,
+            Pump_Size
+        FROM pumps
+        WHERE {CompaniesCondition}
+        AND {FlowsCondition}
+        AND {HeadsCondition}
+        AND {SpeedsCondition}
+        AND {SizesCondition};";
 
                 DataTable fullData4 = await Task.Run(() =>
                 {
                     DataTable dataTable4 = new DataTable();
-                    using (var connection = new MySqlConnection(db_conn))
+                    using (var connection = new SqlConnection(db_conn))
                     {
                         connection.Open();
-                        using (var adapter = new MySqlDataAdapter(Bigquery, connection))
+                        using (var adapter = new SqlDataAdapter(Bigquery, connection))
                         {
                             adapter.Fill(dataTable4);
                         }
@@ -529,15 +551,15 @@ namespace PumpAtlas
         }
 
         //Function that clears pivot table on Server side to allow new data go through and be optimized
-        private void clear_pivot()
+        private void transform_data()
         {
 
-            using (MySqlConnection connection = new MySqlConnection(db_conn))
+            using (SqlConnection connection = new SqlConnection(db_conn))
             {
                 connection.Open();
-                String delete_statement = "TRUNCATE TABLE pumps_receiver";
-                MySqlCommand cmd = new MySqlCommand(delete_statement, connection);
-                MySqlDataReader runenr = cmd.ExecuteReader();
+                String delete_statement = "EXEC UpdateData";
+                SqlCommand cmd = new SqlCommand(delete_statement, connection);
+                SqlDataReader runenr = cmd.ExecuteReader();
             }
         }
         //method that clears listboxes in map tab
@@ -740,76 +762,95 @@ namespace PumpAtlas
 
                     try
                     {
-                        using (var reader = new StreamReader(filePath))
-                        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                        using (var dr = new CsvDataReader(csv))
+                        insert_state.Text = "Performing Insertion, Hold on while we Insert the Data";
+
+                        await Task.Run(async () =>
                         {
-                            insert_state.Text = "Performing Insertion, Hold on while we Insert the Data";
-
-                            await Task.Run(async () =>
+                            try
                             {
-                                try
+                                
+                                using (var connection = new SqlConnection(db_conn))
                                 {
-                                    using (var connection = new MySqlConnection(db_conn))
+                                    connection.Open();
+
+                                    DataTable dt = new DataTable();
+                                    dt.Columns.Add("Company", typeof(string));
+                                    dt.Columns.Add("Pump_Line", typeof(string));
+                                    dt.Columns.Add("Flow", typeof(int));
+                                    dt.Columns.Add("Head", typeof(int));
+                                    dt.Columns.Add("Pump_Speed_in_RPM", typeof(int));
+                                    dt.Columns.Add("Max_BHP", typeof(int));
+                                    dt.Columns.Add("Pump_Model", typeof(string));
+                                    dt.Columns.Add("Line", typeof(string));
+                                    dt.Columns.Add("Stages", typeof(int));
+                                    dt.Columns.Add("Pump_Size", typeof(string));
+
+                                    var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
                                     {
-                                        connection.Open();
+                                        HasHeaderRecord = false
+                                    };
 
-                                        using (var reader = new StreamReader(filePath))
+                                    using (var reader = new StreamReader(filePath))
+                                    using (var csv = new CsvReader(reader, csvConfig))
+                                    {
+
+                                        csv.Read();
+
+
+                                        while (await csv.ReadAsync())
                                         {
-                                            string headerLine = reader.ReadLine();
+                                            DataRow row = dt.NewRow();
 
-                                            while (!reader.EndOfStream)
-                                            {
-                                                string dataLine = reader.ReadLine();
-                                                string[] values = dataLine.Split(',');
+                                            row["Company"] = csv.GetField(0);
+                                            row["Pump_Line"] = csv.GetField(1);
+                                            row["Flow"] = csv.GetField<int>(2);
+                                            row["Head"] = csv.GetField<int>(3);
+                                            row["Pump_Speed_in_RPM"] = csv.GetField<int>(4);
+                                            row["Max_BHP"] = csv.GetField<int>(5);
+                                            row["Pump_Model"] = csv.GetField(6);
+                                            row["Line"] = csv.GetField(7);
+                                            row["Stages"] = csv.GetField<int>(8);
+                                            row["Pump_Size"] = csv.GetField(9);
 
-                                                for (int i = 0; i < values.Length; i++)
-                                                {
-                                                    values[i] = "'" + values[i].Replace("'", "''") + "'";
-                                                }
-
-                                                string valueString = $"({string.Join(",", values)})";
-
-                                                string insertQuery = $"INSERT INTO pumps_receiver (Company,Pump_Line, Flow, Head, Pump_Speed_in_RPM,Max_BHP,Pump_Model,Line,Stages,Pump_Size) VALUES {valueString}";
-
-                                                using (var cmd = new MySqlCommand(insertQuery, connection))
-                                                {
-                                                    cmd.ExecuteNonQuery();
-                                                }
-                                            }
+                                            dt.Rows.Add(row);
                                         }
                                     }
 
+                                    using (var bulkCopy = new SqlBulkCopy(connection))
+                                    {
+                                        bulkCopy.DestinationTableName = "pumps";
+                                        await bulkCopy.WriteToServerAsync(dt);
+                                    }
 
                                     this.Invoke(new Action(() =>
                                     {
                                         insert_state.Text = "Data inserted successfully";
+                                        transform_data();
+                                        refresh_db();
                                         fill_selectors();
-                                        clear_pivot();
+                                        
                                     }));
-
                                     await Task.Delay(6000);
                                     this.Invoke(new Action(() =>
                                     {
-                                        sel_insert_label.Text = string.Empty;
                                         insert_state.Text = string.Empty;
                                     }));
                                 }
-                                catch (Exception ex)
+                            }
+                            catch (Exception ex)
+                            {
+                                this.Invoke(new Action(() =>
                                 {
-                                    this.Invoke(new Action(() =>
-                                    {
-                                        insert_state.Text = $"An error occurred: {ex.Message}";
-                                    }));
+                                    insert_state.Text = $"An error occurred: {ex.Message}";
+                                }));
 
-                                    await Task.Delay(6000);
-                                    this.Invoke(new Action(() =>
-                                    {
-                                        insert_state.Text = string.Empty;
-                                    }));
-                                }
-                            });
-                        }
+                                await Task.Delay(6000);
+                                this.Invoke(new Action(() =>
+                                {
+                                    insert_state.Text = string.Empty;
+                                }));
+                            }
+                        });
                     }
                     catch (Exception ex)
                     {
@@ -822,6 +863,8 @@ namespace PumpAtlas
                 }
             }
         }
+
+
 
         //Button that calls method to insert data in Database from Data management tab
         private void button7_Click(object sender, EventArgs e)
@@ -842,7 +885,6 @@ namespace PumpAtlas
                 select_file_to_insert_to_database();
             }
         }
-
 
         //refreshes all the selectors across the software
         private void refresh_db()

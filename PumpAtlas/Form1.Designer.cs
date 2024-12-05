@@ -30,8 +30,8 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
             tabPage4 = new TabPage();
@@ -142,6 +142,7 @@
             label9 = new Label();
             sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
             sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
+            panel1 = new Panel();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             tabPage4.SuspendLayout();
@@ -166,12 +167,13 @@
             TestTab.SuspendLayout();
             tabPage9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(1308, 3);
+            pictureBox1.Location = new Point(1355, 0);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(125, 56);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -181,9 +183,9 @@
             // pictureBox3
             // 
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(606, 1);
+            pictureBox3.Location = new Point(590, 0);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(368, 58);
+            pictureBox3.Size = new Size(348, 53);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 3;
             pictureBox3.TabStop = false;
@@ -196,7 +198,7 @@
             tabPage4.Location = new Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new Padding(3);
-            tabPage4.Size = new Size(1461, 766);
+            tabPage4.Size = new Size(1484, 832);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Data Management";
             // 
@@ -218,7 +220,7 @@
             tabControl1.Location = new Point(6, 109);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1446, 651);
+            tabControl1.Size = new Size(1470, 717);
             tabControl1.TabIndex = 0;
             // 
             // tabPage5
@@ -234,7 +236,7 @@
             tabPage5.Location = new Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new Padding(3);
-            tabPage5.Size = new Size(1438, 623);
+            tabPage5.Size = new Size(1462, 689);
             tabPage5.TabIndex = 0;
             tabPage5.Text = "File Conversor";
             // 
@@ -310,7 +312,7 @@
             tabPage6.Location = new Point(4, 24);
             tabPage6.Name = "tabPage6";
             tabPage6.Padding = new Padding(3);
-            tabPage6.Size = new Size(1438, 623);
+            tabPage6.Size = new Size(1462, 689);
             tabPage6.TabIndex = 1;
             tabPage6.Text = "File Viewer";
             tabPage6.UseVisualStyleBackColor = true;
@@ -334,26 +336,26 @@
             // 
             // csv_view
             // 
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            csv_view.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            csv_view.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             csv_view.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Window;
-            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
-            csv_view.DefaultCellStyle = dataGridViewCellStyle4;
-            csv_view.Location = new Point(290, 19);
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            csv_view.DefaultCellStyle = dataGridViewCellStyle2;
+            csv_view.Location = new Point(275, 6);
             csv_view.Name = "csv_view";
-            csv_view.Size = new Size(1137, 609);
+            csv_view.Size = new Size(1181, 677);
             csv_view.TabIndex = 2;
             // 
             // button5
@@ -393,7 +395,7 @@
             tabPage7.Location = new Point(4, 24);
             tabPage7.Name = "tabPage7";
             tabPage7.Padding = new Padding(3);
-            tabPage7.Size = new Size(1438, 623);
+            tabPage7.Size = new Size(1462, 689);
             tabPage7.TabIndex = 2;
             tabPage7.Text = "Data Insertion";
             tabPage7.UseVisualStyleBackColor = true;
@@ -429,7 +431,7 @@
             // insert_state
             // 
             insert_state.AutoSize = true;
-            insert_state.Location = new Point(678, 287);
+            insert_state.Location = new Point(111, 295);
             insert_state.Name = "insert_state";
             insert_state.Size = new Size(0, 15);
             insert_state.TabIndex = 9;
@@ -437,7 +439,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(597, 287);
+            label6.Location = new Point(30, 295);
             label6.Name = "label6";
             label6.Size = new Size(88, 15);
             label6.TabIndex = 8;
@@ -526,7 +528,7 @@
             tabPage8.Location = new Point(4, 24);
             tabPage8.Name = "tabPage8";
             tabPage8.Padding = new Padding(3);
-            tabPage8.Size = new Size(1461, 766);
+            tabPage8.Size = new Size(1484, 832);
             tabPage8.TabIndex = 4;
             tabPage8.Text = "All Data";
             // 
@@ -535,7 +537,7 @@
             gridControl4.Location = new Point(447, 16);
             gridControl4.MainView = gridView4;
             gridControl4.Name = "gridControl4";
-            gridControl4.Size = new Size(1005, 744);
+            gridControl4.Size = new Size(1031, 810);
             gridControl4.TabIndex = 69;
             gridControl4.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView4 });
             // 
@@ -690,7 +692,7 @@
             tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(1461, 766);
+            tabPage3.Size = new Size(1484, 832);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "RP vs Market";
             tabPage3.UseVisualStyleBackColor = true;
@@ -700,7 +702,7 @@
             gridControl3.Location = new Point(414, 15);
             gridControl3.MainView = gridView3;
             gridControl3.Name = "gridControl3";
-            gridControl3.Size = new Size(1028, 740);
+            gridControl3.Size = new Size(1062, 811);
             gridControl3.TabIndex = 56;
             gridControl3.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView3 });
             // 
@@ -875,7 +877,7 @@
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1461, 766);
+            tabPage2.Size = new Size(1484, 832);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "RP vs Others";
             tabPage2.UseVisualStyleBackColor = true;
@@ -885,7 +887,7 @@
             gridControl2.Location = new Point(412, 15);
             gridControl2.MainView = gridView2;
             gridControl2.Name = "gridControl2";
-            gridControl2.Size = new Size(1040, 745);
+            gridControl2.Size = new Size(1066, 811);
             gridControl2.TabIndex = 39;
             gridControl2.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView2 });
             // 
@@ -1063,7 +1065,7 @@
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1461, 766);
+            tabPage1.Size = new Size(1484, 832);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Map";
             // 
@@ -1072,7 +1074,7 @@
             gridControl1.Location = new Point(429, 7);
             gridControl1.MainView = gridView1;
             gridControl1.Name = "gridControl1";
-            gridControl1.Size = new Size(1023, 754);
+            gridControl1.Size = new Size(1047, 820);
             gridControl1.TabIndex = 61;
             gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView1 });
             // 
@@ -1257,10 +1259,10 @@
             TestTab.Controls.Add(tabPage8);
             TestTab.Controls.Add(tabPage4);
             TestTab.Controls.Add(tabPage9);
-            TestTab.Location = new Point(12, 41);
+            TestTab.Location = new Point(12, 65);
             TestTab.Name = "TestTab";
             TestTab.SelectedIndex = 0;
-            TestTab.Size = new Size(1469, 794);
+            TestTab.Size = new Size(1492, 860);
             TestTab.TabIndex = 1;
             // 
             // tabPage9
@@ -1270,7 +1272,7 @@
             tabPage9.Controls.Add(label9);
             tabPage9.Location = new Point(4, 24);
             tabPage9.Name = "tabPage9";
-            tabPage9.Size = new Size(1461, 766);
+            tabPage9.Size = new Size(1496, 900);
             tabPage9.TabIndex = 5;
             tabPage9.Text = "About App";
             // 
@@ -1301,15 +1303,23 @@
             // 
             sqlDataSource2.Name = "sqlDataSource2";
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(pictureBox1);
+            panel1.Controls.Add(pictureBox3);
+            panel1.Location = new Point(2, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1502, 56);
+            panel1.TabIndex = 2;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
             AutoSize = true;
             BackColor = Color.White;
-            ClientSize = new Size(1480, 838);
-            Controls.Add(pictureBox3);
-            Controls.Add(pictureBox1);
+            ClientSize = new Size(1504, 928);
+            Controls.Add(panel1);
             Controls.Add(TestTab);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
@@ -1348,6 +1358,7 @@
             tabPage9.ResumeLayout(false);
             tabPage9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -1462,5 +1473,6 @@
         private TabPage tabPage9;
         private Label label9;
         private PictureBox pictureBox4;
+        private Panel panel1;
     }
 }
