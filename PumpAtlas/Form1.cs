@@ -213,26 +213,25 @@ namespace PumpAtlas
         private async void Big_query()
         {
 
-            string Companies = string.Join("','", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
-            string Flows = string.Join("','", FlowList.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
-            string Heads = string.Join("','", HeadList.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
-            string Speeds = string.Join("','", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Speed_in_RPM"].ToString()));
+            string Companies = string.Join(",", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
+            string Flows = string.Join(",", FlowList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
+            string Heads = string.Join(",", HeadList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
+            string Speeds = string.Join(",", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Speed_in_RPM"].ToString()}'"));
 
-            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
-            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
-            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
-            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "TRUE" : $"Pump_Speed_in_RPM IN ('{Speeds}')";
-
+            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
+            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
+            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
+            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";
 
             List<string> pumpSizes;
             string pumpSizeQuery = $@"
-        SELECT DISTINCT Pump_Size 
-        FROM pumps 
-        WHERE 
-            {CompaniesCondition} 
-            AND {FlowsCondition} 
-            AND {SpeedsCondition} 
-            AND {HeadsCondition}";
+    SELECT DISTINCT Pump_Size 
+    FROM pumps 
+    WHERE 
+        {CompaniesCondition} 
+        AND {FlowsCondition} 
+        AND {SpeedsCondition} 
+        AND {HeadsCondition}";
 
             try
             {
@@ -267,30 +266,43 @@ namespace PumpAtlas
                                                Speed = speedItem["Pump_Speed_in_RPM"].ToString(),
                                            };
 
-                string caseStatements = string.Join(",\n", selectedCombinations
+                string caseStatements = string.Join(",", selectedCombinations
                     .SelectMany(item => pumpSizes, (item, pumpSize) =>
                         $@"MIN(CASE WHEN Company = '{item.Company}' 
-                 AND Flow = '{item.Flow}' 
-                 AND Pump_Speed_in_RPM = '{item.Speed}' 
-                 THEN Max_BHP 
-                 END) AS '{item.Flow}\n{item.Company}\n{pumpSize}\n{item.Speed}'"));
+                    AND Flow = '{item.Flow}' 
+                    AND Pump_Speed_in_RPM = '{item.Speed}' 
+                    THEN BHP 
+                    END) AS [" +
+                        item.Company + ((char)13).ToString() + ((char)10).ToString() +
+                        pumpSize + ((char)13).ToString() + ((char)10).ToString() +
+                        item.Flow + ((char)13).ToString() + ((char)10).ToString() +
+                        item.Speed + "]"));
 
-
+                // Reemplazo de GROUP_CONCAT con STRING_AGG para SQL Server
                 string Bigquery = $@"
-            SELECT 
-                Head,
-                GROUP_CONCAT(CONCAT(Company, '\n', Flow, '\n', Pump_Speed_in_RPM, '\n', Pump_Size) 
-                    ORDER BY Company, Flow, Pump_Speed_in_RPM, Pump_Size SEPARATOR '\n') AS CompanyFlow,
-                {caseStatements} 
-            FROM pumps
+    SELECT 
+        Head,
+        STUFF((
+            SELECT '\n' + CONCAT(Company, '\n', Flow, '\n', Pump_Speed_in_RPM, '\n', Pump_Size)
+            FROM pumps AS p
             WHERE 
-                {CompaniesCondition} 
+                p.Head = p1.Head
+                AND {CompaniesCondition}
                 AND {FlowsCondition}
                 AND {HeadsCondition}
                 AND {SpeedsCondition}
-            GROUP BY 
-                Head
-            ORDER BY Head;";
+            FOR XML PATH('')
+        ), 1, 1, '') AS CompanyFlow,
+        {caseStatements}
+    FROM pumps AS p1
+    WHERE 
+        {CompaniesCondition}
+        AND {FlowsCondition}
+        AND {HeadsCondition}
+        AND {SpeedsCondition}
+    GROUP BY 
+        Head
+    ORDER BY Head";
 
 
                 DataTable fullData = await Task.Run(() =>
@@ -312,6 +324,7 @@ namespace PumpAtlas
                 gridView1.GroupPanelText = "";
                 gridView1.PopulateColumns();
                 gridView1.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+                gridView1.OptionsView.ColumnAutoWidth = false;
                 gridView1.BestFitColumns();
                 gridView1.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
                 gridView1.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
@@ -330,6 +343,7 @@ namespace PumpAtlas
         }
 
 
+
         //Query that retrieves Data for the RP vs Others Tab
         private async void big_query2()
         {
@@ -337,9 +351,9 @@ namespace PumpAtlas
             string Flows = string.Join("','", Flow_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", Head_rpvsothers.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
 
-            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
-            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
-            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
+            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ('{Companies}')";
+            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ('{Flows}')";
+            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ('{Heads}')";
 
             try
             {
@@ -352,24 +366,36 @@ namespace PumpAtlas
                                                Flow = flowItem["Flow"].ToString()
                                            };
 
-                string caseStatements = string.Join(",\n", selectedCombinations
-                    .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN Max_BHP END) AS '{item.Company}\n{item.Flow}\n'"));
+                string caseStatements = string.Join(",", selectedCombinations
+               .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN BHP END) AS ["+
+                item.Company +((char)13).ToString() + ((char)10).ToString() +item.Flow+"]"));
 
                 string Bigquery = $@"
-            SELECT 
+        SELECT 
             Head,
-            GROUP_CONCAT(CONCAT(Company, '\n', Flow) ORDER BY Company, Flow SEPARATOR '\n') AS CompanyFlow,
+            STUFF((
+                SELECT CHAR(10) + CONCAT(Company, CHAR(10), Flow)
+                FROM pumps p2
+                WHERE p2.Head = p.Head
+                AND {CompaniesCondition}
+                AND {FlowsCondition}
+                AND {HeadsCondition}
+                ORDER BY Company, Flow
+                FOR XML PATH('')
+            ), 1, 1, '') AS CompanyFlow,
             {caseStatements}
-            FROM 
-            pumps
-            WHERE 
+        FROM 
+            pumps p
+        WHERE 
             {CompaniesCondition}
             AND {FlowsCondition}
             AND {HeadsCondition}
-            GROUP BY 
+        GROUP BY 
             Head
-            ORDER BY 
-            Head;";
+        ORDER BY 
+            Head";
+
+
 
                 DataTable fullData2 = await Task.Run(() =>
                 {
@@ -414,9 +440,10 @@ namespace PumpAtlas
             string Flows = string.Join("','", Flow_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", Head_rpvsmkt.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
 
-            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "TRUE" : $"Company IN ('{Companies}')";
-            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "TRUE" : $"Flow IN ('{Flows}')";
-            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "TRUE" : $"Head IN ('{Heads}')";
+
+            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ('{Companies}')";
+            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ('{Flows}')";
+            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ('{Heads}')";
 
             try
             {
@@ -429,23 +456,32 @@ namespace PumpAtlas
                                            };
 
                 string caseStatements = string.Join(",\n", selectedCombinations
-                        .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN Max_BHP END) AS '{item.Flow}'"));
+                    .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN BHP END) AS [{item.Flow} - {item.Company}]"));
 
                 string Bigquery = $@"
-            SELECT 
-            Head,
-            GROUP_CONCAT(CONCAT(Company, '\n', Flow) ORDER BY Company, Flow SEPARATOR '\n') AS CompanyFlow,
-            {caseStatements}
-            FROM 
-            pumps
-            WHERE 
-            {CompaniesCondition}
+    SELECT 
+        Head,
+        STUFF((
+            SELECT CHAR(13) + CHAR(10) + CONCAT(Company, CHAR(13) + CHAR(10), Flow)
+            FROM pumps p2
+            WHERE p2.Head = p.Head
+            AND {CompaniesCondition}
             AND {FlowsCondition}
             AND {HeadsCondition}
-            GROUP BY 
-            Head
-            ORDER BY 
-            Head;";
+            ORDER BY Company, Flow
+            FOR XML PATH('')
+        ), 1, 1, '') AS CompanyFlow,
+        {caseStatements}
+    FROM 
+        pumps p
+    WHERE 
+        {CompaniesCondition}
+        AND {FlowsCondition}
+        AND {HeadsCondition}
+    GROUP BY 
+        Head
+    ORDER BY 
+        Head";
 
                 DataTable fullData3 = await Task.Run(() =>
                 {
@@ -863,8 +899,6 @@ namespace PumpAtlas
                 }
             }
         }
-
-
 
         //Button that calls method to insert data in Database from Data management tab
         private void button7_Click(object sender, EventArgs e)
