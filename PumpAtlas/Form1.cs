@@ -18,10 +18,10 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Columns;
 using System.Windows.Controls;
 using DevExpress.XtraExport.Helpers;
+using DevExpress.XtraEditors;
 using DevExpress.DirectX.Common.Direct2D;
 
 namespace PumpAtlas
-
 {
     public partial class Form1 : Form
     {
@@ -29,13 +29,10 @@ namespace PumpAtlas
 
         //Integrity not compromised, saved repository successfully
 
-         
         //Database connection information String
-        string db_conn = "Server=DC1FP1;Database=FireSystemsDB;User Id=REDNA\\acerecero;Password=FocusRS2010;Encrypt=False;";
-
+        string db_conn = "Server=DC1FP1;Database=FireSystemsDB;Integrated Security=True;TrustServerCertificate=True;User Id=REDNA\\acerecero;Password=FocusRS2010;";
 
         public static bool IsKeyEntered = false;
-
 
         SqlDataAdapter adapter;
         DataTable Full_data = new DataTable();
@@ -54,8 +51,6 @@ namespace PumpAtlas
             this.Text = "Ruhrpumpen Pump Atlas";
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = true;
-            TestTab.Width = this.ClientSize.Width;
-            TestTab.Height = this.ClientSize.Height;
         }
 
         //Function that runs the method to connect to Database when the app starts
@@ -71,32 +66,20 @@ namespace PumpAtlas
             {
                 using (SqlConnection cnn = new SqlConnection(db_conn))
                 {
-                    cnn.Open(); // Asegúrate de abrir la conexión
+                    cnn.Open();
                     conn_db_state.Text = "Connected Successfully to SQL Server Database";
                     fill_selectors();
                 }
             }
             catch (SqlException ex)
             {
-                // Captura errores específicos de SQL Server
-                conn_db_state.Text = "SQL Server Error: " + ex.Message;
-
-                // Opcional: Registrar el error completo en el log o consola
-                Console.WriteLine($"SQL Exception: {ex.Message}\nStack Trace: {ex.StackTrace}");
+                conn_db_state.Text = "SQL Server Error: " + ex.Message + " " + ex.StackTrace;
             }
             catch (Exception ex)
             {
-                // Captura otros errores generales
                 conn_db_state.Text = "Connection Failed: " + ex.Message;
+            }
 
-                // Opcional: Registrar el error completo en el log o consola
-                Console.WriteLine($"General Exception: {ex.Message}\nStack Trace: {ex.StackTrace}");
-            }
-            finally
-            {
-                // Acción opcional en caso de éxito o fallo (e.g., limpiar recursos)
-                Console.WriteLine("Attempted to connect to the database.");
-            }
         }
 
 
@@ -211,7 +194,13 @@ namespace PumpAtlas
                 String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
                 adapter = new SqlDataAdapter(query5, connection);
                 DataTable size_all = new DataTable();
+                DataTable size_map= new DataTable();
                 adapter.Fill(size_all);
+                adapter.Fill(size_map);
+                //Map   
+                SizeMap.DataSource = null;
+                SizeMap.DataSource = new BindingSource(size_map, null);
+                SizeMap.DisplayMember = "Pump_Size";
                 //All Data
                 Size_all.DataSource = null;
                 Size_all.DataSource = new BindingSource(size_all, null);
@@ -226,11 +215,13 @@ namespace PumpAtlas
             string Flows = string.Join(",", FlowList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
             string Heads = string.Join(",", HeadList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
             string Speeds = string.Join(",", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Speed_in_RPM"].ToString()}'"));
+            string Sizes = string.Join(",", SizeMap.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Size"].ToString()}'"));
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";
+            string SizesCondition = string.IsNullOrEmpty(Sizes) ? "1=1" : $"Pump_Size IN ({Sizes})";
 
             List<string> pumpSizes;
             string pumpSizeQuery = $@"
@@ -300,6 +291,7 @@ namespace PumpAtlas
                 AND {FlowsCondition}
                 AND {HeadsCondition}
                 AND {SpeedsCondition}
+                AND {SizesCondition}
             FOR XML PATH('')
         ), 1, 1, '') AS CompanyFlow,
         {caseStatements}
@@ -309,6 +301,7 @@ namespace PumpAtlas
         AND {FlowsCondition}
         AND {HeadsCondition}
         AND {SpeedsCondition}
+        AND {SizesCondition}
     GROUP BY 
         Head
     ORDER BY Head";
@@ -376,8 +369,8 @@ namespace PumpAtlas
                                            };
 
                 string caseStatements = string.Join(",", selectedCombinations
-               .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN BHP END) AS ["+
-                item.Company +((char)13).ToString() + ((char)10).ToString() +item.Flow+"]"));
+               .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN BHP END) AS [" +
+                item.Company + ((char)13).ToString() + ((char)10).ToString() + item.Flow + "]"));
 
                 string Bigquery = $@"
         SELECT 
@@ -726,9 +719,10 @@ namespace PumpAtlas
         }
 
         //Method that reads CSV data and places it on a Datagrid 
-        private void visor()
+        private async void visor()
         {
             string start = csv_label.Text;
+
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = "c:\\Downloads";
@@ -749,7 +743,8 @@ namespace PumpAtlas
                             {
                                 var dt = new DataTable();
                                 dt.Load(dr);
-                                csv_view.DataSource = dt;
+                                gridControl5.DataSource = dt;
+                                this.gridView5.OptionsView.ShowGroupPanel = false;
                                 string start_ok = "Now Viewing";
                                 viewer.Text = start_ok;
                                 csv_label.Text = start + Path.GetFileName(filePath);
@@ -771,9 +766,10 @@ namespace PumpAtlas
         //Clears the Datagrid and closes open CSV to be able to review a new one 
         public void clear_visor()
         {
-            csv_view.DataSource = null;
-            csv_view.Refresh();
-            csv_view.DataContext = null;
+            gridView5.Columns.Clear();
+            gridControl5.DataSource = null;
+            gridControl5.Refresh();
+            gridControl5.DataContext = null;
             csv_label.Text = String.Empty;
             string start_fail = "No File Selected";
             viewer.Text = start_fail;
@@ -813,7 +809,7 @@ namespace PumpAtlas
                         {
                             try
                             {
-                                
+
                                 using (var connection = new SqlConnection(db_conn))
                                 {
                                     connection.Open();
@@ -873,7 +869,7 @@ namespace PumpAtlas
                                         transform_data();
                                         refresh_db();
                                         fill_selectors();
-                                        
+
                                     }));
                                     await Task.Delay(6000);
                                     this.Invoke(new Action(() =>

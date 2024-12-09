@@ -30,14 +30,11 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
             tabPage4 = new TabPage();
-            pictureBox2 = new PictureBox();
-            tabControl1 = new TabControl();
-            tabPage5 = new TabPage();
+            xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
+            xtraTabPage1 = new DevExpress.XtraTab.XtraTabPage();
             conv_state = new Label();
             Excel_file_tag = new Label();
             sel_label = new Label();
@@ -45,13 +42,17 @@
             label1 = new Label();
             FileNameBox = new TextBox();
             button1 = new Button();
-            tabPage6 = new TabPage();
+            xtraTabPage2 = new DevExpress.XtraTab.XtraTabPage();
+            gridControl5 = new DevExpress.XtraGrid.GridControl();
+            gridView5 = new DevExpress.XtraGrid.Views.Grid.GridView();
             csv_label = new Label();
             viewer = new Label();
-            csv_view = new DataGridView();
             button5 = new Button();
             button4 = new Button();
-            tabPage7 = new TabPage();
+            xtraTabPage3 = new DevExpress.XtraTab.XtraTabPage();
+            xtraScrollableControl1 = new DevExpress.XtraEditors.XtraScrollableControl();
+            label4 = new Label();
+            conn_db_state = new Label();
             label8 = new Label();
             button8 = new Button();
             label7 = new Label();
@@ -60,10 +61,9 @@
             sel_insert_label = new Label();
             label5 = new Label();
             button7 = new Button();
-            conn_db_state = new Label();
-            label4 = new Label();
             label3 = new Label();
             button6 = new Button();
+            pictureBox2 = new PictureBox();
             tabPage8 = new TabPage();
             gridControl4 = new DevExpress.XtraGrid.GridControl();
             gridView4 = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -137,21 +137,37 @@
             HeadList = new ListBox();
             CompanyList = new ListBox();
             TestTab = new TabControl();
+            tabPage10 = new TabPage();
+            panel2 = new Panel();
+            label28 = new Label();
+            button19 = new Button();
+            textBox2 = new TextBox();
+            label24 = new Label();
+            textBox1 = new TextBox();
+            label20 = new Label();
+            label19 = new Label();
+            pictureBox5 = new PictureBox();
             tabPage9 = new TabPage();
             pictureBox4 = new PictureBox();
             label9 = new Label();
             sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
             sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
             panel1 = new Panel();
+            popupMenu1 = new DevExpress.XtraBars.PopupMenu(components);
+            label34 = new Label();
+            SizeMap = new ListBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)xtraTabControl1).BeginInit();
+            xtraTabControl1.SuspendLayout();
+            xtraTabPage1.SuspendLayout();
+            xtraTabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)gridControl5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridView5).BeginInit();
+            xtraTabPage3.SuspendLayout();
+            xtraScrollableControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            tabControl1.SuspendLayout();
-            tabPage5.SuspendLayout();
-            tabPage6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)csv_view).BeginInit();
-            tabPage7.SuspendLayout();
             tabPage8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridControl4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridView4).BeginInit();
@@ -165,15 +181,19 @@
             ((System.ComponentModel.ISupportInitialize)gridControl1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).BeginInit();
             TestTab.SuspendLayout();
+            tabPage10.SuspendLayout();
+            panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             tabPage9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)popupMenu1).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(1468, 0);
+            pictureBox1.Location = new Point(1650, 0);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(125, 56);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -183,7 +203,7 @@
             // pictureBox3
             // 
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(590, 0);
+            pictureBox3.Location = new Point(698, 3);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(348, 53);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
@@ -193,320 +213,302 @@
             // tabPage4
             // 
             tabPage4.BackColor = Color.White;
+            tabPage4.Controls.Add(xtraTabControl1);
             tabPage4.Controls.Add(pictureBox2);
-            tabPage4.Controls.Add(tabControl1);
             tabPage4.Location = new Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new Padding(3);
-            tabPage4.Size = new Size(1569, 832);
+            tabPage4.Size = new Size(1757, 801);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Data Management";
             // 
-            // pictureBox2
+            // xtraTabControl1
             // 
-            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(524, 6);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(465, 97);
-            pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
-            pictureBox2.TabIndex = 1;
-            pictureBox2.TabStop = false;
+            xtraTabControl1.Location = new Point(9, 107);
+            xtraTabControl1.Name = "xtraTabControl1";
+            xtraTabControl1.SelectedTabPage = xtraTabPage1;
+            xtraTabControl1.Size = new Size(1742, 719);
+            xtraTabControl1.TabIndex = 2;
+            xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] { xtraTabPage1, xtraTabPage2, xtraTabPage3 });
             // 
-            // tabControl1
+            // xtraTabPage1
             // 
-            tabControl1.Controls.Add(tabPage5);
-            tabControl1.Controls.Add(tabPage6);
-            tabControl1.Controls.Add(tabPage7);
-            tabControl1.Location = new Point(6, 109);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1557, 717);
-            tabControl1.TabIndex = 0;
-            // 
-            // tabPage5
-            // 
-            tabPage5.BackColor = Color.White;
-            tabPage5.Controls.Add(conv_state);
-            tabPage5.Controls.Add(Excel_file_tag);
-            tabPage5.Controls.Add(sel_label);
-            tabPage5.Controls.Add(button2);
-            tabPage5.Controls.Add(label1);
-            tabPage5.Controls.Add(FileNameBox);
-            tabPage5.Controls.Add(button1);
-            tabPage5.Location = new Point(4, 24);
-            tabPage5.Name = "tabPage5";
-            tabPage5.Padding = new Padding(3);
-            tabPage5.Size = new Size(1549, 689);
-            tabPage5.TabIndex = 0;
-            tabPage5.Text = "File Conversor";
+            xtraTabPage1.Controls.Add(conv_state);
+            xtraTabPage1.Controls.Add(Excel_file_tag);
+            xtraTabPage1.Controls.Add(sel_label);
+            xtraTabPage1.Controls.Add(button2);
+            xtraTabPage1.Controls.Add(label1);
+            xtraTabPage1.Controls.Add(FileNameBox);
+            xtraTabPage1.Controls.Add(button1);
+            xtraTabPage1.Name = "xtraTabPage1";
+            xtraTabPage1.Size = new Size(1740, 694);
+            xtraTabPage1.Text = "File Conversor";
             // 
             // conv_state
             // 
             conv_state.AutoSize = true;
-            conv_state.Location = new Point(685, 370);
+            conv_state.Location = new Point(774, 440);
             conv_state.Name = "conv_state";
-            conv_state.Size = new Size(108, 15);
-            conv_state.TabIndex = 6;
+            conv_state.Size = new Size(102, 13);
+            conv_state.TabIndex = 13;
             conv_state.Text = "Conversion Status: ";
             // 
             // Excel_file_tag
             // 
             Excel_file_tag.AutoSize = true;
-            Excel_file_tag.Location = new Point(784, 143);
+            Excel_file_tag.Location = new Point(873, 213);
             Excel_file_tag.Name = "Excel_file_tag";
-            Excel_file_tag.Size = new Size(0, 15);
-            Excel_file_tag.TabIndex = 5;
+            Excel_file_tag.Size = new Size(0, 13);
+            Excel_file_tag.TabIndex = 12;
             // 
             // sel_label
             // 
             sel_label.AutoSize = true;
-            sel_label.Location = new Point(703, 143);
+            sel_label.Location = new Point(792, 213);
             sel_label.Name = "sel_label";
-            sel_label.Size = new Size(75, 15);
-            sel_label.TabIndex = 4;
+            sel_label.Size = new Size(71, 13);
+            sel_label.TabIndex = 11;
             sel_label.Text = "Selected File:";
             // 
             // button2
             // 
-            button2.Location = new Point(581, 268);
+            button2.Location = new Point(670, 338);
             button2.Name = "button2";
             button2.Size = new Size(328, 52);
-            button2.TabIndex = 3;
+            button2.TabIndex = 10;
             button2.Text = "Save Conversed File";
             button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(703, 182);
+            label1.Location = new Point(792, 252);
             label1.Name = "label1";
-            label1.Size = new Size(90, 15);
-            label1.TabIndex = 2;
+            label1.Size = new Size(80, 13);
+            label1.TabIndex = 9;
             label1.Text = "New File Name ";
             // 
             // FileNameBox
             // 
-            FileNameBox.Location = new Point(581, 216);
+            FileNameBox.Location = new Point(670, 286);
             FileNameBox.Name = "FileNameBox";
-            FileNameBox.Size = new Size(328, 23);
-            FileNameBox.TabIndex = 1;
+            FileNameBox.Size = new Size(328, 21);
+            FileNameBox.TabIndex = 8;
             // 
             // button1
             // 
-            button1.Location = new Point(581, 60);
+            button1.Location = new Point(670, 130);
             button1.Name = "button1";
             button1.Size = new Size(328, 64);
-            button1.TabIndex = 0;
+            button1.TabIndex = 7;
             button1.Text = "Select File\r\n";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
             // 
-            // tabPage6
+            // xtraTabPage2
             // 
-            tabPage6.Controls.Add(csv_label);
-            tabPage6.Controls.Add(viewer);
-            tabPage6.Controls.Add(csv_view);
-            tabPage6.Controls.Add(button5);
-            tabPage6.Controls.Add(button4);
-            tabPage6.Location = new Point(4, 24);
-            tabPage6.Name = "tabPage6";
-            tabPage6.Padding = new Padding(3);
-            tabPage6.Size = new Size(1549, 689);
-            tabPage6.TabIndex = 1;
-            tabPage6.Text = "File Viewer";
-            tabPage6.UseVisualStyleBackColor = true;
+            xtraTabPage2.Controls.Add(gridControl5);
+            xtraTabPage2.Controls.Add(csv_label);
+            xtraTabPage2.Controls.Add(viewer);
+            xtraTabPage2.Controls.Add(button5);
+            xtraTabPage2.Controls.Add(button4);
+            xtraTabPage2.Name = "xtraTabPage2";
+            xtraTabPage2.Size = new Size(1740, 694);
+            xtraTabPage2.Text = "File Viewer";
+            // 
+            // gridControl5
+            // 
+            gridControl5.Location = new Point(263, 22);
+            gridControl5.MainView = gridView5;
+            gridControl5.Name = "gridControl5";
+            gridControl5.Size = new Size(1474, 663);
+            gridControl5.TabIndex = 10;
+            gridControl5.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView5 });
+            // 
+            // gridView5
+            // 
+            gridView5.GridControl = gridControl5;
+            gridView5.GroupPanelText = "'''";
+            gridView5.Name = "gridView5";
+            gridView5.OptionsView.ShowGroupPanel = false;
             // 
             // csv_label
             // 
             csv_label.AutoSize = true;
-            csv_label.Location = new Point(15, 199);
+            csv_label.Location = new Point(3, 200);
             csv_label.Name = "csv_label";
-            csv_label.Size = new Size(0, 15);
-            csv_label.TabIndex = 4;
+            csv_label.Size = new Size(0, 13);
+            csv_label.TabIndex = 8;
             // 
             // viewer
             // 
             viewer.AutoSize = true;
-            viewer.Location = new Point(15, 174);
+            viewer.Location = new Point(3, 175);
             viewer.Name = "viewer";
-            viewer.Size = new Size(77, 15);
-            viewer.TabIndex = 3;
+            viewer.Size = new Size(67, 13);
+            viewer.TabIndex = 7;
             viewer.Text = "Now Viewing";
-            // 
-            // csv_view
-            // 
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            csv_view.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            csv_view.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            csv_view.DefaultCellStyle = dataGridViewCellStyle2;
-            csv_view.Location = new Point(275, 6);
-            csv_view.Name = "csv_view";
-            csv_view.Size = new Size(1268, 677);
-            csv_view.TabIndex = 2;
             // 
             // button5
             // 
-            button5.Location = new Point(15, 106);
+            button5.Location = new Point(15, 107);
             button5.Name = "button5";
-            button5.Size = new Size(254, 53);
-            button5.TabIndex = 1;
+            button5.Size = new Size(242, 53);
+            button5.TabIndex = 6;
             button5.Text = "Close CSV and Clear Visor";
             button5.UseVisualStyleBackColor = true;
             button5.Click += button5_Click;
             // 
             // button4
             // 
-            button4.Location = new Point(15, 21);
+            button4.Location = new Point(15, 22);
             button4.Name = "button4";
-            button4.Size = new Size(254, 53);
-            button4.TabIndex = 0;
+            button4.Size = new Size(242, 53);
+            button4.TabIndex = 5;
             button4.Text = "Open CSV";
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
             // 
-            // tabPage7
+            // xtraTabPage3
             // 
-            tabPage7.Controls.Add(label8);
-            tabPage7.Controls.Add(button8);
-            tabPage7.Controls.Add(label7);
-            tabPage7.Controls.Add(insert_state);
-            tabPage7.Controls.Add(label6);
-            tabPage7.Controls.Add(sel_insert_label);
-            tabPage7.Controls.Add(label5);
-            tabPage7.Controls.Add(button7);
-            tabPage7.Controls.Add(conn_db_state);
-            tabPage7.Controls.Add(label4);
-            tabPage7.Controls.Add(label3);
-            tabPage7.Controls.Add(button6);
-            tabPage7.Location = new Point(4, 24);
-            tabPage7.Name = "tabPage7";
-            tabPage7.Padding = new Padding(3);
-            tabPage7.Size = new Size(1549, 689);
-            tabPage7.TabIndex = 2;
-            tabPage7.Text = "Data Insertion";
-            tabPage7.UseVisualStyleBackColor = true;
+            xtraTabPage3.AutoScroll = true;
+            xtraTabPage3.Controls.Add(xtraScrollableControl1);
+            xtraTabPage3.Controls.Add(label8);
+            xtraTabPage3.Controls.Add(button8);
+            xtraTabPage3.Controls.Add(label7);
+            xtraTabPage3.Controls.Add(insert_state);
+            xtraTabPage3.Controls.Add(label6);
+            xtraTabPage3.Controls.Add(sel_insert_label);
+            xtraTabPage3.Controls.Add(label5);
+            xtraTabPage3.Controls.Add(button7);
+            xtraTabPage3.Controls.Add(label3);
+            xtraTabPage3.Controls.Add(button6);
+            xtraTabPage3.Name = "xtraTabPage3";
+            xtraTabPage3.Size = new Size(1740, 694);
+            xtraTabPage3.Text = "Data Insertion";
+            // 
+            // xtraScrollableControl1
+            // 
+            xtraScrollableControl1.Controls.Add(label4);
+            xtraScrollableControl1.Controls.Add(conn_db_state);
+            xtraScrollableControl1.Location = new Point(550, 178);
+            xtraScrollableControl1.Name = "xtraScrollableControl1";
+            xtraScrollableControl1.Size = new Size(494, 151);
+            xtraScrollableControl1.TabIndex = 26;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(0, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(97, 13);
+            label4.TabIndex = 16;
+            label4.Text = "Connection State: ";
+            // 
+            // conn_db_state
+            // 
+            conn_db_state.AutoSize = true;
+            conn_db_state.Location = new Point(97, 0);
+            conn_db_state.Name = "conn_db_state";
+            conn_db_state.Size = new Size(0, 13);
+            conn_db_state.TabIndex = 17;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(212, 331);
+            label8.Location = new Point(325, 534);
             label8.Name = "label8";
-            label8.Size = new Size(1072, 45);
-            label8.TabIndex = 13;
+            label8.Size = new Size(979, 39);
+            label8.TabIndex = 25;
             label8.Text = resources.GetString("label8.Text");
             // 
             // button8
             // 
-            button8.Location = new Point(597, 379);
+            button8.Location = new Point(667, 576);
             button8.Name = "button8";
             button8.Size = new Size(250, 43);
-            button8.TabIndex = 12;
+            button8.TabIndex = 24;
             button8.Text = "Refresh Database";
             button8.UseVisualStyleBackColor = true;
-            button8.Click += button8_Click_1;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(353, 147);
+            label7.Location = new Point(423, 346);
             label7.Name = "label7";
-            label7.Size = new Size(790, 30);
-            label7.TabIndex = 10;
+            label7.Size = new Size(732, 26);
+            label7.TabIndex = 23;
             label7.Text = "Note: Once selected the file, the process is Automated so it will be executed, make sure to review the file you are about to insert in the File Viewer Tab\r\n\r\n";
             // 
             // insert_state
             // 
             insert_state.AutoSize = true;
-            insert_state.Location = new Point(678, 289);
+            insert_state.Location = new Point(748, 488);
             insert_state.Name = "insert_state";
-            insert_state.Size = new Size(0, 15);
-            insert_state.TabIndex = 9;
+            insert_state.Size = new Size(0, 13);
+            insert_state.TabIndex = 22;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(597, 289);
+            label6.Location = new Point(667, 488);
             label6.Name = "label6";
-            label6.Size = new Size(88, 15);
-            label6.TabIndex = 8;
+            label6.Size = new Size(86, 13);
+            label6.TabIndex = 21;
             label6.Text = "Insertion State: ";
             // 
             // sel_insert_label
             // 
             sel_insert_label.AutoSize = true;
-            sel_insert_label.Location = new Point(675, 248);
+            sel_insert_label.Location = new Point(745, 447);
             sel_insert_label.Name = "sel_insert_label";
-            sel_insert_label.Size = new Size(0, 15);
-            sel_insert_label.TabIndex = 6;
+            sel_insert_label.Size = new Size(0, 13);
+            sel_insert_label.TabIndex = 20;
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(597, 248);
+            label5.Location = new Point(667, 447);
             label5.Name = "label5";
-            label5.Size = new Size(75, 15);
-            label5.TabIndex = 5;
+            label5.Size = new Size(71, 13);
+            label5.TabIndex = 19;
             label5.Text = "Selected File:";
             // 
             // button7
             // 
-            button7.Location = new Point(597, 191);
+            button7.Location = new Point(667, 390);
             button7.Name = "button7";
             button7.Size = new Size(250, 43);
-            button7.TabIndex = 4;
+            button7.TabIndex = 18;
             button7.Text = "Select File to Insert";
             button7.UseVisualStyleBackColor = true;
-            button7.Click += button7_Click;
-            // 
-            // conn_db_state
-            // 
-            conn_db_state.AutoSize = true;
-            conn_db_state.Location = new Point(707, 50);
-            conn_db_state.Name = "conn_db_state";
-            conn_db_state.Size = new Size(0, 15);
-            conn_db_state.TabIndex = 3;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(597, 50);
-            label4.Name = "label4";
-            label4.Size = new Size(104, 15);
-            label4.TabIndex = 2;
-            label4.Text = "Connection State: ";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(408, 23);
+            label3.Location = new Point(488, 73);
             label3.Name = "label3";
-            label3.Size = new Size(676, 15);
-            label3.TabIndex = 1;
+            label3.Size = new Size(631, 13);
+            label3.TabIndex = 15;
             label3.Text = "If not connected to database, click the next button. Otherwise leave the process as it is, the System will tell you the current state\r\n";
             // 
             // button6
             // 
-            button6.Location = new Point(597, 79);
+            button6.Location = new Point(677, 129);
             button6.Name = "button6";
             button6.Size = new Size(250, 43);
-            button6.TabIndex = 0;
+            button6.TabIndex = 14;
             button6.Text = "Connect to Database";
             button6.UseVisualStyleBackColor = true;
-            button6.Click += button6_Click;
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
+            pictureBox2.Location = new Point(638, 6);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(465, 97);
+            pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
+            pictureBox2.TabIndex = 1;
+            pictureBox2.TabStop = false;
             // 
             // tabPage8
             // 
@@ -528,7 +530,7 @@
             tabPage8.Location = new Point(4, 24);
             tabPage8.Name = "tabPage8";
             tabPage8.Padding = new Padding(3);
-            tabPage8.Size = new Size(1569, 832);
+            tabPage8.Size = new Size(1757, 801);
             tabPage8.TabIndex = 4;
             tabPage8.Text = "All Data";
             // 
@@ -537,7 +539,7 @@
             gridControl4.Location = new Point(447, 16);
             gridControl4.MainView = gridView4;
             gridControl4.Name = "gridControl4";
-            gridControl4.Size = new Size(1116, 810);
+            gridControl4.Size = new Size(1304, 810);
             gridControl4.TabIndex = 69;
             gridControl4.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView4 });
             // 
@@ -545,6 +547,7 @@
             // 
             gridView4.GridControl = gridControl4;
             gridView4.Name = "gridView4";
+            gridView4.OptionsView.ShowGroupPanel = false;
             // 
             // button13
             // 
@@ -692,7 +695,7 @@
             tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(1569, 832);
+            tabPage3.Size = new Size(1757, 801);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "RP vs Market";
             tabPage3.UseVisualStyleBackColor = true;
@@ -702,7 +705,7 @@
             gridControl3.Location = new Point(414, 15);
             gridControl3.MainView = gridView3;
             gridControl3.Name = "gridControl3";
-            gridControl3.Size = new Size(1149, 811);
+            gridControl3.Size = new Size(1337, 811);
             gridControl3.TabIndex = 56;
             gridControl3.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView3 });
             // 
@@ -710,6 +713,7 @@
             // 
             gridView3.GridControl = gridControl3;
             gridView3.Name = "gridView3";
+            gridView3.OptionsView.ShowGroupPanel = false;
             // 
             // button18
             // 
@@ -792,7 +796,7 @@
             // label22
             // 
             label22.AutoSize = true;
-            label22.Location = new Point(22, 650);
+            label22.Location = new Point(20, 757);
             label22.Name = "label22";
             label22.Size = new Size(65, 15);
             label22.TabIndex = 45;
@@ -801,7 +805,7 @@
             // checkBox5
             // 
             checkBox5.AutoSize = true;
-            checkBox5.Location = new Point(24, 693);
+            checkBox5.Location = new Point(22, 800);
             checkBox5.Name = "checkBox5";
             checkBox5.Size = new Size(42, 19);
             checkBox5.TabIndex = 45;
@@ -811,7 +815,7 @@
             // checkBox6
             // 
             checkBox6.AutoSize = true;
-            checkBox6.Location = new Point(24, 668);
+            checkBox6.Location = new Point(22, 775);
             checkBox6.Name = "checkBox6";
             checkBox6.Size = new Size(43, 19);
             checkBox6.TabIndex = 45;
@@ -821,7 +825,7 @@
             // label23
             // 
             label23.AutoSize = true;
-            label23.Location = new Point(20, 567);
+            label23.Location = new Point(18, 674);
             label23.Name = "label23";
             label23.Size = new Size(84, 15);
             label23.TabIndex = 42;
@@ -830,7 +834,7 @@
             // checkBox7
             // 
             checkBox7.AutoSize = true;
-            checkBox7.Location = new Point(24, 610);
+            checkBox7.Location = new Point(22, 717);
             checkBox7.Name = "checkBox7";
             checkBox7.Size = new Size(42, 19);
             checkBox7.TabIndex = 41;
@@ -840,7 +844,7 @@
             // checkBox8
             // 
             checkBox8.AutoSize = true;
-            checkBox8.Location = new Point(24, 585);
+            checkBox8.Location = new Point(22, 692);
             checkBox8.Name = "checkBox8";
             checkBox8.Size = new Size(43, 19);
             checkBox8.TabIndex = 40;
@@ -877,7 +881,7 @@
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1569, 832);
+            tabPage2.Size = new Size(1757, 801);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "RP vs Others";
             tabPage2.UseVisualStyleBackColor = true;
@@ -887,7 +891,7 @@
             gridControl2.Location = new Point(412, 15);
             gridControl2.MainView = gridView2;
             gridControl2.Name = "gridControl2";
-            gridControl2.Size = new Size(1151, 811);
+            gridControl2.Size = new Size(1339, 811);
             gridControl2.TabIndex = 39;
             gridControl2.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView2 });
             // 
@@ -895,6 +899,7 @@
             // 
             gridView2.GridControl = gridControl2;
             gridView2.Name = "gridView2";
+            gridView2.OptionsView.ShowGroupPanel = false;
             // 
             // button16
             // 
@@ -910,16 +915,16 @@
             // 
             Head_rpvsothers.FormattingEnabled = true;
             Head_rpvsothers.ItemHeight = 15;
-            Head_rpvsothers.Location = new Point(20, 381);
+            Head_rpvsothers.Location = new Point(16, 471);
             Head_rpvsothers.Name = "Head_rpvsothers";
             Head_rpvsothers.SelectionMode = SelectionMode.MultiExtended;
-            Head_rpvsothers.Size = new Size(190, 154);
+            Head_rpvsothers.Size = new Size(190, 184);
             Head_rpvsothers.TabIndex = 37;
             // 
             // label26
             // 
             label26.AutoSize = true;
-            label26.Location = new Point(18, 363);
+            label26.Location = new Point(14, 453);
             label26.Name = "label26";
             label26.Size = new Size(35, 15);
             label26.TabIndex = 36;
@@ -948,7 +953,7 @@
             // label18
             // 
             label18.AutoSize = true;
-            label18.Location = new Point(18, 190);
+            label18.Location = new Point(16, 237);
             label18.Name = "label18";
             label18.Size = new Size(32, 15);
             label18.TabIndex = 30;
@@ -957,7 +962,7 @@
             // label17
             // 
             label17.AutoSize = true;
-            label17.Location = new Point(20, 633);
+            label17.Location = new Point(20, 736);
             label17.Name = "label17";
             label17.Size = new Size(65, 15);
             label17.TabIndex = 28;
@@ -966,7 +971,7 @@
             // checkBox3
             // 
             checkBox3.AutoSize = true;
-            checkBox3.Location = new Point(30, 676);
+            checkBox3.Location = new Point(30, 779);
             checkBox3.Name = "checkBox3";
             checkBox3.Size = new Size(42, 19);
             checkBox3.TabIndex = 27;
@@ -976,7 +981,7 @@
             // checkBox4
             // 
             checkBox4.AutoSize = true;
-            checkBox4.Location = new Point(30, 651);
+            checkBox4.Location = new Point(30, 754);
             checkBox4.Name = "checkBox4";
             checkBox4.Size = new Size(43, 19);
             checkBox4.TabIndex = 26;
@@ -986,7 +991,7 @@
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new Point(20, 564);
+            label16.Location = new Point(20, 667);
             label16.Name = "label16";
             label16.Size = new Size(84, 15);
             label16.TabIndex = 25;
@@ -995,7 +1000,7 @@
             // checkBox2
             // 
             checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(30, 607);
+            checkBox2.Location = new Point(30, 710);
             checkBox2.Name = "checkBox2";
             checkBox2.Size = new Size(42, 19);
             checkBox2.TabIndex = 24;
@@ -1005,7 +1010,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(30, 582);
+            checkBox1.Location = new Point(30, 685);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(43, 19);
             checkBox1.TabIndex = 23;
@@ -1028,22 +1033,24 @@
             Company_rpvsothers.Location = new Point(18, 33);
             Company_rpvsothers.Name = "Company_rpvsothers";
             Company_rpvsothers.SelectionMode = SelectionMode.MultiExtended;
-            Company_rpvsothers.Size = new Size(190, 154);
+            Company_rpvsothers.Size = new Size(190, 199);
             Company_rpvsothers.TabIndex = 20;
             // 
             // Flow_rpvsothers
             // 
             Flow_rpvsothers.FormattingEnabled = true;
             Flow_rpvsothers.ItemHeight = 15;
-            Flow_rpvsothers.Location = new Point(20, 206);
+            Flow_rpvsothers.Location = new Point(18, 253);
             Flow_rpvsothers.Name = "Flow_rpvsothers";
             Flow_rpvsothers.SelectionMode = SelectionMode.MultiSimple;
-            Flow_rpvsothers.Size = new Size(190, 154);
+            Flow_rpvsothers.Size = new Size(190, 199);
             Flow_rpvsothers.TabIndex = 19;
             // 
             // tabPage1
             // 
             tabPage1.BackColor = Color.White;
+            tabPage1.Controls.Add(label34);
+            tabPage1.Controls.Add(SizeMap);
             tabPage1.Controls.Add(gridControl1);
             tabPage1.Controls.Add(label2);
             tabPage1.Controls.Add(checkBox9);
@@ -1065,7 +1072,7 @@
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1569, 832);
+            tabPage1.Size = new Size(1757, 912);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Map";
             // 
@@ -1074,7 +1081,7 @@
             gridControl1.Location = new Point(429, 7);
             gridControl1.MainView = gridView1;
             gridControl1.Name = "gridControl1";
-            gridControl1.Size = new Size(1153, 820);
+            gridControl1.Size = new Size(1322, 779);
             gridControl1.TabIndex = 61;
             gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView1 });
             // 
@@ -1086,6 +1093,7 @@
             gridView1.OptionsCustomization.AllowColumnMoving = false;
             gridView1.OptionsCustomization.AllowColumnResizing = false;
             gridView1.OptionsView.ColumnAutoWidth = false;
+            gridView1.OptionsView.ShowGroupPanel = false;
             // 
             // label2
             // 
@@ -1253,6 +1261,7 @@
             // 
             // TestTab
             // 
+            TestTab.Controls.Add(tabPage10);
             TestTab.Controls.Add(tabPage1);
             TestTab.Controls.Add(tabPage2);
             TestTab.Controls.Add(tabPage3);
@@ -1262,8 +1271,103 @@
             TestTab.Location = new Point(12, 65);
             TestTab.Name = "TestTab";
             TestTab.SelectedIndex = 0;
-            TestTab.Size = new Size(1577, 860);
+            TestTab.Size = new Size(1765, 940);
             TestTab.TabIndex = 1;
+            // 
+            // tabPage10
+            // 
+            tabPage10.BackColor = Color.White;
+            tabPage10.Controls.Add(panel2);
+            tabPage10.Controls.Add(pictureBox5);
+            tabPage10.Location = new Point(4, 24);
+            tabPage10.Name = "tabPage10";
+            tabPage10.Size = new Size(1757, 792);
+            tabPage10.TabIndex = 6;
+            tabPage10.Text = "Login";
+            // 
+            // panel2
+            // 
+            panel2.BorderStyle = BorderStyle.FixedSingle;
+            panel2.Controls.Add(label28);
+            panel2.Controls.Add(button19);
+            panel2.Controls.Add(textBox2);
+            panel2.Controls.Add(label24);
+            panel2.Controls.Add(textBox1);
+            panel2.Controls.Add(label20);
+            panel2.Controls.Add(label19);
+            panel2.Location = new Point(648, 267);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(439, 379);
+            panel2.TabIndex = 5;
+            // 
+            // label28
+            // 
+            label28.AutoSize = true;
+            label28.Location = new Point(75, 72);
+            label28.Name = "label28";
+            label28.Size = new Size(286, 15);
+            label28.TabIndex = 10;
+            label28.Text = "To Access Tool and Features, please insert Credentials\r\n";
+            // 
+            // button19
+            // 
+            button19.Location = new Point(113, 301);
+            button19.Name = "button19";
+            button19.Size = new Size(215, 41);
+            button19.TabIndex = 9;
+            button19.Text = "Access Tool\r\n";
+            button19.UseVisualStyleBackColor = true;
+            // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(75, 237);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(286, 23);
+            textBox2.TabIndex = 8;
+            // 
+            // label24
+            // 
+            label24.AutoSize = true;
+            label24.Location = new Point(185, 204);
+            label24.Name = "label24";
+            label24.Size = new Size(57, 30);
+            label24.TabIndex = 7;
+            label24.Text = "Password\r\n\r\n";
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(75, 143);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(286, 23);
+            textBox1.TabIndex = 6;
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Location = new Point(185, 116);
+            label20.Name = "label20";
+            label20.Size = new Size(60, 15);
+            label20.TabIndex = 5;
+            label20.Text = "Username\r\n";
+            // 
+            // label19
+            // 
+            label19.AutoSize = true;
+            label19.Location = new Point(160, 39);
+            label19.Name = "label19";
+            label19.Size = new Size(101, 15);
+            label19.TabIndex = 4;
+            label19.Text = "Pump Atlas Login";
+            // 
+            // pictureBox5
+            // 
+            pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
+            pictureBox5.Location = new Point(648, 64);
+            pictureBox5.Name = "pictureBox5";
+            pictureBox5.Size = new Size(439, 178);
+            pictureBox5.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox5.TabIndex = 3;
+            pictureBox5.TabStop = false;
             // 
             // tabPage9
             // 
@@ -1272,7 +1376,7 @@
             tabPage9.Controls.Add(label9);
             tabPage9.Location = new Point(4, 24);
             tabPage9.Name = "tabPage9";
-            tabPage9.Size = new Size(1569, 832);
+            tabPage9.Size = new Size(1757, 801);
             tabPage9.TabIndex = 5;
             tabPage9.Text = "About App";
             // 
@@ -1309,8 +1413,31 @@
             panel1.Controls.Add(pictureBox3);
             panel1.Location = new Point(2, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1596, 56);
+            panel1.Size = new Size(1775, 56);
             panel1.TabIndex = 2;
+            // 
+            // popupMenu1
+            // 
+            popupMenu1.Name = "popupMenu1";
+            // 
+            // label34
+            // 
+            label34.AutoSize = true;
+            label34.Location = new Point(18, 712);
+            label34.Name = "label34";
+            label34.Size = new Size(62, 15);
+            label34.TabIndex = 63;
+            label34.Text = "Pump Size";
+            // 
+            // SizeMap
+            // 
+            SizeMap.FormattingEnabled = true;
+            SizeMap.ItemHeight = 15;
+            SizeMap.Location = new Point(18, 730);
+            SizeMap.Name = "SizeMap";
+            SizeMap.SelectionMode = SelectionMode.MultiExtended;
+            SizeMap.Size = new Size(190, 154);
+            SizeMap.TabIndex = 62;
             // 
             // Form1
             // 
@@ -1318,7 +1445,7 @@
             AutoScaleMode = AutoScaleMode.Dpi;
             AutoSize = true;
             BackColor = Color.White;
-            ClientSize = new Size(1601, 928);
+            ClientSize = new Size(1780, 1011);
             Controls.Add(panel1);
             Controls.Add(TestTab);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -1329,15 +1456,19 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             tabPage4.ResumeLayout(false);
             tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)xtraTabControl1).EndInit();
+            xtraTabControl1.ResumeLayout(false);
+            xtraTabPage1.ResumeLayout(false);
+            xtraTabPage1.PerformLayout();
+            xtraTabPage2.ResumeLayout(false);
+            xtraTabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)gridControl5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridView5).EndInit();
+            xtraTabPage3.ResumeLayout(false);
+            xtraTabPage3.PerformLayout();
+            xtraScrollableControl1.ResumeLayout(false);
+            xtraScrollableControl1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            tabControl1.ResumeLayout(false);
-            tabPage5.ResumeLayout(false);
-            tabPage5.PerformLayout();
-            tabPage6.ResumeLayout(false);
-            tabPage6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)csv_view).EndInit();
-            tabPage7.ResumeLayout(false);
-            tabPage7.PerformLayout();
             tabPage8.ResumeLayout(false);
             tabPage8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)gridControl4).EndInit();
@@ -1355,10 +1486,15 @@
             ((System.ComponentModel.ISupportInitialize)gridControl1).EndInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).EndInit();
             TestTab.ResumeLayout(false);
+            tabPage10.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             tabPage9.ResumeLayout(false);
             tabPage9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)popupMenu1).EndInit();
             ResumeLayout(false);
         }
 
@@ -1367,32 +1503,6 @@
         private PictureBox pictureBox3;
         private TabPage tabPage4;
         private PictureBox pictureBox2;
-        private TabControl tabControl1;
-        private TabPage tabPage5;
-        private Label conv_state;
-        private Label Excel_file_tag;
-        private Label sel_label;
-        private Button button2;
-        private Label label1;
-        private TextBox FileNameBox;
-        private Button button1;
-        private TabPage tabPage6;
-        private Label csv_label;
-        private Label viewer;
-        private DataGridView csv_view;
-        private Button button5;
-        private Button button4;
-        private TabPage tabPage7;
-        private Label label8;
-        private Label label7;
-        private Label insert_state;
-        private Label label6;
-        private Label sel_insert_label;
-        private Label label5;
-        private Label conn_db_state;
-        private Label label4;
-        private Label label3;
-        private Button button6;
         private TabPage tabPage8;
         private Button button13;
         private Button button14;
@@ -1468,11 +1578,52 @@
         private DevExpress.XtraGrid.Views.Grid.GridView gridView3;
         private DevExpress.XtraGrid.GridControl gridControl4;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView4;
-        public Button button7;
-        public Button button8;
         private TabPage tabPage9;
         private Label label9;
         private PictureBox pictureBox4;
         private Panel panel1;
+        private TabPage tabPage10;
+        private Label label19;
+        private PictureBox pictureBox5;
+        private Panel panel2;
+        private TextBox textBox1;
+        private Label label20;
+        private DevExpress.XtraBars.PopupMenu popupMenu1;
+        private Button button19;
+        private TextBox textBox2;
+        private Label label24;
+        private Label label28;
+        private DevExpress.XtraTab.XtraTabControl xtraTabControl1;
+        private DevExpress.XtraTab.XtraTabPage xtraTabPage1;
+        private DevExpress.XtraTab.XtraTabPage xtraTabPage2;
+        private DevExpress.XtraTab.XtraTabPage xtraTabPage3;
+        private Label conv_state;
+        private Label Excel_file_tag;
+        private Label sel_label;
+        private Button button2;
+        private Label label1;
+        private TextBox FileNameBox;
+        private Button button1;
+        private Label csv_label;
+        private Label viewer;
+        private Button button5;
+        private Button button4;
+        private Label label8;
+        public Button button8;
+        private Label label7;
+        private Label insert_state;
+        private Label label6;
+        private Label sel_insert_label;
+        private Label label5;
+        public Button button7;
+        private Label conn_db_state;
+        private Label label4;
+        private Label label3;
+        private Button button6;
+        private DevExpress.XtraGrid.GridControl gridControl5;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView5;
+        private DevExpress.XtraEditors.XtraScrollableControl xtraScrollableControl1;
+        private Label label34;
+        private ListBox SizeMap;
     }
 }
