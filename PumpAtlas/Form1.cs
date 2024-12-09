@@ -25,7 +25,9 @@ namespace PumpAtlas
 {
     public partial class Form1 : Form
     {
+        //Testing integrity of GitHub Repository
 
+         
         //Database connection information String
         string db_conn = "Server=DC1FP1;Database=FireSystemsDB;User Id=REDNA\\acerecero;Password=FocusRS2010;Encrypt=False;";
 
@@ -536,9 +538,9 @@ namespace PumpAtlas
 
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ('{Companies}')";
-            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";  // Flows puede ser numérico, no necesitas comillas
-            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";  // Similar para Heads, también numérico
-            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";  // Speeds también es numérico
+            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";  // Flows puede ser numï¿½rico, no necesitas comillas
+            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";  // Similar para Heads, tambiï¿½n numï¿½rico
+            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";  // Speeds tambiï¿½n es numï¿½rico
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "1=1" : $"Pump_Size IN ('{Sizes}')";
 
             try
