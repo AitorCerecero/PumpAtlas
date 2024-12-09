@@ -27,8 +27,8 @@ namespace PumpAtlas
     {
 
         //Database connection information String
+        string db_conn = "Server=DC1FP1;Database=FireSystemsDB;User Id=REDNA\\acerecero;Password=FocusRS2010;Encrypt=False;";
 
-        string db_conn = ConfigurationManager.ConnectionStrings["FireSystemsConnect"].ConnectionString;
 
         public static bool IsKeyEntered = false;
 
@@ -65,31 +65,36 @@ namespace PumpAtlas
         {
             try
             {
-                SqlConnection cnn = new SqlConnection(db_conn);
-                conn_db_state.Text = "Connected Successfully to SQL Server Database";
-                fill_selectors();
+                using (SqlConnection cnn = new SqlConnection(db_conn))
+                {
+                    cnn.Open(); // Asegúrate de abrir la conexión
+                    conn_db_state.Text = "Connected Successfully to SQL Server Database";
+                    fill_selectors();
+                }
             }
-            catch (Exception)
+            catch (SqlException ex)
             {
-                conn_db_state.Text = "Something Went Wrong";
+                // Captura errores específicos de SQL Server
+                conn_db_state.Text = "SQL Server Error: " + ex.Message;
+
+                // Opcional: Registrar el error completo en el log o consola
+                Console.WriteLine($"SQL Exception: {ex.Message}\nStack Trace: {ex.StackTrace}");
+            }
+            catch (Exception ex)
+            {
+                // Captura otros errores generales
+                conn_db_state.Text = "Connection Failed: " + ex.Message;
+
+                // Opcional: Registrar el error completo en el log o consola
+                Console.WriteLine($"General Exception: {ex.Message}\nStack Trace: {ex.StackTrace}");
+            }
+            finally
+            {
+                // Acción opcional en caso de éxito o fallo (e.g., limpiar recursos)
+                Console.WriteLine("Attempted to connect to the database.");
             }
         }
 
-
-        //Method that established a connection between program and a Sql Database
-        public void db_connect()
-        {
-            try
-            {
-                SqlConnection cnn = new SqlConnection(db_conn);
-                conn_db_state.Text = "Connected Successfully to Database";
-                fill_selectors();
-            }
-            catch (Exception)
-            {
-                conn_db_state.Text = "Something Went Wrong";
-            }
-        }
 
         //Method that fills the Listboxes all across the 3 Tabs of Data Manipulation
         private void fill_selectors()
@@ -997,7 +1002,7 @@ namespace PumpAtlas
         //Button linked to connect to Database method in Data Management Tab
         private void button6_Click(object sender, EventArgs e)
         {
-            db_connect();
+            sql_connect();
         }
         //Buttons that are linked to methods that execute query on each tab
         private void button3_Click(object sender, EventArgs e)
