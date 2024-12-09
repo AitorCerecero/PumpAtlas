@@ -27,6 +27,8 @@ namespace PumpAtlas
     {
         //Testing integrity of GitHub Repository
 
+        //Integrity not compromised, saved repository successfully
+
          
         //Database connection information String
         string db_conn = "Server=DC1FP1;Database=FireSystemsDB;User Id=REDNA\\acerecero;Password=FocusRS2010;Encrypt=False;";
