@@ -194,7 +194,7 @@ namespace PumpAtlas
                 String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
                 adapter = new SqlDataAdapter(query5, connection);
                 DataTable size_all = new DataTable();
-                DataTable size_map= new DataTable();
+                DataTable size_map = new DataTable();
                 adapter.Fill(size_all);
                 adapter.Fill(size_map);
                 //Map   
@@ -259,23 +259,26 @@ namespace PumpAtlas
                 var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                            from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
                                            from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
+                                           from sizeItem in SizeMap.SelectedItems.Cast<DataRowView>()
                                            select new
                                            {
                                                Flow = flowItem["Flow"].ToString(),
                                                Company = companyItem["Company"].ToString(),
                                                Speed = speedItem["Pump_Speed_in_RPM"].ToString(),
+                                               Sizes = sizeItem["Pump_Size"].ToString(),
                                            };
 
                 string caseStatements = string.Join(",", selectedCombinations
-                    .SelectMany(item => pumpSizes, (item, pumpSize) =>
+                    .Select(item =>
                         $@"MIN(CASE WHEN Company = '{item.Company}' 
                     AND Flow = '{item.Flow}' 
                     AND Pump_Speed_in_RPM = '{item.Speed}' 
+                    AND Pump_Size = '{item.Sizes}' 
                     THEN BHP 
                     END) AS [" +
-                        item.Company + ((char)13).ToString() + ((char)10).ToString() +
-                        pumpSize + ((char)13).ToString() + ((char)10).ToString() +
                         item.Flow + ((char)13).ToString() + ((char)10).ToString() +
+                        item.Company + ((char)13).ToString() + ((char)10).ToString() +
+                        item.Sizes + ((char)13).ToString() + ((char)10).ToString() +
                         item.Speed + "]"));
 
                 // Reemplazo de GROUP_CONCAT con STRING_AGG para SQL Server
@@ -1048,6 +1051,11 @@ namespace PumpAtlas
         private void button18_Click(object sender, EventArgs e)
         {
             clear_filter_rpvsmkt();
+        }
+
+        private void xtraTabPage5_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
