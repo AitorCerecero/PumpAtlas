@@ -92,7 +92,7 @@ namespace PumpAtlas
                 connection.Open();
 
                 //Company Filler for all 4 Tabs of Data Processing
-                String query1 = ("SELECT Company FROM pumps GROUP BY Company");
+                String query1 = ("SELECT Company FROM pumps GROUP BY Company ORDER BY Company");
                 adapter = new SqlDataAdapter(query1, connection);
                 DataTable comp = new DataTable();
                 DataTable comp_rpvsothers = new DataTable();
@@ -211,27 +211,33 @@ namespace PumpAtlas
         private async void Big_query()
         {
 
-            string Companies = string.Join(",", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
+            string SanitizeInput(string input)
+            {
+                return input.Replace("'", "''").Replace("--", "").Replace(";", "");
+            }
+
+
+            string Companies = string.Join(",", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => $"'{SanitizeInput(item["Company"].ToString())}'"));
             string Flows = string.Join(",", FlowList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
             string Heads = string.Join(",", HeadList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
             string Speeds = string.Join(",", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Speed_in_RPM"].ToString()}'"));
-            string Sizes = string.Join(",", SizeMap.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Size"].ToString()}'"));
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
+            Console.WriteLine("Generated Query: " + CompaniesCondition);
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
             string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";
-            string SizesCondition = string.IsNullOrEmpty(Sizes) ? "1=1" : $"Pump_Size IN ({Sizes})";
 
             List<string> pumpSizes;
             string pumpSizeQuery = $@"
-    SELECT DISTINCT Pump_Size 
-    FROM pumps 
-    WHERE 
-        {CompaniesCondition} 
-        AND {FlowsCondition} 
-        AND {SpeedsCondition} 
-        AND {HeadsCondition}";
+                SELECT DISTINCT Pump_Size 
+                FROM pumps 
+                WHERE 
+                {CompaniesCondition} 
+                AND {FlowsCondition} 
+                AND {SpeedsCondition} 
+                AND {HeadsCondition} 
+                AND Pump_Size IS NOT NULL";
 
             try
             {
@@ -259,26 +265,24 @@ namespace PumpAtlas
                 var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                            from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
                                            from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
-                                           from sizeItem in SizeMap.SelectedItems.Cast<DataRowView>()
                                            select new
                                            {
                                                Flow = flowItem["Flow"].ToString(),
                                                Company = companyItem["Company"].ToString(),
                                                Speed = speedItem["Pump_Speed_in_RPM"].ToString(),
-                                               Sizes = sizeItem["Pump_Size"].ToString(),
                                            };
 
                 string caseStatements = string.Join(",", selectedCombinations
-                    .Select(item =>
+                    .SelectMany(item => pumpSizes, (item, pumpSize) =>
                         $@"MIN(CASE WHEN Company = '{item.Company}' 
                     AND Flow = '{item.Flow}' 
                     AND Pump_Speed_in_RPM = '{item.Speed}' 
-                    AND Pump_Size = '{item.Sizes}' 
+                    AND Pump_Size = '{pumpSize}' 
                     THEN BHP 
                     END) AS [" +
-                        item.Flow + ((char)13).ToString() + ((char)10).ToString() +
                         item.Company + ((char)13).ToString() + ((char)10).ToString() +
-                        item.Sizes + ((char)13).ToString() + ((char)10).ToString() +
+                        pumpSize + ((char)13).ToString() + ((char)10).ToString() +
+                        item.Flow + ((char)13).ToString() + ((char)10).ToString() +
                         item.Speed + "]"));
 
                 // Reemplazo de GROUP_CONCAT con STRING_AGG para SQL Server
@@ -294,7 +298,6 @@ namespace PumpAtlas
                 AND {FlowsCondition}
                 AND {HeadsCondition}
                 AND {SpeedsCondition}
-                AND {SizesCondition}
             FOR XML PATH('')
         ), 1, 1, '') AS CompanyFlow,
         {caseStatements}
@@ -304,7 +307,6 @@ namespace PumpAtlas
         AND {FlowsCondition}
         AND {HeadsCondition}
         AND {SpeedsCondition}
-        AND {SizesCondition}
     GROUP BY 
         Head
     ORDER BY Head";
@@ -319,6 +321,7 @@ namespace PumpAtlas
                         using (var adapter = new SqlDataAdapter(Bigquery, connection))
                         {
                             adapter.Fill(dataTable);
+                            Console.WriteLine("Generated Query: " + CompaniesCondition);
                         }
                     }
                     return dataTable;
@@ -346,8 +349,6 @@ namespace PumpAtlas
                 System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
-
 
         //Query that retrieves Data for the RP vs Others Tab
         private async void big_query2()
@@ -610,6 +611,7 @@ namespace PumpAtlas
             FlowList.ClearSelected();
             HeadList.ClearSelected();
             SpeedList.ClearSelected();
+            SizeMap.ClearSelected();
         }
         //method that clears listboxes in rp vs others tab
         private void clear_filter_rpvsothers()
@@ -1022,11 +1024,6 @@ namespace PumpAtlas
         {
             big_query3();
         }
-        //butto that call the method that refreshes database 
-        private void button8_Click_1(object sender, EventArgs e)
-        {
-            refresh_db();
-        }
         //method that clears selected info in selectors of all data tab
         private void button17_Click(object sender, EventArgs e)
         {
@@ -1052,10 +1049,10 @@ namespace PumpAtlas
         {
             clear_filter_rpvsmkt();
         }
-
-        private void xtraTabPage5_Paint(object sender, PaintEventArgs e)
+        //button that call the method that refreshes database 
+        private void button8_Click(object sender, EventArgs e)
         {
-
+            refresh_db();
         }
     }
 }
