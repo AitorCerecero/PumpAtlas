@@ -262,7 +262,8 @@ namespace PumpAtlas
                     SizeIsSelected = false;
                 }
 
-                if (SizeIsSelected == true) { //Function that querys based on the selected size, no autosize will be shown
+                if (SizeIsSelected == true)
+                { //Function that querys based on the selected size, no autosize will be shown
                     var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                                from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
                                                from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
@@ -347,8 +348,9 @@ namespace PumpAtlas
                     firstColumn.Visible = false;
 
                 }
-                
-                else if (SizeIsSelected == false) { //Function that querys if no size is selected, all autosize will be shown
+
+                else if (SizeIsSelected == false)
+                { //Function that querys if no size is selected, all autosize will be shown
                     var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                                from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
                                                from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
@@ -809,7 +811,7 @@ namespace PumpAtlas
         }
 
         //Method that reads CSV data and places it on a Datagrid 
-        private async void visor()
+        private void visor()
         {
             string start = csv_label.Text;
 
@@ -1136,5 +1138,6 @@ namespace PumpAtlas
         {
             refresh_db();
         }
+
     }
 }

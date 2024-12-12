@@ -155,7 +155,6 @@
             sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
             sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
             panel1 = new Panel();
-            popupMenu1 = new DevExpress.XtraBars.PopupMenu(components);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)xtraTabControl2).BeginInit();
@@ -188,7 +187,6 @@
             xtraTabPage10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)popupMenu1).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
@@ -619,6 +617,7 @@
             button16.TabIndex = 44;
             button16.Text = "Clear Filters";
             button16.UseVisualStyleBackColor = true;
+            button16.Click += button16_Click;
             // 
             // Head_rpvsothers
             // 
@@ -638,6 +637,7 @@
             button9.TabIndex = 42;
             button9.Text = "Run Selections";
             button9.UseVisualStyleBackColor = true;
+            button9.Click += button9_Click;
             // 
             // button10
             // 
@@ -647,6 +647,7 @@
             button10.TabIndex = 41;
             button10.Text = "Clear Results";
             button10.UseVisualStyleBackColor = true;
+            button10.Click += button10_Click;
             // 
             // Company_rpvsothers
             // 
@@ -753,6 +754,7 @@
             button18.TabIndex = 65;
             button18.Text = "Clear Filters";
             button18.UseVisualStyleBackColor = true;
+            button18.Click += button18_Click;
             // 
             // Head_rpvsmkt
             // 
@@ -782,6 +784,7 @@
             button11.TabIndex = 62;
             button11.Text = "Run Selections";
             button11.UseVisualStyleBackColor = true;
+            button11.Click += button11_Click;
             // 
             // button12
             // 
@@ -791,6 +794,7 @@
             button12.TabIndex = 61;
             button12.Text = "Clear Results";
             button12.UseVisualStyleBackColor = true;
+            button12.Click += button12_Click;
             // 
             // Flow_rpvsmkt
             // 
@@ -925,6 +929,7 @@
             button13.TabIndex = 64;
             button13.Text = "Clear Results";
             button13.UseVisualStyleBackColor = true;
+            button13.Click += button13_Click;
             // 
             // button14
             // 
@@ -934,6 +939,7 @@
             button14.TabIndex = 62;
             button14.Text = "Run Selections";
             button14.UseVisualStyleBackColor = true;
+            button14.Click += button14_Click;
             // 
             // button17
             // 
@@ -943,6 +949,7 @@
             button17.TabIndex = 60;
             button17.Text = "Clear Filters";
             button17.UseVisualStyleBackColor = true;
+            button17.Click += button17_Click;
             // 
             // Size_all
             // 
@@ -1098,6 +1105,7 @@
             button2.TabIndex = 10;
             button2.Text = "Save Conversed File";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // label1
             // 
@@ -1123,6 +1131,7 @@
             button1.TabIndex = 7;
             button1.Text = "Select File\r\n";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // xtraTabPage2
             // 
@@ -1176,6 +1185,7 @@
             button5.TabIndex = 6;
             button5.Text = "Close CSV and Clear Visor";
             button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
             // 
             // button4
             // 
@@ -1185,6 +1195,7 @@
             button4.TabIndex = 5;
             button4.Text = "Open CSV";
             button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
             // 
             // xtraTabPage3
             // 
@@ -1375,10 +1386,6 @@
             panel1.Size = new Size(1580, 56);
             panel1.TabIndex = 2;
             // 
-            // popupMenu1
-            // 
-            popupMenu1.Name = "popupMenu1";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -1435,7 +1442,6 @@
             xtraTabPage10.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)popupMenu1).EndInit();
             ResumeLayout(false);
         }
 
@@ -1445,7 +1451,6 @@
         private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource1;
         private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
         private Panel panel1;
-        private DevExpress.XtraBars.PopupMenu popupMenu1;
         private DevExpress.XtraTab.XtraTabControl xtraTabControl2;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage4;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage5;
