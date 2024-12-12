@@ -343,7 +343,7 @@
             gridControl1.Location = new Point(428, 16);
             gridControl1.MainView = gridView1;
             gridControl1.Name = "gridControl1";
-            gridControl1.Size = new Size(1141, 894);
+            gridControl1.Size = new Size(1141, 857);
             gridControl1.TabIndex = 75;
             gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView1 });
             // 
@@ -907,7 +907,7 @@
             gridControl4.Location = new Point(435, 3);
             gridControl4.MainView = gridView4;
             gridControl4.Name = "gridControl4";
-            gridControl4.Size = new Size(1134, 907);
+            gridControl4.Size = new Size(1134, 874);
             gridControl4.TabIndex = 70;
             gridControl4.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView4 });
             // 
