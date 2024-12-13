@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
@@ -120,6 +119,8 @@
             xtraTabPage9 = new DevExpress.XtraTab.XtraTabPage();
             xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
             xtraTabPage1 = new DevExpress.XtraTab.XtraTabPage();
+            linkLabel1 = new LinkLabel();
+            labelControl23 = new DevExpress.XtraEditors.LabelControl();
             conv_state = new Label();
             Excel_file_tag = new Label();
             sel_label = new Label();
@@ -152,8 +153,6 @@
             xtraTabPage10 = new DevExpress.XtraTab.XtraTabPage();
             pictureBox4 = new PictureBox();
             label9 = new Label();
-            sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
-            sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(components);
             panel1 = new Panel();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -1060,6 +1059,8 @@
             // 
             // xtraTabPage1
             // 
+            xtraTabPage1.Controls.Add(linkLabel1);
+            xtraTabPage1.Controls.Add(labelControl23);
             xtraTabPage1.Controls.Add(conv_state);
             xtraTabPage1.Controls.Add(Excel_file_tag);
             xtraTabPage1.Controls.Add(sel_label);
@@ -1070,6 +1071,25 @@
             xtraTabPage1.Name = "xtraTabPage1";
             xtraTabPage1.Size = new Size(1558, 779);
             xtraTabPage1.Text = "File Conversor";
+            // 
+            // linkLabel1
+            // 
+            linkLabel1.AutoSize = true;
+            linkLabel1.Location = new Point(1071, 503);
+            linkLabel1.Name = "linkLabel1";
+            linkLabel1.Size = new Size(30, 13);
+            linkLabel1.TabIndex = 15;
+            linkLabel1.TabStop = true;
+            linkLabel1.Text = "Here\r\n";
+            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
+            // 
+            // labelControl23
+            // 
+            labelControl23.Location = new Point(535, 503);
+            labelControl23.Name = "labelControl23";
+            labelControl23.Size = new Size(530, 13);
+            labelControl23.TabIndex = 14;
+            labelControl23.Text = "Note: To insert any data, this must be placed on an excel and then export the file. You can find the file clicking";
             // 
             // conv_state
             // 
@@ -1369,14 +1389,6 @@
             label9.TabIndex = 2;
             label9.Text = "Pump Atlas\r\n\r\nVersion 1.0.0\r\n\r\nProperty of Ruhrpumpen Fire Systems\r\n";
             // 
-            // sqlDataSource1
-            // 
-            sqlDataSource1.Name = "sqlDataSource1";
-            // 
-            // sqlDataSource2
-            // 
-            sqlDataSource2.Name = "sqlDataSource2";
-            // 
             // panel1
             // 
             panel1.Controls.Add(pictureBox1);
@@ -1448,8 +1460,6 @@
         #endregion
         private PictureBox pictureBox1;
         private PictureBox pictureBox3;
-        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource1;
-        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
         private Panel panel1;
         private DevExpress.XtraTab.XtraTabControl xtraTabControl2;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage4;
@@ -1571,5 +1581,7 @@
         private DevExpress.XtraEditors.LabelControl labelControl22;
         private DevExpress.XtraEditors.LabelControl labelControl21;
         private DevExpress.XtraEditors.LabelControl labelControl20;
+        private DevExpress.XtraEditors.LabelControl labelControl23;
+        private LinkLabel linkLabel1;
     }
 }

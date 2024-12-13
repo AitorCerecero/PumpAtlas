@@ -22,6 +22,7 @@ using DevExpress.XtraEditors;
 using DevExpress.DirectX.Common.Direct2D;
 using Spire.Xls.Core;
 using DevExpress.CodeParser;
+using System.Diagnostics;
 
 namespace PumpAtlas
 {
@@ -58,7 +59,6 @@ namespace PumpAtlas
         {
             sql_connect();
         }
-
         //SQL Server connect test 
         public void sql_connect()
         {
@@ -438,7 +438,6 @@ namespace PumpAtlas
                 System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
         //Query that retrieves Data for the RP vs Others Tab
         private async void big_query2()
         {
@@ -525,7 +524,6 @@ namespace PumpAtlas
                 System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
         //Query that retrieves Data for the RP vs Market Tab
         private async void big_query3()
         {
@@ -611,7 +609,6 @@ namespace PumpAtlas
             }
 
         }
-
         //Query that retrieves Data for the All Data Tab
         private async void big_query4()
         {
@@ -678,7 +675,6 @@ namespace PumpAtlas
                 System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
         //Function that clears pivot table on Server side to allow new data go through and be optimized
         private void transform_data()
         {
@@ -753,7 +749,6 @@ namespace PumpAtlas
         {
             open_excel();
         }
-
         //function Saves converted file as CSV after conversion
         private void save_file()
         {
@@ -809,7 +804,6 @@ namespace PumpAtlas
         {
             save_file();
         }
-
         //Method that reads CSV data and places it on a Datagrid 
         private void visor()
         {
@@ -1038,7 +1032,6 @@ namespace PumpAtlas
 
             fill_selectors();
         }
-
         //Clears map datagrid
         private void clear_results_map()
         {
@@ -1067,7 +1060,6 @@ namespace PumpAtlas
             gridView4.Columns.Clear();
             Full_data4.Clear();
         }
-
         //Method that Clears grid result on MAP tab
         private void Clear_select_Click(object sender, EventArgs e)
         {
@@ -1138,6 +1130,10 @@ namespace PumpAtlas
         {
             refresh_db();
         }
-
+        //process that will open the link
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://ruhrpumpen.sharepoint.com/:x:/r/sites/RPFS-InsideSales/Shared%20Documents/Product%20Engineer/PRODUCT%20ENGINEER%20LUIS%20DAVILA/PRACTICANTES/AITOR%20CERECERO/Data%20Insertion%20Template.xlsx?d=w6be1803de5154790a8fe1b5e71a95549&csf=1&web=1&e=qN8q1l") { UseShellExecute = true });
+        }
     }
 }
