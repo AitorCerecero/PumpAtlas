@@ -30,7 +30,7 @@ namespace PumpAtlas
     {
 
         //Database connection information String
-        string db_conn = "Server=DC1FP1;Database=FireSystemsDB;Integrated Security=True;TrustServerCertificate=True;User Id=REDNA\\acerecero;Password=FocusRS2010;";
+        string db_conn = "Server=DC1FP1;Database=FireSystemsDB;TrustServerCertificate=True;User Id=firedb;Password=firedb;";
 
         public static bool IsKeyEntered = false;
         public static bool? SizeIsSelected = null;
@@ -208,12 +208,15 @@ namespace PumpAtlas
         //Query that retrieves Data for the Map Tab
         private async void Big_query()
         {
-            string Companies = string.Join(",", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
-            string Flows = string.Join(",", FlowList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
+            //Must Go Filters
             string Heads = string.Join(",", HeadList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
+            string Flows = string.Join(",", FlowList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
+            //Optional Filters
+            string Companies = string.Join(",", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
             string Speeds = string.Join(",", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Speed_in_RPM"].ToString()}'"));
             string Sizes = string.Join(",", SizeMap.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Size"].ToString()}'"));
 
+            //Bypass Query conditions to run it even when nothing is selected
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
@@ -221,15 +224,27 @@ namespace PumpAtlas
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "1=1" : $"Pump_Size IN ({Sizes})";
 
             List<string> pumpSizes;
+            List<string> pumpSpeeds;
+
+            string pumpSpeedQuery = $@"
+            SELECT DISTINCT Pump_Speed_in_RPM 
+            FROM pumps
+            WHERE
+            {CompaniesCondition} 
+            AND {FlowsCondition} 
+            AND {SizesCondition} 
+            AND {HeadsCondition} 
+            AND Pump_Speed_in_RPM  IS NOT NULL";
+
             string pumpSizeQuery = $@"
-                SELECT DISTINCT Pump_Size 
-                FROM pumps 
-                WHERE 
-                {CompaniesCondition} 
-                AND {FlowsCondition} 
-                AND {SpeedsCondition} 
-                AND {HeadsCondition} 
-                AND Pump_Size IS NOT NULL";
+            SELECT DISTINCT Pump_Size 
+            FROM pumps 
+            WHERE 
+           {CompaniesCondition} 
+            AND {FlowsCondition} 
+            AND {SpeedsCondition} 
+            AND {HeadsCondition} 
+            AND Pump_Size IS NOT NULL";
 
             try
             {
@@ -252,6 +267,29 @@ namespace PumpAtlas
                     }
                     return sizes;
                 });
+
+                pumpSpeeds = await Task.Run(() =>
+                {
+                    var speeds = new List<string>();
+                    using (var connection = new SqlConnection(db_conn))
+                    {
+                        using (var command = new SqlCommand(pumpSpeedQuery, connection))
+                        {
+                            connection.Open();
+                            using (var reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    speeds.Add(reader["Pump_Speed_in_RPM"].ToString());
+                                }
+                            }
+                        }
+                    }
+                    return speeds;
+                });
+
+
+
 
                 if (SizeMap.SelectedItems.Count > 0)
                 {
@@ -280,14 +318,14 @@ namespace PumpAtlas
                         .SelectMany(item => pumpSizes, (item, pumpSize) =>
                             $@"MIN(CASE WHEN Company = '{item.Company}' 
                     AND Flow = '{item.Flow}' 
-                    AND Pump_Speed_in_RPM = '{item.Speed}' 
+                    AND Pump_Speed_in_RPM = '{pumpSpeeds}' 
                     AND Pump_Size = '{item.Sizes}' 
                     THEN BHP 
                     END) AS [" +
                             item.Company + ((char)13).ToString() + ((char)10).ToString() +
                             item.Sizes + ((char)13).ToString() + ((char)10).ToString() +
                             item.Flow + ((char)13).ToString() + ((char)10).ToString() +
-                            item.Speed + "]"));
+                            pumpSpeeds + "]"));
 
                     string Bigquery = $@"
                      SELECT 
@@ -353,26 +391,32 @@ namespace PumpAtlas
                 { //Function that querys if no size is selected, all autosize will be shown
                     var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
                                                from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
-                                               from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
                                                select new
                                                {
-                                                   Flow = flowItem["Flow"].ToString(),
                                                    Company = companyItem["Company"].ToString(),
-                                                   Speed = speedItem["Pump_Speed_in_RPM"].ToString(),
+                                                   Flow = flowItem["Flow"].ToString(),
                                                };
 
-                    string caseStatements = string.Join(",", selectedCombinations
-                        .SelectMany(item => pumpSizes, (item, pumpSize) =>
-                            $@"MIN(CASE WHEN Company = '{item.Company}' 
-                    AND Flow = '{item.Flow}' 
-                    AND Pump_Speed_in_RPM = '{item.Speed}' 
-                    AND Pump_Size = '{pumpSize}' 
-                    THEN BHP 
-                    END) AS [" +
-                            item.Company + ((char)13).ToString() + ((char)10).ToString() +
-                            pumpSize + ((char)13).ToString() + ((char)10).ToString() +
-                            item.Flow + ((char)13).ToString() + ((char)10).ToString() +
-                            item.Speed + "]"));
+                    string caseStatements = string.Join(",",
+                        selectedCombinations.SelectMany(item =>
+                            pumpSizes.SelectMany(pumpSize =>
+                                pumpSpeeds.Select(pumpSpeed =>
+                                    $@"MIN(CASE WHEN Company = '{item.Company}' 
+                            AND Flow = '{item.Flow}' 
+                            AND Pump_Speed_in_RPM = '{pumpSpeed}' 
+                            AND Pump_Size = '{pumpSize}' 
+                            THEN BHP 
+                            END) AS [" +
+                                    item.Company + ((char)13).ToString() + ((char)10).ToString() +
+                                    pumpSize + ((char)13).ToString() + ((char)10).ToString() +
+                                    item.Flow + ((char)13).ToString() + ((char)10).ToString() +
+                                    pumpSpeed + "]"
+                                )
+                            )
+                        )
+                    );
+
+
 
                     string Bigquery = $@"
                      SELECT 
@@ -438,6 +482,7 @@ namespace PumpAtlas
                 System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
         }
+
         //Query that retrieves Data for the RP vs Others Tab
         private async void big_query2()
         {
@@ -1134,11 +1179,6 @@ namespace PumpAtlas
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://ruhrpumpen.sharepoint.com/:x:/r/sites/RPFS-InsideSales/Shared%20Documents/Product%20Engineer/PRODUCT%20ENGINEER%20LUIS%20DAVILA/PRACTICANTES/AITOR%20CERECERO/Data%20Insertion%20Template.xlsx?d=w6be1803de5154790a8fe1b5e71a95549&csf=1&web=1&e=qN8q1l") { UseShellExecute = true });
-        }
-
-        private void Company_rpvsothers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

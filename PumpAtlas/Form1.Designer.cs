@@ -32,16 +32,6 @@
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
             xtraTabControl2 = new DevExpress.XtraTab.XtraTabControl();
-            xtraTabPage4 = new DevExpress.XtraTab.XtraTabPage();
-            panel2 = new Panel();
-            label28 = new Label();
-            button19 = new Button();
-            textBox2 = new TextBox();
-            label24 = new Label();
-            textBox1 = new TextBox();
-            label20 = new Label();
-            label19 = new Label();
-            pictureBox5 = new PictureBox();
             xtraTabPage5 = new DevExpress.XtraTab.XtraTabPage();
             gridControl1 = new DevExpress.XtraGrid.GridControl();
             gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -158,9 +148,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)xtraTabControl2).BeginInit();
             xtraTabControl2.SuspendLayout();
-            xtraTabPage4.SuspendLayout();
-            panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             xtraTabPage5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridControl1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).BeginInit();
@@ -212,102 +199,10 @@
             // 
             xtraTabControl2.Location = new Point(12, 65);
             xtraTabControl2.Name = "xtraTabControl2";
-            xtraTabControl2.SelectedTabPage = xtraTabPage4;
+            xtraTabControl2.SelectedTabPage = xtraTabPage5;
             xtraTabControl2.Size = new Size(1560, 884);
             xtraTabControl2.TabIndex = 6;
-            xtraTabControl2.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] { xtraTabPage4, xtraTabPage5, xtraTabPage6, xtraTabPage7, xtraTabPage8, xtraTabPage9, xtraTabPage10 });
-            // 
-            // xtraTabPage4
-            // 
-            xtraTabPage4.Controls.Add(panel2);
-            xtraTabPage4.Controls.Add(pictureBox5);
-            xtraTabPage4.Name = "xtraTabPage4";
-            xtraTabPage4.Size = new Size(1558, 859);
-            xtraTabPage4.Text = "Login";
-            // 
-            // panel2
-            // 
-            panel2.BorderStyle = BorderStyle.FixedSingle;
-            panel2.Controls.Add(label28);
-            panel2.Controls.Add(button19);
-            panel2.Controls.Add(textBox2);
-            panel2.Controls.Add(label24);
-            panel2.Controls.Add(textBox1);
-            panel2.Controls.Add(label20);
-            panel2.Controls.Add(label19);
-            panel2.Location = new Point(592, 292);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(439, 379);
-            panel2.TabIndex = 6;
-            // 
-            // label28
-            // 
-            label28.AutoSize = true;
-            label28.Location = new Point(75, 72);
-            label28.Name = "label28";
-            label28.Size = new Size(270, 13);
-            label28.TabIndex = 10;
-            label28.Text = "To Access Tool and Features, please insert Credentials\r\n";
-            // 
-            // button19
-            // 
-            button19.Location = new Point(113, 301);
-            button19.Name = "button19";
-            button19.Size = new Size(215, 41);
-            button19.TabIndex = 9;
-            button19.Text = "Access Tool\r\n";
-            button19.UseVisualStyleBackColor = true;
-            // 
-            // textBox2
-            // 
-            textBox2.Location = new Point(75, 237);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(286, 21);
-            textBox2.TabIndex = 8;
-            // 
-            // label24
-            // 
-            label24.AutoSize = true;
-            label24.Location = new Point(185, 204);
-            label24.Name = "label24";
-            label24.Size = new Size(53, 26);
-            label24.TabIndex = 7;
-            label24.Text = "Password\r\n\r\n";
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(75, 143);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(286, 21);
-            textBox1.TabIndex = 6;
-            // 
-            // label20
-            // 
-            label20.AutoSize = true;
-            label20.Location = new Point(185, 116);
-            label20.Name = "label20";
-            label20.Size = new Size(55, 13);
-            label20.TabIndex = 5;
-            label20.Text = "Username\r\n";
-            // 
-            // label19
-            // 
-            label19.AutoSize = true;
-            label19.Location = new Point(160, 39);
-            label19.Name = "label19";
-            label19.Size = new Size(88, 13);
-            label19.TabIndex = 4;
-            label19.Text = "Pump Atlas Login";
-            // 
-            // pictureBox5
-            // 
-            pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
-            pictureBox5.Location = new Point(592, 63);
-            pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(439, 178);
-            pictureBox5.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox5.TabIndex = 4;
-            pictureBox5.TabStop = false;
+            xtraTabControl2.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] { xtraTabPage5, xtraTabPage6, xtraTabPage7, xtraTabPage8, xtraTabPage9, xtraTabPage10 });
             // 
             // xtraTabPage5
             // 
@@ -1415,10 +1310,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)xtraTabControl2).EndInit();
             xtraTabControl2.ResumeLayout(false);
-            xtraTabPage4.ResumeLayout(false);
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             xtraTabPage5.ResumeLayout(false);
             xtraTabPage5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)gridControl1).EndInit();
@@ -1462,22 +1353,12 @@
         private PictureBox pictureBox3;
         private Panel panel1;
         private DevExpress.XtraTab.XtraTabControl xtraTabControl2;
-        private DevExpress.XtraTab.XtraTabPage xtraTabPage4;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage5;
-        private PictureBox pictureBox5;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage6;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage7;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage8;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage9;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage10;
-        private Panel panel2;
-        private Label label28;
-        private Button button19;
-        private TextBox textBox2;
-        private Label label24;
-        private TextBox textBox1;
-        private Label label20;
-        private Label label19;
         private DevExpress.XtraEditors.LabelControl labelControl6;
         private DevExpress.XtraEditors.LabelControl labelControl5;
         private DevExpress.XtraEditors.LabelControl labelControl4;
