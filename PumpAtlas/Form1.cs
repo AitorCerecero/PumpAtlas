@@ -1,28 +1,14 @@
-using System.Configuration;
 using Microsoft.Data.SqlClient;
 using Spire.Xls;
 using System.Data;
-using System.Text;
 using CsvHelper;
 using System.Globalization;
-using System.Timers;
-using System.Windows;
-using System.Windows.Forms;
-using static System.Reflection.Metadata.BlobBuilder;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using CsvHelper.Configuration;
-using System.Threading;
 using System.IO;
-using DevExpress.XtraGrid;
-using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Columns;
-using System.Windows.Controls;
-using DevExpress.XtraExport.Helpers;
-using DevExpress.XtraEditors;
-using DevExpress.DirectX.Common.Direct2D;
-using Spire.Xls.Core;
-using DevExpress.CodeParser;
+using DevExpress.XtraGrid.Views.Grid;
 using System.Diagnostics;
+using DevExpress.CodeParser;
 
 namespace PumpAtlas
 {
@@ -34,6 +20,8 @@ namespace PumpAtlas
 
         public static bool IsKeyEntered = false;
         public static bool? SizeIsSelected = null;
+        private bool allListsSelected = false;
+        private bool allListsSpeedSelected = false;
 
         SqlDataAdapter adapter;
         DataTable Full_data = new DataTable();
@@ -44,6 +32,7 @@ namespace PumpAtlas
 
         String fileContent = string.Empty;
         String filePath = string.Empty;
+        System.Windows.Forms.Timer selectionTimer = new System.Windows.Forms.Timer();
 
         //initializing stage with app name
         public Form1()
@@ -52,6 +41,31 @@ namespace PumpAtlas
             this.Text = "Ruhrpumpen Pump Atlas";
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = true;
+
+            HeadList.SelectedIndexChanged += HeadList_SelectedIndexChanged;
+            HeadList.SelectedIndexChanged += HeadList_speed_SelectedIndexChanged;
+
+            FlowList.SelectedIndexChanged += FlowList_SelectedIndexChanged;
+            FlowList.SelectedIndexChanged += FlowList_speed_SelectedIndexChanged;
+
+            CompanyList.SelectedIndexChanged += CompanyList_SelectedIndexChanged;
+            CompanyList.SelectedIndexChanged += CompanyList_speed_SelectedIndexChanged;
+
+            SpeedList.SelectedIndexChanged += SpeedList_SelectedIndexChanged;
+            SpeedList.SelectedIndexChanged += SpeedList_speed_SelectedIndexChanged;
+
+
+            selectionTimer.Interval = 1; // ⏳ Espera 500ms antes de ejecutar la consulta
+            selectionTimer.Tick += async (s, e) => {
+                selectionTimer.Stop();
+                await fill_speeds();
+            };
+
+            selectionTimer.Interval = 1; // ⏳ Espera 500ms antes de ejecutar la consulta
+            selectionTimer.Tick += async (s, e) => {
+                selectionTimer.Stop();
+                await fill_sizes();
+            };
         }
 
         //Function that runs the method to connect to Database when the app starts
@@ -173,16 +187,11 @@ namespace PumpAtlas
                 Flow_all.DataSource = new BindingSource(flow_all, null);
                 Flow_all.DisplayMember = "Flow";
 
-                //Speed Filler for all 4 Tabs of Data Processing (Only used twice)
+                //Speed Filler for all 4 Tabs of Data Processing (Only used once in All)
                 String query4 = ("SELECT Pump_Speed_in_RPM FROM pumps GROUP BY Pump_Speed_in_RPM ORDER BY Pump_Speed_in_RPM ASC");
                 adapter = new SqlDataAdapter(query4, connection);
-                DataTable speed = new DataTable();
                 DataTable speed_all = new DataTable();
-                adapter.Fill(speed);
                 adapter.Fill(speed_all);
-                SpeedList.DataSource = null;
-                SpeedList.DataSource = new BindingSource(speed, null);
-                SpeedList.DisplayMember = "Pump_Speed_in_RPM";
                 //All Data
                 Speed_all.DataSource = null;
                 Speed_all.DataSource = new BindingSource(speed_all, null);
@@ -192,22 +201,210 @@ namespace PumpAtlas
                 String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
                 adapter = new SqlDataAdapter(query5, connection);
                 DataTable size_all = new DataTable();
-                DataTable size_map = new DataTable();
                 adapter.Fill(size_all);
-                adapter.Fill(size_map);
-                //Map   
-                SizeMap.DataSource = null;
-                SizeMap.DataSource = new BindingSource(size_map, null);
-                SizeMap.DisplayMember = "Pump_Size";
                 //All Data
                 Size_all.DataSource = null;
                 Size_all.DataSource = new BindingSource(size_all, null);
                 Size_all.DisplayMember = "Pump_Size";
             }
         }
-        //Query that retrieves Data for the Map Tab
-        private async void Big_query()
+
+        void HeadList_SelectedIndexChanged(object sender, EventArgs e)
         {
+            AllLists_SelectedIndexChanged(sender, e);
+        }
+
+        void FlowList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AllLists_SelectedIndexChanged(sender, e);
+        }
+
+        void CompanyList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AllLists_SelectedIndexChanged(sender, e);
+        }
+
+        void SpeedList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AllLists_SelectedIndexChanged(sender, e);
+        }
+
+        void HeadList_speed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AllLists_Speed_SelectedIndexChanged(sender, e);
+        }
+
+        void FlowList_speed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AllLists_Speed_SelectedIndexChanged(sender, e);
+        }
+
+        void CompanyList_speed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AllLists_Speed_SelectedIndexChanged(sender, e);
+        }
+
+        void SpeedList_speed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AllLists_Speed_SelectedIndexChanged(sender, e);
+        }
+
+        async Task fill_sizes()
+        {
+            string Heads = string.Join(",", HeadList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
+            string Flows = string.Join(",", FlowList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
+            string Companies = string.Join(",", CompanyList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
+            string Speeds = string.Join(",", SpeedList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Pump_Speed_in_RPM"].ToString()}'"));
+
+            // Asegurar que si la lista está vacía, la condición sea válida
+            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
+            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
+            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
+            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";
+
+            using (SqlConnection connection = new SqlConnection(db_conn))
+            {
+                await connection.OpenAsync();
+
+                string query = $@"
+            SELECT Pump_Size 
+            FROM pumps 
+            WHERE {CompaniesCondition} 
+              AND {FlowsCondition} 
+              AND {HeadsCondition} 
+              AND {SpeedsCondition}
+            GROUP BY Pump_Size 
+            ORDER BY Pump_Size ASC";
+
+                string query2 = $@"
+            SELECT Pump_Speed_in_RPM
+            FROM pumps 
+            WHERE {CompaniesCondition} 
+              AND {FlowsCondition} 
+              AND {HeadsCondition} 
+            GROUP BY Pump_Speed_in_RPM 
+            ORDER BY Pump_Speed_in_RPM ASC";
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(query, connection))
+                {
+                    DataTable size_map = new DataTable();
+                    adapter.Fill(size_map);
+                    SizeMap.DataSource = null;
+                    SizeMap.DataSource = new BindingSource(size_map, null);
+                    SizeMap.DisplayMember = "Pump_Size";
+                }
+
+
+            }
+        }
+
+        async Task fill_speeds()
+        {
+            // 🔄 Save current selections before updating DataSource
+            List<string> selectedSpeeds = SpeedList.SelectedItems
+                .OfType<DataRowView>()
+                .Select(item => item["Pump_Speed_in_RPM"].ToString())
+                .ToList();
+
+            string Heads = string.Join(",", HeadList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
+            string Flows = string.Join(",", FlowList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
+            string Companies = string.Join(",", CompanyList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
+
+            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
+            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
+            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
+
+            using (SqlConnection connection = new SqlConnection(db_conn))
+            {
+                await connection.OpenAsync();
+
+                string query2 = $@"
+        SELECT DISTINCT Pump_Speed_in_RPM
+        FROM pumps 
+        WHERE {CompaniesCondition} 
+          AND {HeadsCondition} 
+          AND {FlowsCondition} 
+        ORDER BY Pump_Speed_in_RPM ASC";
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(query2, connection))
+                {
+                    DataTable speed_map = new DataTable();
+                    adapter.Fill(speed_map);
+
+                    Console.WriteLine($"Speeds Retrieved: {speed_map.Rows.Count}");
+
+                    // 🛑 Stop UI refresh while updating
+                    SpeedList.BeginUpdate();
+                    SpeedList.DataSource = null;
+                    SpeedList.DataSource = new BindingSource(speed_map, null);
+                    SpeedList.DisplayMember = "Pump_Speed_in_RPM";
+
+                    // 🔄 CLEAR selection before restoring it
+                    SpeedList.ClearSelected();
+
+                    // 🔄 Restore previous selections AFTER updating DataSource
+                    List<int> indexesToSelect = new List<int>();
+
+                    for (int i = 0; i < SpeedList.Items.Count; i++)
+                    {
+                        DataRowView item = (DataRowView)SpeedList.Items[i];
+                        string speedValue = item["Pump_Speed_in_RPM"].ToString();
+
+                        if (selectedSpeeds.Contains(speedValue))
+                        {
+                            indexesToSelect.Add(i);
+                        }
+                    }
+
+                    // ✅ Apply selection safely
+                    foreach (int index in indexesToSelect)
+                    {
+                        SpeedList.SetSelected(index, true);
+                    }
+
+                    SpeedList.EndUpdate(); // ✅ Enable UI refresh again
+                }
+            }
+        }
+
+        async void AllLists_Speed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bool allListsSelected = (HeadList.SelectedItems.Count > 0) &&
+                                    (FlowList.SelectedItems.Count > 0) &&
+                                    (CompanyList.SelectedItems.Count > 0);
+
+            if (allListsSelected)
+            {
+                selectionTimer.Stop();  // 🛑 Detiene el timer en cada cambio
+                selectionTimer.Start(); // ⏳ Espera antes de ejecutar `fill_sizes()`
+            }
+            else
+            {
+                SpeedList.DataSource = null; // 🛑 Si algo queda vacío, limpia `Pump Size`
+            }
+        }
+
+        async void AllLists_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bool allListsSelected = (HeadList.SelectedItems.Count > 0) &&
+                                    (FlowList.SelectedItems.Count > 0) &&
+                                    (CompanyList.SelectedItems.Count > 0) &&
+                                    (SpeedList.SelectedItems.Count > 0);
+
+            if (allListsSelected)
+            {
+                selectionTimer.Stop();  // 🛑 Detiene el timer en cada cambio
+                selectionTimer.Start(); // ⏳ Espera antes de ejecutar `fill_sizes()`
+            }
+            else
+            {
+                SizeMap.DataSource = null; // 🛑 Si algo queda vacío, limpia `Pump Size`
+            }
+        }
+
+        public async void Big_query()
+        {
+
             //Must Go Filters
             string Heads = string.Join(",", HeadList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
             string Flows = string.Join(",", FlowList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
@@ -288,9 +485,6 @@ namespace PumpAtlas
                     return speeds;
                 });
 
-
-
-
                 if (SizeMap.SelectedItems.Count > 0)
                 {
                     SizeIsSelected = true;
@@ -313,19 +507,20 @@ namespace PumpAtlas
                                                    Speed = speedItem["Pump_Speed_in_RPM"].ToString(),
                                                    Sizes = sizeItem["Pump_Size"].ToString(),
                                                };
+                    string caseStatements = string.Join(",\n", selectedCombinations
+                        .SelectMany(item => pumpSpeeds, (item, pumpSpeed) =>
+                            $@"MIN(CASE 
+    WHEN Company = '{item.Company.Replace("'", "''")}' 
+    AND Flow = '{item.Flow.Replace("'", "''")}' 
+    AND Pump_Speed_in_RPM = '{pumpSpeed.Replace("'", "''")}' 
+    AND Pump_Size = '{item.Sizes.Replace("'", "''")}' 
+    THEN BHP 
+    END) AS [" + item.Company.Replace("'", "''") + "\n" +
+                                        item.Sizes.Replace("'", "''") + "\n" +
+                                        item.Flow.Replace("'", "''") + "\n" +
+                                        pumpSpeed.Replace("'", "''") + "]"));
 
-                    string caseStatements = string.Join(",", selectedCombinations
-                        .SelectMany(item => pumpSizes, (item, pumpSize) =>
-                            $@"MIN(CASE WHEN Company = '{item.Company}' 
-                    AND Flow = '{item.Flow}' 
-                    AND Pump_Speed_in_RPM = '{pumpSpeeds}' 
-                    AND Pump_Size = '{item.Sizes}' 
-                    THEN BHP 
-                    END) AS [" +
-                            item.Company + ((char)13).ToString() + ((char)10).ToString() +
-                            item.Sizes + ((char)13).ToString() + ((char)10).ToString() +
-                            item.Flow + ((char)13).ToString() + ((char)10).ToString() +
-                            pumpSpeeds + "]"));
+
 
                     string Bigquery = $@"
                      SELECT 
@@ -473,8 +668,13 @@ namespace PumpAtlas
                     GridColumn zeroColumn = gridView1.Columns[0];
                     zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
+                    hide_unused_columns();
+
                     GridColumn firstColumn = gridView1.Columns[1];
                     firstColumn.Visible = false;
+
+
+
                 }
             }
             catch (Exception ex)
@@ -482,6 +682,31 @@ namespace PumpAtlas
                 System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
         }
+
+        private void hide_unused_columns()
+        {
+            for (int j = gridView1.Columns.Count - 1; j >= 0; j--) 
+            {
+                GridColumn column = gridView1.Columns[j];
+                bool allCellsEmpty = true; 
+
+                for (int i = 0; i < gridView1.RowCount; i++) 
+                {
+                    object cellValue = gridView1.GetRowCellValue(i, column);
+
+                    if (cellValue != null && !string.IsNullOrWhiteSpace(cellValue.ToString()))
+                    {
+                        allCellsEmpty = false;
+                        break; 
+                    }
+                }
+
+                column.Visible = !allCellsEmpty;
+            }
+        }
+
+
+
 
         //Query that retrieves Data for the RP vs Others Tab
         private async void big_query2()
