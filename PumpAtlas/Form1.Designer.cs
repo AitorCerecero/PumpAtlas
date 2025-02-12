@@ -126,6 +126,9 @@
             button5 = new Button();
             button4 = new Button();
             xtraTabPage3 = new DevExpress.XtraTab.XtraTabPage();
+            dropDownButton1 = new DevExpress.XtraEditors.DropDownButton();
+            label2 = new Label();
+            button19 = new Button();
             xtraScrollableControl1 = new DevExpress.XtraEditors.XtraScrollableControl();
             label4 = new Label();
             conn_db_state = new Label();
@@ -1115,6 +1118,9 @@
             // xtraTabPage3
             // 
             xtraTabPage3.AutoScroll = true;
+            xtraTabPage3.Controls.Add(dropDownButton1);
+            xtraTabPage3.Controls.Add(label2);
+            xtraTabPage3.Controls.Add(button19);
             xtraTabPage3.Controls.Add(xtraScrollableControl1);
             xtraTabPage3.Controls.Add(label8);
             xtraTabPage3.Controls.Add(button8);
@@ -1130,13 +1136,40 @@
             xtraTabPage3.Size = new Size(1535, 725);
             xtraTabPage3.Text = "Data Insertion";
             // 
+            // dropDownButton1
+            // 
+            dropDownButton1.Location = new Point(748, 353);
+            dropDownButton1.Name = "dropDownButton1";
+            dropDownButton1.Size = new Size(135, 23);
+            dropDownButton1.TabIndex = 29;
+            dropDownButton1.Text = "dropDownButton1";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(667, 358);
+            label2.Name = "label2";
+            label2.Size = new Size(81, 13);
+            label2.TabIndex = 28;
+            label2.Text = "Selected Table:";
+            // 
+            // button19
+            // 
+            button19.Location = new Point(667, 389);
+            button19.Name = "button19";
+            button19.Size = new Size(250, 43);
+            button19.TabIndex = 27;
+            button19.Text = "Insert Data";
+            button19.UseVisualStyleBackColor = true;
+            button19.Click += button19_Click;
+            // 
             // xtraScrollableControl1
             // 
             xtraScrollableControl1.Controls.Add(label4);
             xtraScrollableControl1.Controls.Add(conn_db_state);
-            xtraScrollableControl1.Location = new Point(550, 178);
+            xtraScrollableControl1.Location = new Point(423, 178);
             xtraScrollableControl1.Name = "xtraScrollableControl1";
-            xtraScrollableControl1.Size = new Size(494, 151);
+            xtraScrollableControl1.Size = new Size(732, 25);
             xtraScrollableControl1.TabIndex = 26;
             // 
             // label4
@@ -1159,7 +1192,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(325, 534);
+            label8.Location = new Point(325, 497);
             label8.Name = "label8";
             label8.Size = new Size(979, 39);
             label8.TabIndex = 25;
@@ -1167,7 +1200,7 @@
             // 
             // button8
             // 
-            button8.Location = new Point(667, 576);
+            button8.Location = new Point(667, 539);
             button8.Name = "button8";
             button8.Size = new Size(250, 43);
             button8.TabIndex = 24;
@@ -1178,7 +1211,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(423, 346);
+            label7.Location = new Point(423, 220);
             label7.Name = "label7";
             label7.Size = new Size(732, 26);
             label7.TabIndex = 23;
@@ -1187,7 +1220,7 @@
             // insert_state
             // 
             insert_state.AutoSize = true;
-            insert_state.Location = new Point(748, 488);
+            insert_state.Location = new Point(748, 463);
             insert_state.Name = "insert_state";
             insert_state.Size = new Size(0, 13);
             insert_state.TabIndex = 22;
@@ -1195,7 +1228,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(667, 488);
+            label6.Location = new Point(667, 463);
             label6.Name = "label6";
             label6.Size = new Size(86, 13);
             label6.TabIndex = 21;
@@ -1204,7 +1237,7 @@
             // sel_insert_label
             // 
             sel_insert_label.AutoSize = true;
-            sel_insert_label.Location = new Point(745, 447);
+            sel_insert_label.Location = new Point(745, 321);
             sel_insert_label.Name = "sel_insert_label";
             sel_insert_label.Size = new Size(0, 13);
             sel_insert_label.TabIndex = 20;
@@ -1212,7 +1245,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(667, 447);
+            label5.Location = new Point(667, 321);
             label5.Name = "label5";
             label5.Size = new Size(71, 13);
             label5.TabIndex = 19;
@@ -1220,7 +1253,7 @@
             // 
             // button7
             // 
-            button7.Location = new Point(667, 390);
+            button7.Location = new Point(667, 264);
             button7.Name = "button7";
             button7.Size = new Size(250, 43);
             button7.TabIndex = 18;
@@ -1250,7 +1283,7 @@
             // pictureBox2
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(610, 3);
+            pictureBox2.Location = new Point(606, 15);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(465, 97);
             pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -1464,5 +1497,8 @@
         private DevExpress.XtraEditors.LabelControl labelControl20;
         private DevExpress.XtraEditors.LabelControl labelControl23;
         private LinkLabel linkLabel1;
+        public Button button19;
+        private Label label2;
+        private DevExpress.XtraEditors.DropDownButton dropDownButton1;
     }
 }

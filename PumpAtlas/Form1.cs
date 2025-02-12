@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Spire.Xls;
+using System;
 using System.Data;
 using CsvHelper;
 using System.Globalization;
@@ -7,6 +8,8 @@ using CsvHelper.Configuration;
 using System.IO;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraBars;
+using System.Windows.Forms;
 using System.Diagnostics;
 using DevExpress.CodeParser;
 
@@ -19,6 +22,7 @@ namespace PumpAtlas
         string db_conn = "Server=DC1FP1;Database=FireSystemsDB;TrustServerCertificate=True;User Id=firedb;Password=firedb;";
 
         public static bool IsKeyEntered = false;
+        public static bool selectedFile = false;
         public static bool? SizeIsSelected = null;
         private bool allListsSelected = false;
         private bool allListsSpeedSelected = false;
@@ -31,7 +35,9 @@ namespace PumpAtlas
         DataTable dt = new DataTable();
 
         String fileContent = string.Empty;
+        String filelocation;
         String filePath = string.Empty;
+
         System.Windows.Forms.Timer selectionTimer = new System.Windows.Forms.Timer();
 
         //initializing stage with app name
@@ -55,14 +61,16 @@ namespace PumpAtlas
             SpeedList.SelectedIndexChanged += SpeedList_speed_SelectedIndexChanged;
 
 
-            selectionTimer.Interval = 1; // ⏳ Espera 500ms antes de ejecutar la consulta
-            selectionTimer.Tick += async (s, e) => {
+            selectionTimer.Interval = 1; // 
+            selectionTimer.Tick += async (s, e) =>
+            {
                 selectionTimer.Stop();
                 await fill_speeds();
             };
 
-            selectionTimer.Interval = 1; // ⏳ Espera 500ms antes de ejecutar la consulta
-            selectionTimer.Tick += async (s, e) => {
+            selectionTimer.Interval = 1; // 
+            selectionTimer.Tick += async (s, e) =>
+            {
                 selectionTimer.Stop();
                 await fill_sizes();
             };
@@ -206,6 +214,14 @@ namespace PumpAtlas
                 Size_all.DataSource = null;
                 Size_all.DataSource = new BindingSource(size_all, null);
                 Size_all.DisplayMember = "Pump_Size";
+
+                String tables_Query = ("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'");
+                adapter = new SqlDataAdapter(tables_Query, connection);
+                DataTable tables = new DataTable();
+                adapter.Fill(tables);
+                DevExpress.XtraNavBar.NavBarControl navBarControl = new DevExpress.XtraNavBar.NavBarControl();
+
+                //tables.DataSource = null;
             }
         }
 
@@ -577,6 +593,8 @@ namespace PumpAtlas
                     GridColumn zeroColumn = gridView1.Columns[0];
                     zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
+                    hide_unused_columns();
+
                     GridColumn firstColumn = gridView1.Columns[1];
                     firstColumn.Visible = false;
 
@@ -685,19 +703,19 @@ namespace PumpAtlas
 
         private void hide_unused_columns()
         {
-            for (int j = gridView1.Columns.Count - 1; j >= 0; j--) 
+            for (int j = gridView1.Columns.Count - 1; j >= 0; j--)
             {
                 GridColumn column = gridView1.Columns[j];
-                bool allCellsEmpty = true; 
+                bool allCellsEmpty = true;
 
-                for (int i = 0; i < gridView1.RowCount; i++) 
+                for (int i = 0; i < gridView1.RowCount; i++)
                 {
                     object cellValue = gridView1.GetRowCellValue(i, column);
 
                     if (cellValue != null && !string.IsNullOrWhiteSpace(cellValue.ToString()))
                     {
                         allCellsEmpty = false;
-                        break; 
+                        break;
                     }
                 }
 
@@ -1141,6 +1159,130 @@ namespace PumpAtlas
             clear_visor();
         }
         //Async function that inserts a file to the Database
+
+        public async void SelectCsvFile()
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\Downloads";
+                openFileDialog.Title = "Select a CSV to Insert onto Database";
+                openFileDialog.Filter = "CSV files (*.csv)|*.csv";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    sel_insert_label.Text = Path.GetFileName(filePath);
+                    selectedFile = true;
+
+                    await InsertCsvDataToDatabase(filePath); // 🔄 Call function to insert data
+                }
+                else
+                {
+                    sel_insert_label.Text = "No File Selected";
+                }
+            }
+        }
+
+        public async Task InsertCsvDataToDatabase(string filePath)
+        {
+
+            try
+            {
+                insert_state.Text = "Performing Insertion, Hold on while we Insert the Data";
+
+                await Task.Run(async () =>
+                {
+                    try
+                    {
+                        using (var connection = new SqlConnection(db_conn))
+                        {
+                            connection.Open();
+
+                            DataTable dt = new DataTable();
+                            dt.Columns.Add("Company", typeof(string));
+                            dt.Columns.Add("Pump_Line", typeof(string));
+                            dt.Columns.Add("Flow", typeof(int));
+                            dt.Columns.Add("Head", typeof(int));
+                            dt.Columns.Add("Pump_Speed_in_RPM", typeof(int));
+                            dt.Columns.Add("Max_BHP", typeof(int));
+                            dt.Columns.Add("Pump_Model", typeof(string));
+                            dt.Columns.Add("Line", typeof(string));
+                            dt.Columns.Add("Stages", typeof(int));
+                            dt.Columns.Add("Pump_Size", typeof(string));
+
+                            var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+                            {
+                                HasHeaderRecord = false
+                            };
+
+                            using (var reader = new StreamReader(filePath))
+                            using (var csv = new CsvReader(reader, csvConfig))
+                            {
+                                csv.Read();
+
+                                while (await csv.ReadAsync())
+                                {
+                                    DataRow row = dt.NewRow();
+                                    row["Company"] = csv.GetField(0);
+                                    row["Pump_Line"] = csv.GetField(1);
+                                    row["Flow"] = csv.GetField<int>(2);
+                                    row["Head"] = csv.GetField<int>(3);
+                                    row["Pump_Speed_in_RPM"] = csv.GetField<int>(4);
+                                    row["Max_BHP"] = csv.GetField<int>(5);
+                                    row["Pump_Model"] = csv.GetField(6);
+                                    row["Line"] = csv.GetField(7);
+                                    row["Stages"] = csv.GetField<int>(8);
+                                    row["Pump_Size"] = csv.GetField(9);
+
+                                    dt.Rows.Add(row);
+                                }
+                            }
+
+                            using (var bulkCopy = new SqlBulkCopy(connection))
+                            {
+                                bulkCopy.DestinationTableName = "pumps";
+                                await bulkCopy.WriteToServerAsync(dt);
+                            }
+
+                            this.Invoke(new Action(() =>
+                            {
+                                insert_state.Text = "Data inserted successfully";
+                                transform_data();
+                                refresh_db();
+                                fill_selectors();
+                            }));
+
+                            await Task.Delay(6000);
+                            this.Invoke(new Action(() =>
+                            {
+                                insert_state.Text = string.Empty;
+                            }));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            insert_state.Text = $"An error occurred: {ex.Message}";
+                        }));
+
+                        await Task.Delay(6000);
+                        this.Invoke(new Action(() =>
+                        {
+                            insert_state.Text = string.Empty;
+                        }));
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Error reading CSV file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        //old function
         public async void select_file_to_insert_to_database()
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -1405,5 +1547,13 @@ namespace PumpAtlas
         {
             Process.Start(new ProcessStartInfo("https://ruhrpumpen.sharepoint.com/:x:/r/sites/RPFS-InsideSales/Shared%20Documents/Product%20Engineer/PRODUCT%20ENGINEER%20LUIS%20DAVILA/PRACTICANTES/AITOR%20CERECERO/Data%20Insertion%20Template.xlsx?d=w6be1803de5154790a8fe1b5e71a95549&csf=1&web=1&e=qN8q1l") { UseShellExecute = true });
         }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
     }
 }
