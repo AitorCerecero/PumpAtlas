@@ -126,9 +126,6 @@
             button5 = new Button();
             button4 = new Button();
             xtraTabPage3 = new DevExpress.XtraTab.XtraTabPage();
-            dropDownButton1 = new DevExpress.XtraEditors.DropDownButton();
-            label2 = new Label();
-            button19 = new Button();
             xtraScrollableControl1 = new DevExpress.XtraEditors.XtraScrollableControl();
             label4 = new Label();
             conn_db_state = new Label();
@@ -146,7 +143,7 @@
             xtraTabPage10 = new DevExpress.XtraTab.XtraTabPage();
             pictureBox4 = new PictureBox();
             label9 = new Label();
-            panel1 = new Panel();
+            panelControl1 = new DevExpress.XtraEditors.PanelControl();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)xtraTabControl2).BeginInit();
@@ -175,25 +172,30 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             xtraTabPage10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
-            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)panelControl1).BeginInit();
+            panelControl1.SuspendLayout();
             SuspendLayout();
             // 
             // pictureBox1
             // 
+            pictureBox1.Dock = DockStyle.Right;
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(1452, 0);
+            pictureBox1.Location = new Point(1406, 2);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(125, 53);
+            pictureBox1.Size = new Size(152, 53);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 2;
             pictureBox1.TabStop = false;
             // 
             // pictureBox3
             // 
+            pictureBox3.BackColor = Color.White;
+            pictureBox3.BackgroundImageLayout = ImageLayout.None;
+            pictureBox3.Dock = DockStyle.Fill;
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(643, 3);
+            pictureBox3.Location = new Point(2, 2);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(348, 50);
+            pictureBox3.Size = new Size(1556, 53);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 3;
             pictureBox3.TabStop = false;
@@ -1118,9 +1120,6 @@
             // xtraTabPage3
             // 
             xtraTabPage3.AutoScroll = true;
-            xtraTabPage3.Controls.Add(dropDownButton1);
-            xtraTabPage3.Controls.Add(label2);
-            xtraTabPage3.Controls.Add(button19);
             xtraTabPage3.Controls.Add(xtraScrollableControl1);
             xtraTabPage3.Controls.Add(label8);
             xtraTabPage3.Controls.Add(button8);
@@ -1136,38 +1135,11 @@
             xtraTabPage3.Size = new Size(1535, 725);
             xtraTabPage3.Text = "Data Insertion";
             // 
-            // dropDownButton1
-            // 
-            dropDownButton1.Location = new Point(748, 353);
-            dropDownButton1.Name = "dropDownButton1";
-            dropDownButton1.Size = new Size(135, 23);
-            dropDownButton1.TabIndex = 29;
-            dropDownButton1.Text = "dropDownButton1";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(667, 358);
-            label2.Name = "label2";
-            label2.Size = new Size(81, 13);
-            label2.TabIndex = 28;
-            label2.Text = "Selected Table:";
-            // 
-            // button19
-            // 
-            button19.Location = new Point(667, 389);
-            button19.Name = "button19";
-            button19.Size = new Size(250, 43);
-            button19.TabIndex = 27;
-            button19.Text = "Insert Data";
-            button19.UseVisualStyleBackColor = true;
-            button19.Click += button19_Click;
-            // 
             // xtraScrollableControl1
             // 
             xtraScrollableControl1.Controls.Add(label4);
             xtraScrollableControl1.Controls.Add(conn_db_state);
-            xtraScrollableControl1.Location = new Point(423, 178);
+            xtraScrollableControl1.Location = new Point(401, 182);
             xtraScrollableControl1.Name = "xtraScrollableControl1";
             xtraScrollableControl1.Size = new Size(732, 25);
             xtraScrollableControl1.TabIndex = 26;
@@ -1192,7 +1164,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(325, 497);
+            label8.Location = new Point(344, 403);
             label8.Name = "label8";
             label8.Size = new Size(979, 39);
             label8.TabIndex = 25;
@@ -1200,7 +1172,7 @@
             // 
             // button8
             // 
-            button8.Location = new Point(667, 539);
+            button8.Location = new Point(647, 459);
             button8.Name = "button8";
             button8.Size = new Size(250, 43);
             button8.TabIndex = 24;
@@ -1211,7 +1183,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(423, 220);
+            label7.Location = new Point(401, 224);
             label7.Name = "label7";
             label7.Size = new Size(732, 26);
             label7.TabIndex = 23;
@@ -1220,7 +1192,7 @@
             // insert_state
             // 
             insert_state.AutoSize = true;
-            insert_state.Location = new Point(748, 463);
+            insert_state.Location = new Point(726, 356);
             insert_state.Name = "insert_state";
             insert_state.Size = new Size(0, 13);
             insert_state.TabIndex = 22;
@@ -1228,7 +1200,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(667, 463);
+            label6.Location = new Point(645, 356);
             label6.Name = "label6";
             label6.Size = new Size(86, 13);
             label6.TabIndex = 21;
@@ -1237,7 +1209,7 @@
             // sel_insert_label
             // 
             sel_insert_label.AutoSize = true;
-            sel_insert_label.Location = new Point(745, 321);
+            sel_insert_label.Location = new Point(723, 325);
             sel_insert_label.Name = "sel_insert_label";
             sel_insert_label.Size = new Size(0, 13);
             sel_insert_label.TabIndex = 20;
@@ -1245,7 +1217,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(667, 321);
+            label5.Location = new Point(645, 325);
             label5.Name = "label5";
             label5.Size = new Size(71, 13);
             label5.TabIndex = 19;
@@ -1253,7 +1225,7 @@
             // 
             // button7
             // 
-            button7.Location = new Point(667, 264);
+            button7.Location = new Point(645, 268);
             button7.Name = "button7";
             button7.Size = new Size(250, 43);
             button7.TabIndex = 18;
@@ -1264,7 +1236,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(488, 73);
+            label3.Location = new Point(466, 77);
             label3.Name = "label3";
             label3.Size = new Size(631, 13);
             label3.TabIndex = 15;
@@ -1272,7 +1244,7 @@
             // 
             // button6
             // 
-            button6.Location = new Point(677, 129);
+            button6.Location = new Point(655, 133);
             button6.Name = "button6";
             button6.Size = new Size(250, 43);
             button6.TabIndex = 14;
@@ -1317,14 +1289,16 @@
             label9.TabIndex = 2;
             label9.Text = "Pump Atlas\r\n\r\nVersion 1.0.0\r\n\r\nProperty of Ruhrpumpen Fire Systems\r\n";
             // 
-            // panel1
+            // panelControl1
             // 
-            panel1.Controls.Add(pictureBox1);
-            panel1.Controls.Add(pictureBox3);
-            panel1.Location = new Point(2, 3);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1580, 56);
-            panel1.TabIndex = 2;
+            panelControl1.Appearance.BackColor = Color.Transparent;
+            panelControl1.Appearance.Options.UseBackColor = true;
+            panelControl1.Controls.Add(pictureBox1);
+            panelControl1.Controls.Add(pictureBox3);
+            panelControl1.Location = new Point(12, 2);
+            panelControl1.Name = "panelControl1";
+            panelControl1.Size = new Size(1560, 57);
+            panelControl1.TabIndex = 77;
             // 
             // Form1
             // 
@@ -1332,12 +1306,13 @@
             AutoScaleMode = AutoScaleMode.Dpi;
             AutoSize = true;
             BackColor = Color.White;
-            ClientSize = new Size(1584, 958);
+            ClientSize = new Size(1584, 961);
+            Controls.Add(panelControl1);
             Controls.Add(xtraTabControl2);
-            Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "Form1";
+            WindowState = FormWindowState.Maximized;
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
@@ -1377,14 +1352,14 @@
             xtraTabPage10.ResumeLayout(false);
             xtraTabPage10.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
-            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)panelControl1).EndInit();
+            panelControl1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
         private PictureBox pictureBox1;
         private PictureBox pictureBox3;
-        private Panel panel1;
         private DevExpress.XtraTab.XtraTabControl xtraTabControl2;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage5;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage6;
@@ -1497,8 +1472,6 @@
         private DevExpress.XtraEditors.LabelControl labelControl20;
         private DevExpress.XtraEditors.LabelControl labelControl23;
         private LinkLabel linkLabel1;
-        public Button button19;
-        private Label label2;
-        private DevExpress.XtraEditors.DropDownButton dropDownButton1;
+        private DevExpress.XtraEditors.PanelControl panelControl1;
     }
 }

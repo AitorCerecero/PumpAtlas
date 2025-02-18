@@ -40,13 +40,21 @@ namespace PumpAtlas
 
         System.Windows.Forms.Timer selectionTimer = new System.Windows.Forms.Timer();
 
-        //initializing stage with app name
         public Form1()
         {
             InitializeComponent();
             this.Text = "Ruhrpumpen Pump Atlas";
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = true;
+            //this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            //this.MaximizeBox = true;
+
+            xtraTabControl2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            xtraTabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            gridControl1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            gridControl2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            gridControl3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            gridControl4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            gridControl5.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            panelControl1.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
 
             HeadList.SelectedIndexChanged += HeadList_SelectedIndexChanged;
             HeadList.SelectedIndexChanged += HeadList_speed_SelectedIndexChanged;
@@ -313,10 +321,9 @@ namespace PumpAtlas
 
             }
         }
-
         async Task fill_speeds()
         {
-            // 🔄 Save current selections before updating DataSource
+            
             List<string> selectedSpeeds = SpeedList.SelectedItems
                 .OfType<DataRowView>()
                 .Select(item => item["Pump_Speed_in_RPM"].ToString())
@@ -349,16 +356,15 @@ namespace PumpAtlas
 
                     Console.WriteLine($"Speeds Retrieved: {speed_map.Rows.Count}");
 
-                    // 🛑 Stop UI refresh while updating
+                   
                     SpeedList.BeginUpdate();
                     SpeedList.DataSource = null;
                     SpeedList.DataSource = new BindingSource(speed_map, null);
                     SpeedList.DisplayMember = "Pump_Speed_in_RPM";
 
-                    // 🔄 CLEAR selection before restoring it
+                    
                     SpeedList.ClearSelected();
 
-                    // 🔄 Restore previous selections AFTER updating DataSource
                     List<int> indexesToSelect = new List<int>();
 
                     for (int i = 0; i < SpeedList.Items.Count; i++)
@@ -378,11 +384,10 @@ namespace PumpAtlas
                         SpeedList.SetSelected(index, true);
                     }
 
-                    SpeedList.EndUpdate(); // ✅ Enable UI refresh again
+                    SpeedList.EndUpdate(); 
                 }
             }
         }
-
         async void AllLists_Speed_SelectedIndexChanged(object sender, EventArgs e)
         {
             bool allListsSelected = (HeadList.SelectedItems.Count > 0) &&
@@ -391,15 +396,14 @@ namespace PumpAtlas
 
             if (allListsSelected)
             {
-                selectionTimer.Stop();  // 🛑 Detiene el timer en cada cambio
-                selectionTimer.Start(); // ⏳ Espera antes de ejecutar `fill_sizes()`
+                selectionTimer.Stop();  
+                selectionTimer.Start(); 
             }
             else
             {
-                SpeedList.DataSource = null; // 🛑 Si algo queda vacío, limpia `Pump Size`
+                SpeedList.DataSource = null; 
             }
         }
-
         async void AllLists_SelectedIndexChanged(object sender, EventArgs e)
         {
             bool allListsSelected = (HeadList.SelectedItems.Count > 0) &&
@@ -409,12 +413,12 @@ namespace PumpAtlas
 
             if (allListsSelected)
             {
-                selectionTimer.Stop();  // 🛑 Detiene el timer en cada cambio
-                selectionTimer.Start(); // ⏳ Espera antes de ejecutar `fill_sizes()`
+                selectionTimer.Stop();  
+                selectionTimer.Start(); 
             }
             else
             {
-                SizeMap.DataSource = null; // 🛑 Si algo queda vacío, limpia `Pump Size`
+                SizeMap.DataSource = null; 
             }
         }
 
@@ -722,10 +726,6 @@ namespace PumpAtlas
                 column.Visible = !allCellsEmpty;
             }
         }
-
-
-
-
         //Query that retrieves Data for the RP vs Others Tab
         private async void big_query2()
         {
@@ -1159,130 +1159,6 @@ namespace PumpAtlas
             clear_visor();
         }
         //Async function that inserts a file to the Database
-
-        public async void SelectCsvFile()
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.InitialDirectory = "c:\\Downloads";
-                openFileDialog.Title = "Select a CSV to Insert onto Database";
-                openFileDialog.Filter = "CSV files (*.csv)|*.csv";
-                openFileDialog.FilterIndex = 1;
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string filePath = openFileDialog.FileName;
-                    sel_insert_label.Text = Path.GetFileName(filePath);
-                    selectedFile = true;
-
-                    await InsertCsvDataToDatabase(filePath); // 🔄 Call function to insert data
-                }
-                else
-                {
-                    sel_insert_label.Text = "No File Selected";
-                }
-            }
-        }
-
-        public async Task InsertCsvDataToDatabase(string filePath)
-        {
-
-            try
-            {
-                insert_state.Text = "Performing Insertion, Hold on while we Insert the Data";
-
-                await Task.Run(async () =>
-                {
-                    try
-                    {
-                        using (var connection = new SqlConnection(db_conn))
-                        {
-                            connection.Open();
-
-                            DataTable dt = new DataTable();
-                            dt.Columns.Add("Company", typeof(string));
-                            dt.Columns.Add("Pump_Line", typeof(string));
-                            dt.Columns.Add("Flow", typeof(int));
-                            dt.Columns.Add("Head", typeof(int));
-                            dt.Columns.Add("Pump_Speed_in_RPM", typeof(int));
-                            dt.Columns.Add("Max_BHP", typeof(int));
-                            dt.Columns.Add("Pump_Model", typeof(string));
-                            dt.Columns.Add("Line", typeof(string));
-                            dt.Columns.Add("Stages", typeof(int));
-                            dt.Columns.Add("Pump_Size", typeof(string));
-
-                            var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
-                            {
-                                HasHeaderRecord = false
-                            };
-
-                            using (var reader = new StreamReader(filePath))
-                            using (var csv = new CsvReader(reader, csvConfig))
-                            {
-                                csv.Read();
-
-                                while (await csv.ReadAsync())
-                                {
-                                    DataRow row = dt.NewRow();
-                                    row["Company"] = csv.GetField(0);
-                                    row["Pump_Line"] = csv.GetField(1);
-                                    row["Flow"] = csv.GetField<int>(2);
-                                    row["Head"] = csv.GetField<int>(3);
-                                    row["Pump_Speed_in_RPM"] = csv.GetField<int>(4);
-                                    row["Max_BHP"] = csv.GetField<int>(5);
-                                    row["Pump_Model"] = csv.GetField(6);
-                                    row["Line"] = csv.GetField(7);
-                                    row["Stages"] = csv.GetField<int>(8);
-                                    row["Pump_Size"] = csv.GetField(9);
-
-                                    dt.Rows.Add(row);
-                                }
-                            }
-
-                            using (var bulkCopy = new SqlBulkCopy(connection))
-                            {
-                                bulkCopy.DestinationTableName = "pumps";
-                                await bulkCopy.WriteToServerAsync(dt);
-                            }
-
-                            this.Invoke(new Action(() =>
-                            {
-                                insert_state.Text = "Data inserted successfully";
-                                transform_data();
-                                refresh_db();
-                                fill_selectors();
-                            }));
-
-                            await Task.Delay(6000);
-                            this.Invoke(new Action(() =>
-                            {
-                                insert_state.Text = string.Empty;
-                            }));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        this.Invoke(new Action(() =>
-                        {
-                            insert_state.Text = $"An error occurred: {ex.Message}";
-                        }));
-
-                        await Task.Delay(6000);
-                        this.Invoke(new Action(() =>
-                        {
-                            insert_state.Text = string.Empty;
-                        }));
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show("Error reading CSV file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        //old function
         public async void select_file_to_insert_to_database()
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -1372,6 +1248,7 @@ namespace PumpAtlas
                                     this.Invoke(new Action(() =>
                                     {
                                         insert_state.Text = string.Empty;
+                                        sel_insert_label.Text = string.Empty;
                                     }));
                                 }
                             }
@@ -1386,6 +1263,7 @@ namespace PumpAtlas
                                 this.Invoke(new Action(() =>
                                 {
                                     insert_state.Text = string.Empty;
+                                    sel_insert_label.Text = string.Empty;
                                 }));
                             }
                         });
@@ -1547,13 +1425,5 @@ namespace PumpAtlas
         {
             Process.Start(new ProcessStartInfo("https://ruhrpumpen.sharepoint.com/:x:/r/sites/RPFS-InsideSales/Shared%20Documents/Product%20Engineer/PRODUCT%20ENGINEER%20LUIS%20DAVILA/PRACTICANTES/AITOR%20CERECERO/Data%20Insertion%20Template.xlsx?d=w6be1803de5154790a8fe1b5e71a95549&csf=1&web=1&e=qN8q1l") { UseShellExecute = true });
         }
-
-        private void button19_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
-
     }
 }
