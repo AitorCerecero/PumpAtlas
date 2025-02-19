@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using CsvHelper;
 using System.Globalization;
+using System.Linq;
 using CsvHelper.Configuration;
 using System.IO;
 using DevExpress.XtraGrid.Columns;
@@ -11,7 +12,11 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraBars;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Dapper;
 using DevExpress.CodeParser;
+using System.ComponentModel.DataAnnotations;
 
 namespace PumpAtlas
 {
@@ -323,7 +328,7 @@ namespace PumpAtlas
         }
         async Task fill_speeds()
         {
-            
+
             List<string> selectedSpeeds = SpeedList.SelectedItems
                 .OfType<DataRowView>()
                 .Select(item => item["Pump_Speed_in_RPM"].ToString())
@@ -356,13 +361,13 @@ namespace PumpAtlas
 
                     Console.WriteLine($"Speeds Retrieved: {speed_map.Rows.Count}");
 
-                   
+
                     SpeedList.BeginUpdate();
                     SpeedList.DataSource = null;
                     SpeedList.DataSource = new BindingSource(speed_map, null);
                     SpeedList.DisplayMember = "Pump_Speed_in_RPM";
 
-                    
+
                     SpeedList.ClearSelected();
 
                     List<int> indexesToSelect = new List<int>();
@@ -384,7 +389,7 @@ namespace PumpAtlas
                         SpeedList.SetSelected(index, true);
                     }
 
-                    SpeedList.EndUpdate(); 
+                    SpeedList.EndUpdate();
                 }
             }
         }
@@ -396,12 +401,12 @@ namespace PumpAtlas
 
             if (allListsSelected)
             {
-                selectionTimer.Stop();  
-                selectionTimer.Start(); 
+                selectionTimer.Stop();
+                selectionTimer.Start();
             }
             else
             {
-                SpeedList.DataSource = null; 
+                SpeedList.DataSource = null;
             }
         }
         async void AllLists_SelectedIndexChanged(object sender, EventArgs e)
@@ -413,291 +418,112 @@ namespace PumpAtlas
 
             if (allListsSelected)
             {
-                selectionTimer.Stop();  
-                selectionTimer.Start(); 
+                selectionTimer.Stop();
+                selectionTimer.Start();
             }
             else
             {
-                SizeMap.DataSource = null; 
+                SizeMap.DataSource = null;
             }
         }
 
         public async void Big_query()
         {
-
-            //Must Go Filters
-            string Heads = string.Join(",", HeadList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
-            string Flows = string.Join(",", FlowList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
-            //Optional Filters
-            string Companies = string.Join(",", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
-            string Speeds = string.Join(",", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Speed_in_RPM"].ToString()}'"));
-            string Sizes = string.Join(",", SizeMap.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Size"].ToString()}'"));
-
-            //Bypass Query conditions to run it even when nothing is selected
-            string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
-            string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
-            string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
-            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";
-            string SizesCondition = string.IsNullOrEmpty(Sizes) ? "1=1" : $"Pump_Size IN ({Sizes})";
-
-            List<string> pumpSizes;
-            List<string> pumpSpeeds;
-
-            string pumpSpeedQuery = $@"
-            SELECT DISTINCT Pump_Speed_in_RPM 
-            FROM pumps
-            WHERE
-            {CompaniesCondition} 
-            AND {FlowsCondition} 
-            AND {SizesCondition} 
-            AND {HeadsCondition} 
-            AND Pump_Speed_in_RPM  IS NOT NULL";
-
-            string pumpSizeQuery = $@"
-            SELECT DISTINCT Pump_Size 
-            FROM pumps 
-            WHERE 
-           {CompaniesCondition} 
-            AND {FlowsCondition} 
-            AND {SpeedsCondition} 
-            AND {HeadsCondition} 
-            AND Pump_Size IS NOT NULL";
-
             try
             {
-                pumpSizes = await Task.Run(() =>
+                // Construcción de filtros SQL
+                string Heads = string.Join(",", HeadList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
+                string Flows = string.Join(",", FlowList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
+                string Companies = string.Join(",", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
+                string Speeds = string.Join(",", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Speed_in_RPM"].ToString()}'"));
+                string Sizes = string.Join(",", SizeMap.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Size"].ToString()}'"));
+
+                // Condiciones dinámicas
+                string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
+                string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
+                string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
+                string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";
+                string SizesCondition = string.IsNullOrEmpty(Sizes) ? "1=1" : $"Pump_Size IN ({Sizes})";
+
+                // Construcción dinámica de las columnas
+                string dynamicColumnsQuery = $@"
+            SELECT DISTINCT
+                REPLACE(CONCAT(Company, CHAR(13) + CHAR(10), Pump_Size, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Pump_Speed_in_RPM), '\n', CHAR(13) + CHAR(10)) AS ColumnName
+            FROM pumps
+            WHERE {CompaniesCondition} AND {FlowsCondition} AND {HeadsCondition} AND {SpeedsCondition} AND {SizesCondition}";
+
+                List<string> dynamicColumns = new List<string>();
+                using (var connection = new SqlConnection(db_conn))
                 {
-                    var sizes = new List<string>();
-                    using (var connection = new SqlConnection(db_conn))
+                    connection.Open();
+                    using (var command = new SqlCommand(dynamicColumnsQuery, connection))
+                    using (var reader = command.ExecuteReader())
                     {
-                        using (var command = new SqlCommand(pumpSizeQuery, connection))
+                        while (reader.Read())
                         {
-                            connection.Open();
-                            using (var reader = command.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    sizes.Add(reader["Pump_Size"].ToString());
-                                }
-                            }
+                            dynamicColumns.Add(reader["ColumnName"].ToString());
                         }
                     }
-                    return sizes;
-                });
+                }
 
-                pumpSpeeds = await Task.Run(() =>
+                string caseStatements = string.Join(",\n", dynamicColumns.Select(col => $@"
+            MIN(CASE WHEN REPLACE(CONCAT(Company, CHAR(13) + CHAR(10), Pump_Size, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Pump_Speed_in_RPM), '\n', CHAR(13) + CHAR(10)) = '{col.Replace("'", "''")}' THEN BHP END) AS [{col}]")
+                );
+
+                string Bigquery = $@"
+            SELECT 
+                Head,
+                STUFF((
+                    SELECT CHAR(13) + CHAR(10) + CONCAT(Company, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Pump_Speed_in_RPM, CHAR(13) + CHAR(10), Pump_Size)
+                    FROM pumps AS p
+                    WHERE p.Head = p1.Head
+                    AND {CompaniesCondition}
+                    AND {FlowsCondition}
+                    AND {HeadsCondition}
+                    AND {SpeedsCondition}
+                    AND {SizesCondition}
+                    FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS CompanyFlow,
+                {caseStatements}
+            FROM pumps AS p1
+            WHERE {CompaniesCondition} 
+              AND {FlowsCondition} 
+              AND {HeadsCondition} 
+              AND {SpeedsCondition} 
+              AND {SizesCondition}
+            GROUP BY Head
+            ORDER BY Head";
+
+                DataTable fullData = await Task.Run(() =>
                 {
-                    var speeds = new List<string>();
+                    DataTable dataTable = new DataTable();
                     using (var connection = new SqlConnection(db_conn))
                     {
-                        using (var command = new SqlCommand(pumpSpeedQuery, connection))
+                        connection.Open();
+                        using (var adapter = new SqlDataAdapter(Bigquery, connection))
                         {
-                            connection.Open();
-                            using (var reader = command.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    speeds.Add(reader["Pump_Speed_in_RPM"].ToString());
-                                }
-                            }
+                            adapter.Fill(dataTable);
                         }
                     }
-                    return speeds;
+                    return dataTable;
                 });
 
-                if (SizeMap.SelectedItems.Count > 0)
-                {
-                    SizeIsSelected = true;
-                }
-                else
-                {
-                    SizeIsSelected = false;
-                }
+                // Configurar el grid con los datos obtenidos
+                gridControl1.DataSource = fullData;
+                gridView1.OptionsView.ShowGroupPanel = false;
+                gridView1.PopulateColumns();
+                gridView1.OptionsView.ColumnAutoWidth = false;
+                gridView1.BestFitColumns();
+                gridView1.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+                gridView1.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+                gridView1.ColumnPanelRowHeight = 70; 
 
-                if (SizeIsSelected == true)
-                { //Function that querys based on the selected size, no autosize will be shown
-                    var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
-                                               from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
-                                               from speedItem in SpeedList.SelectedItems.Cast<DataRowView>()
-                                               from sizeItem in SizeMap.SelectedItems.Cast<DataRowView>()
-                                               select new
-                                               {
-                                                   Flow = flowItem["Flow"].ToString(),
-                                                   Company = companyItem["Company"].ToString(),
-                                                   Speed = speedItem["Pump_Speed_in_RPM"].ToString(),
-                                                   Sizes = sizeItem["Pump_Size"].ToString(),
-                                               };
-                    string caseStatements = string.Join(",\n", selectedCombinations
-                        .SelectMany(item => pumpSpeeds, (item, pumpSpeed) =>
-                            $@"MIN(CASE 
-    WHEN Company = '{item.Company.Replace("'", "''")}' 
-    AND Flow = '{item.Flow.Replace("'", "''")}' 
-    AND Pump_Speed_in_RPM = '{pumpSpeed.Replace("'", "''")}' 
-    AND Pump_Size = '{item.Sizes.Replace("'", "''")}' 
-    THEN BHP 
-    END) AS [" + item.Company.Replace("'", "''") + "\n" +
-                                        item.Sizes.Replace("'", "''") + "\n" +
-                                        item.Flow.Replace("'", "''") + "\n" +
-                                        pumpSpeed.Replace("'", "''") + "]"));
+                GridColumn zeroColumn = gridView1.Columns[0];
+                zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
+                hide_unused_columns();
 
-
-                    string Bigquery = $@"
-                     SELECT 
-                         Head,
-                         STUFF((
-                            SELECT '\n' + CONCAT(Company, '\n', Flow, '\n', Pump_Speed_in_RPM, '\n', Pump_Size)
-                            FROM pumps AS p
-                            WHERE 
-                                p.Head = p1.Head
-                                    AND {CompaniesCondition}
-                                    AND {FlowsCondition}
-                                    AND {HeadsCondition}
-                                    AND {SpeedsCondition}
-                                    AND {SizesCondition}
-                            FOR XML PATH('')
-                            ), 1, 1, '') AS CompanyFlow,
-                       {caseStatements}
-                        FROM pumps AS p1
-                        WHERE 
-                            {CompaniesCondition}
-                            AND {FlowsCondition}
-                            AND {HeadsCondition}
-                            AND {SpeedsCondition}
-                            AND {SizesCondition}
-                        GROUP BY 
-                        Head
-                        ORDER BY Head";
-
-                    DataTable fullData = await Task.Run(() =>
-                    {
-                        DataTable dataTable = new DataTable();
-                        using (var connection = new SqlConnection(db_conn))
-                        {
-                            connection.Open();
-                            using (var adapter = new SqlDataAdapter(Bigquery, connection))
-                            {
-                                adapter.Fill(dataTable);
-
-                            }
-                        }
-                        return dataTable;
-                    });
-
-                    gridControl1.DataSource = fullData;
-                    gridView1.OptionsView.ShowGroupPanel = false;
-                    gridView1.GroupPanelText = "";
-                    gridView1.PopulateColumns();
-                    gridView1.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
-                    gridView1.OptionsView.ColumnAutoWidth = false;
-                    gridView1.BestFitColumns();
-                    gridView1.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-                    gridView1.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-
-                    GridColumn zeroColumn = gridView1.Columns[0];
-                    zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    hide_unused_columns();
-
-                    GridColumn firstColumn = gridView1.Columns[1];
-                    firstColumn.Visible = false;
-
-                }
-
-                else if (SizeIsSelected == false)
-                { //Function that querys if no size is selected, all autosize will be shown
-                    var selectedCombinations = from flowItem in FlowList.SelectedItems.Cast<DataRowView>()
-                                               from companyItem in CompanyList.SelectedItems.Cast<DataRowView>()
-                                               select new
-                                               {
-                                                   Company = companyItem["Company"].ToString(),
-                                                   Flow = flowItem["Flow"].ToString(),
-                                               };
-
-                    string caseStatements = string.Join(",",
-                        selectedCombinations.SelectMany(item =>
-                            pumpSizes.SelectMany(pumpSize =>
-                                pumpSpeeds.Select(pumpSpeed =>
-                                    $@"MIN(CASE WHEN Company = '{item.Company}' 
-                            AND Flow = '{item.Flow}' 
-                            AND Pump_Speed_in_RPM = '{pumpSpeed}' 
-                            AND Pump_Size = '{pumpSize}' 
-                            THEN BHP 
-                            END) AS [" +
-                                    item.Company + ((char)13).ToString() + ((char)10).ToString() +
-                                    pumpSize + ((char)13).ToString() + ((char)10).ToString() +
-                                    item.Flow + ((char)13).ToString() + ((char)10).ToString() +
-                                    pumpSpeed + "]"
-                                )
-                            )
-                        )
-                    );
-
-
-
-                    string Bigquery = $@"
-                     SELECT 
-                         Head,
-                         STUFF((
-                            SELECT '\n' + CONCAT(Company, '\n', Flow, '\n', Pump_Speed_in_RPM, '\n', Pump_Size)
-                            FROM pumps AS p
-                            WHERE 
-                                p.Head = p1.Head
-                                    AND {CompaniesCondition}
-                                    AND {FlowsCondition}
-                                    AND {HeadsCondition}
-                                    AND {SpeedsCondition}
-                                    AND {SizesCondition}
-                            FOR XML PATH('')
-                            ), 1, 1, '') AS CompanyFlow,
-                       {caseStatements}
-                        FROM pumps AS p1
-                        WHERE 
-                            {CompaniesCondition}
-                            AND {FlowsCondition}
-                            AND {HeadsCondition}
-                            AND {SpeedsCondition}
-                            AND {SizesCondition}
-                        GROUP BY 
-                        Head
-                        ORDER BY Head";
-
-                    DataTable fullData = await Task.Run(() =>
-                    {
-                        DataTable dataTable = new DataTable();
-                        using (var connection = new SqlConnection(db_conn))
-                        {
-                            connection.Open();
-                            using (var adapter = new SqlDataAdapter(Bigquery, connection))
-                            {
-                                adapter.Fill(dataTable);
-
-                            }
-                        }
-                        return dataTable;
-                    });
-
-                    gridControl1.DataSource = fullData;
-                    gridView1.OptionsView.ShowGroupPanel = false;
-                    gridView1.GroupPanelText = "";
-                    gridView1.PopulateColumns();
-                    gridView1.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
-                    gridView1.OptionsView.ColumnAutoWidth = false;
-                    gridView1.BestFitColumns();
-                    gridView1.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-                    gridView1.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-
-                    GridColumn zeroColumn = gridView1.Columns[0];
-                    zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-
-                    hide_unused_columns();
-
-                    GridColumn firstColumn = gridView1.Columns[1];
-                    firstColumn.Visible = false;
-
-
-
-                }
+                GridColumn firstColumn = gridView1.Columns[1];
+                firstColumn.Visible = false;
             }
             catch (Exception ex)
             {
@@ -1425,5 +1251,6 @@ namespace PumpAtlas
         {
             Process.Start(new ProcessStartInfo("https://ruhrpumpen.sharepoint.com/:x:/r/sites/RPFS-InsideSales/Shared%20Documents/Product%20Engineer/PRODUCT%20ENGINEER%20LUIS%20DAVILA/PRACTICANTES/AITOR%20CERECERO/Data%20Insertion%20Template.xlsx?d=w6be1803de5154790a8fe1b5e71a95549&csf=1&web=1&e=qN8q1l") { UseShellExecute = true });
         }
+
     }
 }

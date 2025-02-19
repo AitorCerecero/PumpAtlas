@@ -33,6 +33,8 @@
             pictureBox3 = new PictureBox();
             xtraTabControl2 = new DevExpress.XtraTab.XtraTabControl();
             xtraTabPage5 = new DevExpress.XtraTab.XtraTabPage();
+            current_process = new DevExpress.XtraEditors.LabelControl();
+            labelControl24 = new DevExpress.XtraEditors.LabelControl();
             gridControl1 = new DevExpress.XtraGrid.GridControl();
             gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             checkBox9 = new CheckBox();
@@ -211,6 +213,8 @@
             // 
             // xtraTabPage5
             // 
+            xtraTabPage5.Controls.Add(current_process);
+            xtraTabPage5.Controls.Add(labelControl24);
             xtraTabPage5.Controls.Add(gridControl1);
             xtraTabPage5.Controls.Add(checkBox9);
             xtraTabPage5.Controls.Add(checkBox10);
@@ -234,6 +238,21 @@
             xtraTabPage5.Name = "xtraTabPage5";
             xtraTabPage5.Size = new Size(1558, 859);
             xtraTabPage5.Text = "Map";
+            // 
+            // current_process
+            // 
+            current_process.Location = new Point(266, 323);
+            current_process.Name = "current_process";
+            current_process.Size = new Size(0, 13);
+            current_process.TabIndex = 77;
+            // 
+            // labelControl24
+            // 
+            labelControl24.Location = new Point(230, 323);
+            labelControl24.Name = "labelControl24";
+            labelControl24.Size = new Size(30, 13);
+            labelControl24.TabIndex = 76;
+            labelControl24.Text = "State:\r\n";
             // 
             // gridControl1
             // 
@@ -1473,5 +1492,7 @@
         private DevExpress.XtraEditors.LabelControl labelControl23;
         private LinkLabel linkLabel1;
         private DevExpress.XtraEditors.PanelControl panelControl1;
+        private DevExpress.XtraEditors.LabelControl labelControl24;
+        private DevExpress.XtraEditors.LabelControl current_process;
     }
 }
