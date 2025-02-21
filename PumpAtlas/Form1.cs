@@ -515,8 +515,7 @@ namespace PumpAtlas
                 gridView1.BestFitColumns();
                 gridView1.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
                 gridView1.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-                gridView1.ColumnPanelRowHeight = 70; 
-
+                gridView1.ColumnPanelRowHeight = 70;
                 GridColumn zeroColumn = gridView1.Columns[0];
                 zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
@@ -565,43 +564,53 @@ namespace PumpAtlas
 
             try
             {
+                // Construcción dinámica de las columnas
+                string dynamicColumnsQuery = $@"
+        SELECT DISTINCT
+            CONCAT(Company, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10)) AS ColumnName
+        FROM pumps
+        WHERE {CompaniesCondition} AND {FlowsCondition} AND {HeadsCondition}";
 
-                var selectedCombinations = from companyItem in Company_rpvsothers.SelectedItems.Cast<DataRowView>()
-                                           from flowItem in Flow_rpvsothers.SelectedItems.Cast<DataRowView>()
-                                           select new
-                                           {
-                                               Company = companyItem["Company"].ToString(),
-                                               Flow = flowItem["Flow"].ToString()
-                                           };
+                List<string> dynamicColumns = new List<string>();
+                using (var connection = new SqlConnection(db_conn))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(dynamicColumnsQuery, connection))
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            dynamicColumns.Add(reader["ColumnName"].ToString());
+                        }
+                    }
+                }
 
-                string caseStatements = string.Join(",", selectedCombinations
-               .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN BHP END) AS [" +
-                item.Company + ((char)13).ToString() + ((char)10).ToString() + item.Flow + "]"));
+                string caseStatements = string.Join(",\n", dynamicColumns.Select(col => $@"
+        MIN(CASE 
+            WHEN CONCAT(Company, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10)) = '{col.Replace("'", "''")}' 
+            THEN BHP 
+        END) AS [{col}]")
+                );
 
                 string Bigquery = $@"
         SELECT 
             Head,
             STUFF((
-                SELECT CHAR(10) + CONCAT(Company, CHAR(10), Flow)
-                FROM pumps p2
-                WHERE p2.Head = p.Head
+                SELECT CHAR(13) + CHAR(10) + CONCAT(Company, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10))
+                FROM pumps AS p
+                WHERE p.Head = p1.Head
                 AND {CompaniesCondition}
                 AND {FlowsCondition}
                 AND {HeadsCondition}
-                ORDER BY Company, Flow
-                FOR XML PATH('')
-            ), 1, 1, '') AS CompanyFlow,
+                FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS CompanyFlow,
             {caseStatements}
-        FROM 
-            pumps p
-        WHERE 
-            {CompaniesCondition}
-            AND {FlowsCondition}
-            AND {HeadsCondition}
-        GROUP BY 
-            Head
-        ORDER BY 
-            Head";
+        FROM pumps AS p1
+        WHERE {CompaniesCondition} 
+          AND {FlowsCondition} 
+          AND {HeadsCondition}
+        GROUP BY Head
+        ORDER BY Head";
+
 
                 DataTable fullData2 = await Task.Run(() =>
                 {
@@ -632,6 +641,9 @@ namespace PumpAtlas
                 GridColumn firstColumn = gridView2.Columns[1];
                 firstColumn.Visible = false;
 
+                hide_unused_columns();
+
+
             }
             catch (Exception ex)
             {
@@ -652,16 +664,33 @@ namespace PumpAtlas
 
             try
             {
-                var selectedCombinations = from companyItem in Company_rpvsmkt.SelectedItems.Cast<DataRowView>()
-                                           from flowItem in Flow_rpvsmkt.SelectedItems.Cast<DataRowView>()
-                                           select new
-                                           {
-                                               Company = companyItem["Company"].ToString(),
-                                               Flow = flowItem["Flow"].ToString()
-                                           };
+                string dynamicColumnsQuery = $@"
+        SELECT DISTINCT
+            CONCAT(Company, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10)) AS ColumnName
+        FROM pumps
+        WHERE {CompaniesCondition} AND {FlowsCondition} AND {HeadsCondition}";
 
-                string caseStatements = string.Join(",\n", selectedCombinations
-                    .Select(item => $@"MIN(CASE WHEN Company = '{item.Company}' AND Flow = '{item.Flow}' THEN BHP END) AS [{item.Flow} - {item.Company}]"));
+                List<string> dynamicColumns = new List<string>();
+                using (var connection = new SqlConnection(db_conn))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(dynamicColumnsQuery, connection))
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            dynamicColumns.Add(reader["ColumnName"].ToString());
+                        }
+                    }
+                }
+
+
+                string caseStatements = string.Join(",\n", dynamicColumns.Select(col => $@"
+        MIN(CASE 
+            WHEN CONCAT(Company, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10)) = '{col.Replace("'", "''")}' 
+            THEN BHP 
+        END) AS [{col}]")
+);
 
                 string Bigquery = $@"
     SELECT 
@@ -710,9 +739,19 @@ namespace PumpAtlas
                 gridView3.BestFitColumns();
                 gridView3.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
                 gridView3.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+                gridView3.ColumnPanelRowHeight = 70;
+                gridView3.OptionsView.ColumnAutoWidth = true;
+                foreach (GridColumn column in gridView3.Columns)
+                {
+                    column.BestFit();
+                    column.Width = 100; // Ajusta el ancho según necesites
+                }
+
 
                 GridColumn zeroColumn = gridView3.Columns[0];
                 zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+
+                hide_unused_columns();
 
                 GridColumn firstColumn = gridView3.Columns[1];
                 firstColumn.Visible = false;
