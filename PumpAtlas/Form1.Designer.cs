@@ -1211,7 +1211,7 @@
             // insert_state
             // 
             insert_state.AutoSize = true;
-            insert_state.Location = new Point(726, 356);
+            insert_state.Location = new Point(425, 521);
             insert_state.Name = "insert_state";
             insert_state.Size = new Size(0, 13);
             insert_state.TabIndex = 22;
@@ -1219,7 +1219,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(645, 356);
+            label6.Location = new Point(344, 521);
             label6.Name = "label6";
             label6.Size = new Size(86, 13);
             label6.TabIndex = 21;

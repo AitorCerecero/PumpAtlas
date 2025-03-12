@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PumpAtlas": {
+      "commandName": "Project",
+      "sqlDebugging": true
+    }
+  }
+}

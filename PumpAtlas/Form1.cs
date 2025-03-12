@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using Dapper;
 using DevExpress.CodeParser;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace PumpAtlas
 {
@@ -209,14 +211,14 @@ namespace PumpAtlas
                 Flow_all.DisplayMember = "Flow";
 
                 //Speed Filler for all 4 Tabs of Data Processing (Only used once in All)
-                String query4 = ("SELECT Pump_Speed_in_RPM FROM pumps GROUP BY Pump_Speed_in_RPM ORDER BY Pump_Speed_in_RPM ASC");
+                String query4 = ("SELECT Speed_RPM FROM pumps GROUP BY Speed_RPM ORDER BY Speed_RPM ASC");
                 adapter = new SqlDataAdapter(query4, connection);
                 DataTable speed_all = new DataTable();
                 adapter.Fill(speed_all);
                 //All Data
                 Speed_all.DataSource = null;
                 Speed_all.DataSource = new BindingSource(speed_all, null);
-                Speed_all.DisplayMember = "Pump_Speed_in_RPM";
+                Speed_all.DisplayMember = "Speed_RPM";
 
                 //Pump Size Filler for all  Tabs of Data Processing (Only used Once in Map)
                 String query5 = ("SELECT Pump_Size FROM pumps GROUP BY Pump_Size ORDER BY Pump_Size ASC");
@@ -283,13 +285,13 @@ namespace PumpAtlas
             string Heads = string.Join(",", HeadList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
             string Flows = string.Join(",", FlowList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
             string Companies = string.Join(",", CompanyList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
-            string Speeds = string.Join(",", SpeedList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Pump_Speed_in_RPM"].ToString()}'"));
+            string Speeds = string.Join(",", SpeedList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Speed_RPM"].ToString()}'"));
 
             // Asegurar que si la lista está vacía, la condición sea válida
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
-            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";
+            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Speed_RPM IN ({Speeds})";
 
             using (SqlConnection connection = new SqlConnection(db_conn))
             {
@@ -306,13 +308,13 @@ namespace PumpAtlas
             ORDER BY Pump_Size ASC";
 
                 string query2 = $@"
-            SELECT Pump_Speed_in_RPM
+            SELECT Speed_RPM
             FROM pumps 
             WHERE {CompaniesCondition} 
               AND {FlowsCondition} 
               AND {HeadsCondition} 
-            GROUP BY Pump_Speed_in_RPM 
-            ORDER BY Pump_Speed_in_RPM ASC";
+            GROUP BY Speed_RPM
+            ORDER BY Speed_RPM ASC";
 
                 using (SqlDataAdapter adapter = new SqlDataAdapter(query, connection))
                 {
@@ -331,7 +333,7 @@ namespace PumpAtlas
 
             List<string> selectedSpeeds = SpeedList.SelectedItems
                 .OfType<DataRowView>()
-                .Select(item => item["Pump_Speed_in_RPM"].ToString())
+                .Select(item => item["Speed_RPM"].ToString())
                 .ToList();
 
             string Heads = string.Join(",", HeadList.SelectedItems.OfType<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
@@ -347,12 +349,12 @@ namespace PumpAtlas
                 await connection.OpenAsync();
 
                 string query2 = $@"
-        SELECT DISTINCT Pump_Speed_in_RPM
+        SELECT DISTINCT Speed_RPM
         FROM pumps 
         WHERE {CompaniesCondition} 
           AND {HeadsCondition} 
           AND {FlowsCondition} 
-        ORDER BY Pump_Speed_in_RPM ASC";
+        ORDER BY Speed_RPM ASC";
 
                 using (SqlDataAdapter adapter = new SqlDataAdapter(query2, connection))
                 {
@@ -365,7 +367,7 @@ namespace PumpAtlas
                     SpeedList.BeginUpdate();
                     SpeedList.DataSource = null;
                     SpeedList.DataSource = new BindingSource(speed_map, null);
-                    SpeedList.DisplayMember = "Pump_Speed_in_RPM";
+                    SpeedList.DisplayMember = "Speed_RPM";
 
 
                     SpeedList.ClearSelected();
@@ -375,7 +377,7 @@ namespace PumpAtlas
                     for (int i = 0; i < SpeedList.Items.Count; i++)
                     {
                         DataRowView item = (DataRowView)SpeedList.Items[i];
-                        string speedValue = item["Pump_Speed_in_RPM"].ToString();
+                        string speedValue = item["Speed_RPM"].ToString();
 
                         if (selectedSpeeds.Contains(speedValue))
                         {
@@ -435,20 +437,20 @@ namespace PumpAtlas
                 string Heads = string.Join(",", HeadList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Head"].ToString()}'"));
                 string Flows = string.Join(",", FlowList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Flow"].ToString()}'"));
                 string Companies = string.Join(",", CompanyList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Company"].ToString()}'"));
-                string Speeds = string.Join(",", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Speed_in_RPM"].ToString()}'"));
+                string Speeds = string.Join(",", SpeedList.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Speed_RPM"].ToString()}'"));
                 string Sizes = string.Join(",", SizeMap.SelectedItems.Cast<DataRowView>().Select(item => $"'{item["Pump_Size"].ToString()}'"));
 
                 // Condiciones dinámicas
                 string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ({Companies})";
                 string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";
                 string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";
-                string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";
+                string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Speed_RPM IN ({Speeds})";
                 string SizesCondition = string.IsNullOrEmpty(Sizes) ? "1=1" : $"Pump_Size IN ({Sizes})";
 
                 // Construcción dinámica de las columnas
                 string dynamicColumnsQuery = $@"
             SELECT DISTINCT
-                REPLACE(CONCAT(Company, CHAR(13) + CHAR(10), Pump_Size, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Pump_Speed_in_RPM), '\n', CHAR(13) + CHAR(10)) AS ColumnName
+                REPLACE(CONCAT(Company, CHAR(13) + CHAR(10), Pump_Size, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Speed_RPM), '\n', CHAR(13) + CHAR(10)) AS ColumnName
             FROM pumps
             WHERE {CompaniesCondition} AND {FlowsCondition} AND {HeadsCondition} AND {SpeedsCondition} AND {SizesCondition}";
 
@@ -467,14 +469,20 @@ namespace PumpAtlas
                 }
 
                 string caseStatements = string.Join(",\n", dynamicColumns.Select(col => $@"
-            MIN(CASE WHEN REPLACE(CONCAT(Company, CHAR(13) + CHAR(10), Pump_Size, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Pump_Speed_in_RPM), '\n', CHAR(13) + CHAR(10)) = '{col.Replace("'", "''")}' THEN BHP END) AS [{col}]")
-                );
+            MIN(CASE WHEN REPLACE(CONCAT(Company, CHAR(13) + CHAR(10), Pump_Size, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Speed_RPM), '\n', CHAR(13) + CHAR(10)) = '{col.Replace("'", "''")}' THEN BHP END) AS [{col}]"));
+
+                string caseStatementsBestPrice = string.Join(",\n", dynamicColumns.Select(col => $@"
+            MIN(CASE WHEN REPLACE(CONCAT(Company, CHAR(13) + CHAR(10), Pump_Size, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Speed_RPM), '\n', CHAR(13) + CHAR(10)) = '{col.Replace("'", "''")}' 
+                 THEN Best_Price 
+            END) AS [Best_{col}]")
+        );
+
 
                 string Bigquery = $@"
             SELECT 
                 Head,
                 STUFF((
-                    SELECT CHAR(13) + CHAR(10) + CONCAT(Company, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Pump_Speed_in_RPM, CHAR(13) + CHAR(10), Pump_Size)
+                    SELECT CHAR(13) + CHAR(10) + CONCAT(Company, CHAR(13) + CHAR(10), Flow, CHAR(13) + CHAR(10), Speed_RPM, CHAR(13) + CHAR(10), Pump_Size)
                     FROM pumps AS p
                     WHERE p.Head = p1.Head
                     AND {CompaniesCondition}
@@ -483,7 +491,7 @@ namespace PumpAtlas
                     AND {SpeedsCondition}
                     AND {SizesCondition}
                     FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS CompanyFlow,
-                {caseStatements}
+                {caseStatements},{caseStatementsBestPrice}
             FROM pumps AS p1
             WHERE {CompaniesCondition} 
               AND {FlowsCondition} 
@@ -520,6 +528,7 @@ namespace PumpAtlas
                 zeroColumn.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
 
                 hide_unused_columns();
+                hide_price_columns();
 
                 GridColumn firstColumn = gridView1.Columns[1];
                 firstColumn.Visible = false;
@@ -529,6 +538,8 @@ namespace PumpAtlas
                 System.Windows.Forms.MessageBox.Show($"Error: {ex.Message}");
             }
         }
+
+
 
         private void hide_unused_columns()
         {
@@ -550,6 +561,21 @@ namespace PumpAtlas
 
                 column.Visible = !allCellsEmpty;
             }
+        }
+
+        private void hide_price_columns()
+        {
+            for (int j = gridView1.Columns.Count - 1; j >= 0; j--)
+            {
+                GridColumn column = gridView1.Columns[j];
+                string lookfor = "Best";
+
+                if (column.FieldName.Contains(lookfor) || column.Caption.Contains(lookfor))
+                {
+                    column.Visible = false; 
+                }
+            }
+
         }
         //Query that retrieves Data for the RP vs Others Tab
         private async void big_query2()
@@ -769,30 +795,21 @@ namespace PumpAtlas
             string Companies = string.Join("','", Company_all.SelectedItems.Cast<DataRowView>().Select(item => item["Company"].ToString()));
             string Flows = string.Join("','", Flow_all.SelectedItems.Cast<DataRowView>().Select(item => item["Flow"].ToString()));
             string Heads = string.Join("','", Head_all.SelectedItems.Cast<DataRowView>().Select(item => item["Head"].ToString()));
-            string Speeds = string.Join("','", Speed_all.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Speed_in_RPM"].ToString()));
+            string Speeds = string.Join("','", Speed_all.SelectedItems.Cast<DataRowView>().Select(item => item["Speed_RPM"].ToString()));
             string Sizes = string.Join("','", Size_all.SelectedItems.Cast<DataRowView>().Select(item => item["Pump_Size"].ToString()));
 
 
             string CompaniesCondition = string.IsNullOrEmpty(Companies) ? "1=1" : $"Company IN ('{Companies}')";
             string FlowsCondition = string.IsNullOrEmpty(Flows) ? "1=1" : $"Flow IN ({Flows})";  // Flows puede ser num�rico, no necesitas comillas
             string HeadsCondition = string.IsNullOrEmpty(Heads) ? "1=1" : $"Head IN ({Heads})";  // Similar para Heads, tambi�n num�rico
-            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Pump_Speed_in_RPM IN ({Speeds})";  // Speeds tambi�n es num�rico
+            string SpeedsCondition = string.IsNullOrEmpty(Speeds) ? "1=1" : $"Speed_RPM IN ({Speeds})";  // Speeds tambi�n es num�rico
             string SizesCondition = string.IsNullOrEmpty(Sizes) ? "1=1" : $"Pump_Size IN ('{Sizes}')";
 
             try
             {
                 string Bigquery = $@"
         SELECT 
-            Company,
-            Pump_Line,
-            Head,
-            Flow,  
-            Pump_Speed_in_RPM as 'Pump Speed', 
-            BHP,
-            Model, 
-            Line,
-            Stages,
-            Pump_Size
+        *
         FROM pumps
         WHERE {CompaniesCondition}
         AND {FlowsCondition}
@@ -818,10 +835,25 @@ namespace PumpAtlas
                 gridView4.OptionsView.ShowGroupPanel = false;
                 gridView4.GroupPanelText = "";
                 gridView4.PopulateColumns();
+                gridView1.OptionsView.ColumnAutoWidth = true;
                 gridView4.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+
+                // Ajustar el ancho de las columnas automáticamente considerando los encabezados
                 gridView4.BestFitColumns();
+
+                // Ajustar cada columna individualmente para que su ancho se adapte al encabezado y al contenido
+                foreach (DevExpress.XtraGrid.Columns.GridColumn column in gridView4.Columns)
+                {
+                    column.BestFit(); // Ajusta la columna al contenido y al encabezado
+                    column.OptionsColumn.FixedWidth = false; // Permite redimensionamiento manual
+                }
+
+                // Asegurar que los nombres largos de las columnas se muestren completamente
                 gridView4.Appearance.HeaderPanel.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
                 gridView4.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+                gridView4.ColumnPanelRowHeight = 70;
+
+
             }
             catch (Exception ex)
             {
@@ -1047,7 +1079,6 @@ namespace PumpAtlas
                         {
                             try
                             {
-
                                 using (var connection = new SqlConnection(db_conn))
                                 {
                                     connection.Open();
@@ -1057,39 +1088,91 @@ namespace PumpAtlas
                                     dt.Columns.Add("Pump_Line", typeof(string));
                                     dt.Columns.Add("Flow", typeof(int));
                                     dt.Columns.Add("Head", typeof(int));
-                                    dt.Columns.Add("Pump_Speed_in_RPM", typeof(int));
-                                    dt.Columns.Add("Max_BHP", typeof(int));
-                                    dt.Columns.Add("Pump_Model", typeof(string));
+                                    dt.Columns.Add("Speed_RPM", typeof(int));
+                                    dt.Columns.Add("BHP", typeof(int));
+                                    dt.Columns.Add("Model", typeof(string));
                                     dt.Columns.Add("Line", typeof(string));
                                     dt.Columns.Add("Stages", typeof(int));
                                     dt.Columns.Add("Pump_Size", typeof(string));
+                                    dt.Columns.Add("Pump_RPM", typeof(int));
+                                    dt.Columns.Add("Kirloskar", typeof(string));
+                                    dt.Columns.Add("Clarke", typeof(string));
+                                    dt.Columns.Add("Rated_Head", typeof(int));
+                                    dt.Columns.Add("K_R_RPM", typeof(string));
+                                    dt.Columns.Add("C_R_RPM", typeof(string));
+                                    dt.Columns.Add("Kirloskar_Price", typeof(decimal));
+                                    dt.Columns.Add("Clarke_Price", typeof(decimal));
+                                    dt.Columns.Add("Best_Price", typeof(decimal));
+                                    dt.Columns.Add("CFH", typeof(string));
+                                    dt.Columns.Add("FH", typeof(string));
+                                    dt.Columns.Add("FHP", typeof(string));
+                                    dt.Columns.Add("CFHS_Class", typeof(decimal));
+                                    dt.Columns.Add("FH_Class", typeof(decimal));
+                                    dt.Columns.Add("KFH_Class", typeof(decimal));
+                                    dt.Columns.Add("CLFH_Class", typeof(decimal));
+                                    dt.Columns.Add("BHP_FH_Class", typeof(decimal));
+                                    dt.Columns.Add("Best_Selection", typeof(string));
+                                    dt.Columns.Add("Best_Company", typeof(string));
+                                    dt.Columns.Add("Best_Motor", typeof(string));
+                                    dt.Columns.Add("Best_Clarke", typeof(string));
+                                    dt.Columns.Add("Best_Kirloskar", typeof(string));
+                                    dt.Columns.Add("Comp_Size_RPM", typeof(string));
 
                                     var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
                                     {
-                                        HasHeaderRecord = false
+                                        HasHeaderRecord = false,
+                                        Delimiter = ",",
+                                        IgnoreBlankLines = true,
+                                        TrimOptions = TrimOptions.Trim,
+                                        BadDataFound = null,
+                                        Mode = CsvMode.RFC4180,
+                                        AllowComments = true,
+                                        Quote = '"',
+                                        ShouldQuote = args => true,
+                                        MissingFieldFound = null
                                     };
 
                                     using (var reader = new StreamReader(filePath))
                                     using (var csv = new CsvReader(reader, csvConfig))
                                     {
-
                                         csv.Read();
-
 
                                         while (await csv.ReadAsync())
                                         {
                                             DataRow row = dt.NewRow();
-
                                             row["Company"] = csv.GetField(0);
                                             row["Pump_Line"] = csv.GetField(1);
                                             row["Flow"] = csv.GetField<int>(2);
                                             row["Head"] = csv.GetField<int>(3);
-                                            row["Pump_Speed_in_RPM"] = csv.GetField<int>(4);
-                                            row["Max_BHP"] = csv.GetField<int>(5);
-                                            row["Pump_Model"] = csv.GetField(6);
+                                            row["Speed_RPM"] = csv.GetField<int>(4);
+                                            row["BHP"] = csv.GetField<int>(5);
+                                            row["Model"] = csv.GetField(6);
                                             row["Line"] = csv.GetField(7);
                                             row["Stages"] = csv.GetField<int>(8);
                                             row["Pump_Size"] = csv.GetField(9);
+                                            row["Pump_RPM"] = csv.GetField<int>(10);
+                                            row["Kirloskar"] = csv.GetField(11);
+                                            row["Clarke"] = csv.GetField(12);
+                                            row["Rated_Head"] = csv.GetField<int>(13);
+                                            row["K_R_RPM"] = csv.GetField(14);
+                                            row["C_R_RPM"] = csv.GetField(15);
+                                            row["Kirloskar_Price"] = csv.GetField<decimal>(16);
+                                            row["Clarke_Price"] = csv.GetField<decimal>(17);
+                                            row["Best_Price"] = csv.GetField<decimal>(18);
+                                            row["CFH"] = csv.GetField(19);
+                                            row["FH"] = csv.GetField(20);
+                                            row["FHP"] = csv.GetField(21);
+                                            row["CFHS_Class"] = csv.GetField<decimal>(22);
+                                            row["FH_Class"] = csv.GetField<decimal>(23);
+                                            row["KFH_Class"] = csv.GetField<decimal>(24);
+                                            row["CLFH_Class"] = csv.GetField<decimal>(25);
+                                            row["BHP_FH_Class"] = csv.GetField<decimal>(26);
+                                            row["Best_Selection"] = csv.GetField(27);
+                                            row["Best_Company"] = csv.GetField(28);
+                                            row["Best_Motor"] = csv.GetField(29);
+                                            row["Best_Clarke"] = csv.GetField(30);
+                                            row["Best_Kirloskar"] = csv.GetField(31);
+                                            row["Comp_Size_RPM"] = csv.GetField(32);
 
                                             dt.Rows.Add(row);
                                         }
@@ -1098,17 +1181,39 @@ namespace PumpAtlas
                                     using (var bulkCopy = new SqlBulkCopy(connection))
                                     {
                                         bulkCopy.DestinationTableName = "pumps";
-                                        await bulkCopy.WriteToServerAsync(dt);
+                                        try
+                                        {
+                                            await bulkCopy.WriteToServerAsync(dt);
+
+                                            this.Invoke(new Action(() =>
+                                            {
+                                                insert_state.Text = "Data inserted successfully";
+                                                transform_data();
+                                                refresh_db();
+                                                fill_selectors();
+                                            }));
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            string errorMessage = string.Empty;
+                                            if (ex.Message.Contains("Received an invalid column length from the bcp client for colid"))
+                                            {
+                                                errorMessage = GetBulkCopyColumnException(ex, bulkCopy);
+                                                this.Invoke(new Action(() =>
+                                                {
+                                                    insert_state.Text = $"Error en columna: {errorMessage}";
+                                                }));
+                                            }
+                                            else
+                                            {
+                                                this.Invoke(new Action(() =>
+                                                {
+                                                    insert_state.Text = $"Error en la inserción: {ex.Message}";
+                                                }));
+                                            }
+                                        }
                                     }
 
-                                    this.Invoke(new Action(() =>
-                                    {
-                                        insert_state.Text = "Data inserted successfully";
-                                        transform_data();
-                                        refresh_db();
-                                        fill_selectors();
-
-                                    }));
                                     await Task.Delay(6000);
                                     this.Invoke(new Action(() =>
                                     {
@@ -1143,6 +1248,28 @@ namespace PumpAtlas
                     sel_insert_label.Text = "No File Selected";
                 }
             }
+        }
+
+        private string GetBulkCopyColumnException(Exception ex, SqlBulkCopy bulkcopy)
+        {
+            string message = string.Empty;
+            if (ex.Message.Contains("Received an invalid column length from the bcp client for colid"))
+            {
+                string pattern = @"\d+";
+                Match match = Regex.Match(ex.Message.ToString(), pattern);
+                var index = Convert.ToInt32(match.Value) - 1;
+
+                FieldInfo fi = typeof(SqlBulkCopy).GetField("_sortedColumnMappings", BindingFlags.NonPublic | BindingFlags.Instance);
+                var sortedColumns = fi.GetValue(bulkcopy);
+                var items = (Object[])sortedColumns.GetType().GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(sortedColumns);
+
+                FieldInfo itemdata = items[index].GetType().GetField("_metadata", BindingFlags.NonPublic | BindingFlags.Instance);
+                var metadata = itemdata.GetValue(items[index]);
+                var column = metadata.GetType().GetField("column", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(metadata);
+                var length = metadata.GetType().GetField("length", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(metadata);
+                message = (String.Format("Column: {0} contains data with a length greater than: {1}", column, length));
+            }
+            return message;
         }
         //Button that calls method to insert data in Database from Data management tab
         private void button7_Click(object sender, EventArgs e)
