@@ -21,7 +21,11 @@ I want to make emphasis on a file, VP Jordi Bernal is the author of the file HSC
 	- use the color properties that DevExpress offers to color red when price is higher and green when price is either the same or lower
 6. I already created the derrated function on the table, there is a table where all the process takes place and another one that serves as reference and the GUI of the app also contains a text box to introduce the derrated value
 
-Overall, that is everything to consider the application done, remember to run the dotnet publish comand and set the state of the app from debug to release so the IDE returns a single EXE file to run in any Windows system 
+The dotnet command that works is the following dotnet publish -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishTrimmed=true --output "output directory where the final exe will be stored"
 
-The dotnet command that works is the following dotnet publish -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishTrimmed=true --output "La carpeta de destino donde se guardara el exe"
+additional, if you need to load data, the bcp command that works is the following bcp 'table name' in "File path" -c -r\n -t, -F 2 -S DC1FP1 -U firedb -P firedb, change table and file path with the appropiate resources
+
+Overall, that is everything to consider the application done, remember to run the dotnet publish comand that is on this same message and set the state of the app from debug to release so the IDE returns a single EXE file to run in any Windows system 
+
+
 
